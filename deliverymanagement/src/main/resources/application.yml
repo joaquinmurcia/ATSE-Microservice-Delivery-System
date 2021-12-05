@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: deliverymanagement
+  data:
+    mongodb:
+      # Configure database location
+      host: localhost
+      port: 27017
+      database: deliveryManagement
+
+      # Configure credential
+      username: aseAdmin
+      password: test
+      authentication-database: admin
+
+      # Configure Database Operation,
+      # allow creating index automatically from the code
+      auto-index-creation: true
+
+      #enable the usage of Spring Data Mongo Repository
+      repositories:
+        enabled: true
+
+server:
+  port: 9002
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:9001/eureka
+
+logging:
+  level:
+    edu:
+      tum:
+        ase: DEBUG
+    root: DEBUG
