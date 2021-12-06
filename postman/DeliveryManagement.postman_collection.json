@@ -13,7 +13,7 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"id\", jsonData[0].id);"
+							"postman.setEnvironmentVariable(\"delivery_id\", jsonData[0].id);"
 						],
 						"type": "text/javascript"
 					}
@@ -55,7 +55,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"targetCustomer\": \"customer1\",\n    \"responsibleDriver\": \"driver1\"\n}",
+					"raw": "{\n    \"targetBox\": \"box1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -102,7 +102,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{id}}",
+					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}",
 					"host": [
 						"localhost"
 					],
@@ -110,7 +110,7 @@
 					"path": [
 						"deliverymanagement",
 						"deliveries",
-						"{{id}}"
+						"{{delivery_id}}"
 					]
 				}
 			},
@@ -142,7 +142,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{id}}",
+					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}",
 					"host": [
 						"localhost"
 					],
@@ -150,7 +150,7 @@
 					"path": [
 						"deliverymanagement",
 						"deliveries",
-						"{{id}}"
+						"{{delivery_id}}"
 					]
 				}
 			},
@@ -185,7 +185,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{id}}",
+					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}",
 					"host": [
 						"localhost"
 					],
@@ -193,7 +193,7 @@
 					"path": [
 						"deliverymanagement",
 						"deliveries",
-						"{{id}}"
+						"{{delivery_id}}"
 					]
 				}
 			},
@@ -225,7 +225,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{id}}/pickup",
+					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}/pickup",
 					"host": [
 						"localhost"
 					],
@@ -233,7 +233,7 @@
 					"path": [
 						"deliverymanagement",
 						"deliveries",
-						"{{id}}",
+						"{{delivery_id}}",
 						"pickup"
 					]
 				}
@@ -266,7 +266,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{id}}/deposit",
+					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}/deposit",
 					"host": [
 						"localhost"
 					],
@@ -274,7 +274,7 @@
 					"path": [
 						"deliverymanagement",
 						"deliveries",
-						"{{id}}",
+						"{{delivery_id}}",
 						"deposit"
 					]
 				}

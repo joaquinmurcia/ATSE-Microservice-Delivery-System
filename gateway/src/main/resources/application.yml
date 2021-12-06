@@ -17,9 +17,13 @@ spring:
           lowerCaseServiceId: true
       routes:
         - id: deliverymanagement
-          uri: lb://DELIVERYMANAGEMENT
+          uri: lb://boxmanagement
           predicates:
             - Path=/deliverymanagement/**
+        - id: boxmanagement
+          uri: lb://boxmanagement
+          predicates:
+            - Path=/boxmanagement/**
 
 logging:
   level:

@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "581fbb0b-74b8-4afb-9a64-97ce1a57d63b",
+		"name": "BoxManagement",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Boxes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"box_id\", jsonData[0].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n{\n    \"address\": {\n        \"streetName\": \"streetName1\",\n        \"streetNumber\" : 1,\n        \"city\": \"city1\",\n        \"codecode\": 12345,\n        \"country\": \"country1\"\n    },\n    \"boxStatus\": \"available\",\n    \"deliveryID\" : \"deliveryID1\"\n}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/boxmanagement/boxes",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"boxmanagement",
+						"boxes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boxes",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"deliveryID\" : \"deliveryID1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/boxmanagement/boxes",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"boxmanagement",
+						"boxes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Box",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/boxmanagement/boxes/{{box_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"boxmanagement",
+						"boxes",
+						"{{box_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Box",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": {\n        \"streetName\": \"streetName2\",\n        \"streetNumber\": 1,\n        \"postcode\": 0,\n        \"city\": \"city2\",\n        \"country\": \"country2\"\n    },\n    \"boxStatus\": \"available\",\n    \"deliveryID\": \"deliveryID2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/boxmanagement/boxes/{{box_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"boxmanagement",
+						"boxes",
+						"{{box_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Box",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/boxmanagement/boxes/{{box_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"boxmanagement",
+						"boxes",
+						"{{box_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
