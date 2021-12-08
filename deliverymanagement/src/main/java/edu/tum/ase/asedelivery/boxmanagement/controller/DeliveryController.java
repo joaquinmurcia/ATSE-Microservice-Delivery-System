@@ -1,8 +1,6 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
-import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
-import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
+import edu.tum.ase.asedelivery.boxmanagement.model.*;
 import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +23,8 @@ public class DeliveryController {
 
     @Autowired
     DeliveryService deliveryService;
+
+    RestTemplate restTemplate;
 
     @RequestMapping(
             value = "/deliveries",
@@ -37,8 +39,21 @@ public class DeliveryController {
                 }
             }
 
-            // TODO Check if delivery status (set to open if not already open)
-            // TODO Check if a box exists and is used
+            for (Delivery delivery: deliveries) {
+                //Checks if delivery status is open else return bad request
+                //Delivery status for a new delivery always needs to be open
+                if (delivery.getDeliveryStatus() != DeliveryStatus.open){
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+
+                //Checks if a box exists and isn't used else return a bad request
+                //TODO delivery.getTargetBox() must be the id of the box
+                Box box = restTemplate.getForObject("http://localhost:9001/eureka/boxes/{id}", Box.class, delivery.getTargetBox());
+                if (box == null || box.getBoxStatus() == BoxStatus.occupied){
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
+
             // TODO Check if customer exists
             // TODO Check if driver exists
 
@@ -123,9 +138,30 @@ public class DeliveryController {
             if (!delivery.isValid()){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
+            //Target customer of a delivery cant be changed
+            if(!_delivery.getTargetCustomer().equals(delivery.getTargetCustomer())){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            //Target box of a delivery cant be changed
+            if(!_delivery.getTargetBox().equals(delivery.getTargetBox())){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            //Responsible Driver of a delivery cant be changed
+            if(!_delivery.getResponsibleDriver().equals(delivery.getResponsibleDriver())){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            //These if statements ensure that the delivery status can only be changed in the right order
+            //1. open -> 2. pickedUp -> 3. delivered -> 1. open -> ...
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.open && delivery.getDeliveryStatus() == DeliveryStatus.delivered){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.pickedUp && delivery.getDeliveryStatus() == DeliveryStatus.open){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.delivered && delivery.getDeliveryStatus() == DeliveryStatus.pickedUp){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
 
-            // TODO Check if delivery status (set to open if not already open)
-            // TODO Check if a box exists and is used
             // TODO Check if customer exists
             // TODO Check if driver exists
 
