@@ -10,4 +10,5 @@ public class Constants {
     public static final String TARGET_CUSTOMER = "targetCustomer";
     public static final String RESPONSIBLE_DRIVER = "responsibleDriver";
     public static final String DELIVERY_STATUS = "deliveryStatus";
+
 }

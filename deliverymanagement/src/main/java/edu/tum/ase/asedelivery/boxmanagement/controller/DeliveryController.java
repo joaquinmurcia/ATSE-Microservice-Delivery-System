@@ -1,5 +1,8 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
+import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
+import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
+import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
 import edu.tum.ase.asedelivery.asedeliverymodels.Box;
 import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
 import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
@@ -42,6 +45,15 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
             }
+
+            // TODO Check if delivery status (set to open if not already open)
+            // TODO Check if a box exists and is used
+
+
+
+
+
+
 
             for (Delivery delivery: deliveries) {
                 //Checks if delivery status is open else return bad request
@@ -166,6 +178,8 @@ public class DeliveryController {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
+            // TODO Check if delivery status (set to open if not already open)
+            // TODO Check if a box exists and is used
             // TODO Check if customer exists
             // TODO Check if driver exists
 
