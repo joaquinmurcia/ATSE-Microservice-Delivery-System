@@ -1,6 +1,10 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.*;
+import edu.tum.ase.asedelivery.asedeliverymodels.Box;
+import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
+import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
+import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
+import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
 import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +52,7 @@ public class DeliveryController {
 
                 //Checks if a box exists and isn't used else return a bad request
                 //TODO delivery.getTargetBox() must be the id of the box
-                Box box = restTemplate.getForObject("http://localhost:9001/eureka/boxes/{id}", Box.class, delivery.getTargetBox());
+                Box box = restTemplate.getForObject("http://localhost:9002/boxes/{id}", Box.class, delivery.getTargetBox());
                 if (box == null || box.getBoxStatus() == BoxStatus.occupied){
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }

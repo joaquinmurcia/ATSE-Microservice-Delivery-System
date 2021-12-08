@@ -22,7 +22,7 @@ spring:
         enabled: true
 
 server:
-  port: 9002
+  port: 9003
 
 eureka:
   client:

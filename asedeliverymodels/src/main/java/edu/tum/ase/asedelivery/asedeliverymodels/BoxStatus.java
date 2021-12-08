@@ -1,4 +1,4 @@
-package edu.tum.ase.asedelivery.boxmanagement.model;
+package edu.tum.ase.asedelivery.asedeliverymodels;
 
 import lombok.ToString;
 
