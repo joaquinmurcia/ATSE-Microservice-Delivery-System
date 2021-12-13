@@ -1,9 +1,9 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
 import edu.tum.ase.asedelivery.boxmanagement.model.Address;
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
 import edu.tum.ase.asedelivery.boxmanagement.model.Box;
 import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
+import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
 import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
@@ -34,7 +34,7 @@ public class BoxController {
             for (Box box : boxes) {
                 //Checks if box status is available, new boxes can only be available
                 if (box.getBoxStatus() != BoxStatus.available) {
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
                 Address boxAdress = box.getAddress();

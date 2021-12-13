@@ -1,8 +1,5 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
-import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
-import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
 import edu.tum.ase.asedelivery.asedeliverymodels.Box;
 import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
 import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
@@ -50,11 +47,6 @@ public class DeliveryController {
             // TODO Check if a box exists and is used
 
 
-
-
-
-
-
             for (Delivery delivery: deliveries) {
                 //Checks if delivery status is open else return bad request
                 //Delivery status for a new delivery always needs to be open
@@ -66,7 +58,7 @@ public class DeliveryController {
                 //TODO delivery.getTargetBox() must be the id of the box
                 Box box = restTemplate.getForObject("http://localhost:9002/boxes/{id}", Box.class, delivery.getTargetBox());
                 if (box == null || box.getBoxStatus() == BoxStatus.occupied){
-                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
             }
 
