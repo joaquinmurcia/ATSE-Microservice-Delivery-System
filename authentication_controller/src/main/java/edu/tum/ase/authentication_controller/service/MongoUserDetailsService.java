@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class MongoUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationControllerApplication.class);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,8 +26,6 @@ public class MongoUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        log.info("user = " + user);
-
         // Return a Spring User with the
         // username, password and authority that we retrieved above
         return new AseUserPrincipal(user);
