@@ -22,7 +22,7 @@ spring:
         enabled: true
 
 server:
-  port: 9002
+  port: 9003
 
 eureka:
   client:
@@ -30,6 +30,12 @@ eureka:
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://localhost:9001/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 logging:
   level:
