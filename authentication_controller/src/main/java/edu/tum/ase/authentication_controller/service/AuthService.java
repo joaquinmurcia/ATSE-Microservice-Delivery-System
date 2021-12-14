@@ -32,10 +32,11 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public ResponseEntity<String> authenticateUser(String authorization, HttpServletRequest request) throws Exception {
+    public String authenticateUser(String authorization, HttpServletRequest request) throws Exception {
         String username;
         String password;
 
+        System.out.println("authenticate");
         // Get the username and password by decoding the Base64 credential inside
         if (authorization != null && authorization.startsWith("Basic")) {
             String encodedUsernamePassword = authorization.substring("Basic ".length()).trim();
@@ -67,18 +68,16 @@ public class AuthService {
 
                 final String jwt = jwtUtil.generateToken(user);
                 System.out.println("jwt token generated: " + jwt);
-                return new ResponseEntity<String>(jwt, HttpStatus.OK);
+                return jwt;
             } else {
-                System.out.println(password + " -  " + user.getPassword());
-                return new ResponseEntity<String>(
-                        "Email or password is incorrect",
-                        HttpStatus.BAD_REQUEST
-                );
+                System.out.println("Invalid password");
+                return "";
             }
 //            // Authenticate the user using the Spring Authentication Manager
 //            Authentication asdf = authManager.authenticate(authenticationToken);
         }
-        return new ResponseEntity<String>("hmmm idk",HttpStatus.OK);
+        System.out.println("idk what happen");
+        return "";
     }
 
     public void setAuthentication(User userDetails, HttpServletRequest request) {

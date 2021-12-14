@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,10 +31,13 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private MongoUserDetailsService mongoUserDetailsService;
+
     @Autowired
     private JwtUtil jwtUtil;
+
     @Autowired
     private AuthService authService;
+
     @Autowired
     UserRepository userRepository;
 
@@ -41,35 +45,57 @@ public class AuthRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String username = null;
-        String jwt = null;
-        final String authHeader = request.getHeader("Authorization");
-        System.out.println("Authenticate Header " + authHeader);
-        if (authHeader != null && authHeader.startsWith("Bearer")) {
-            jwt = authHeader.substring(7);
-            jwt = authHeader.substring(7);
-            try {
-                username = jwtUtil.extractUsername(jwt);
-                if (!jwtUtil.verifyJwtSignature(jwt)) {
-                    response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
-                }
-            }catch (Exception e){
-                response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
-            }
-        } else {
-            // No valid authentication, No go
-            if (authHeader == null || !authHeader.startsWith("Basic")) {
-                response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT Token or Basic Auth Info Found");
-            }
+
+        String path = request.getRequestURI();
+
+        if ("/auth".equals(path)) {
+            System.out.println("gottem");
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        String username = null;
+        String jwt = null;
+        Cookie[] cookies = request.getCookies();
+        Cookie jwtCookie = null;
+
+        for (Cookie tmp :cookies){
+            if (tmp.getName().equals("jwt")){
+                jwtCookie = tmp;
+                break;
+            }
+        }
+        if(jwtCookie == null) {
+            System.out.println("No JWT found");
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT given");
+            return;
+        }
+
+        jwt = jwtCookie.getValue();
+        System.out.println("JWT token received: " + jwt);
+        try {
+            username = jwtUtil.extractUsername(jwt);
+            if (!jwtUtil.verifyJwtSignature(jwt)) {
+                response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
+                return;
+            }
+        }catch (Exception e){
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
+            return;
+        }
+
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // TODO: load a user from the database that has the same username
-            // as in the JWT token.
+            // load a user from the database that has the same username as in the JWT token.
             User userDetails = null;
             AseUser user = userRepository.findByName(username);
-            userDetails = new AseUserPrincipal(user).getUser();
+            if (user == null){
+                response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
+                return;
 
+            }
+
+            userDetails = new AseUserPrincipal(user).getUser();
             authService.setAuthentication(userDetails, request);
             Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
             System.out.println(String.format("Authenticate Token Set:\n"
@@ -82,4 +108,11 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+//
+//        @Override
+//        protected boolean shouldNotFilter(HttpServletRequest request)
+//                throws ServletException {
+//            String path = request.getRequestURI();
+//            return "/auth".equals(path) || "/auth/".equals(path);
+//        }
 }
