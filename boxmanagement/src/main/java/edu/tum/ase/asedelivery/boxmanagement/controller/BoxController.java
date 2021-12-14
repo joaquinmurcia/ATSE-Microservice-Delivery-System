@@ -1,8 +1,9 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
+import edu.tum.ase.asedelivery.boxmanagement.model.Address;
 import edu.tum.ase.asedelivery.boxmanagement.model.Box;
 import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
+import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
 import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("")
@@ -28,8 +31,17 @@ public class BoxController {
     )
     public ResponseEntity<List<Box>> createBoxes(@RequestBody List<Box> boxes) {
         try {
-            // TODO Check if address is valid
-            // TODO Check box status (newly created boxes should always be available)
+            for (Box box : boxes) {
+                //Checks if box status is available, new boxes can only be available
+                if (box.getBoxStatus() != BoxStatus.available) {
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                Address boxAdress = box.getAddress();
+                if(!this.isAdressValid(boxAdress)){
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+            }
 
             List<Box> _boxes = boxService.saveAll(boxes);
             return new ResponseEntity<>(_boxes, HttpStatus.CREATED);
@@ -112,8 +124,11 @@ public class BoxController {
             _box.setBoxStatus(box.getBoxStatus());
             _box.setDeliveryID(box.getDeliveryID());
 
-            // TODO Check if address is valid
-            // TODO Check box status
+            Address boxAdress = box.getAddress();
+            if(!this.isAdressValid(boxAdress)){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            // TODO Check box status, do we need this ToDo? there are no invalid box status changes
 
             return new ResponseEntity<>(boxService.save(_box), HttpStatus.OK);
         } else {
@@ -135,5 +150,20 @@ public class BoxController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    //Checks if Street, City and Country of the box adress have a valid format
+    private boolean isAdressValid(Address adress) {
+        if (!Pattern.compile("[a-zA-Z]+").matcher(adress.getStreetName()).find()) {
+            return false;
+        }
+        if (!Pattern.compile("[a-zA-Z]+").matcher(adress.getCity()).find()) {
+            return false;
+        }
+        if (!Pattern.compile("[a-zA-Z]+").matcher(adress.getCountry()).find()) {
+            return false;
+        }
+
+        return true;
     }
 }
