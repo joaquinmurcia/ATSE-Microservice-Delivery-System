@@ -1,7 +1,9 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUserDAO;
 import edu.tum.ase.asedelivery.asedeliverymodels.Box;
 import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
 import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
 import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
 import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
@@ -43,10 +45,6 @@ public class DeliveryController {
                 }
             }
 
-            // TODO Check if delivery status (set to open if not already open)
-            // TODO Check if a box exists and is used
-
-
             for (Delivery delivery: deliveries) {
                 //Checks if delivery status is open else return bad request
                 //Delivery status for a new delivery always needs to be open
@@ -54,16 +52,17 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
-                //Checks if a box exists and isn't used else return a bad request
-                //TODO delivery.getTargetBox() must be the id of the box
-                Box box = restTemplate.getForObject("http://localhost:9002/boxes/{id}", Box.class, delivery.getTargetBox());
-                if (box == null || box.getBoxStatus() == BoxStatus.occupied){
+                //Checks if the box, customer and deliverer for a delivery is correct
+                Box box = restTemplate.getForObject("http://boxmanagement/boxes/{id}", Box.class, delivery.getTargetBox());
+                AseUserDAO customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getTargetCustomer());
+                AseUserDAO deliverer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getResponsibleDriver());
+
+                if (box == null || box.getBoxStatus() == BoxStatus.occupied ||
+                    customer == null || customer.getRole() != UserRole.ROLE_CUSTOMER ||
+                    deliverer == null || deliverer.getRole() != UserRole.ROLE_DELIVERER) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
             }
-
-            // TODO Check if customer exists
-            // TODO Check if driver exists
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
@@ -169,11 +168,6 @@ public class DeliveryController {
             if (_delivery.getDeliveryStatus() == DeliveryStatus.delivered && delivery.getDeliveryStatus() == DeliveryStatus.pickedUp){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-
-            // TODO Check if delivery status (set to open if not already open)
-            // TODO Check if a box exists and is used
-            // TODO Check if customer exists
-            // TODO Check if driver exists
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {

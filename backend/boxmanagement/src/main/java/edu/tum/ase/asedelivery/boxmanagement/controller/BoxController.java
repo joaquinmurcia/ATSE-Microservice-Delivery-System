@@ -128,7 +128,9 @@ public class BoxController {
             if(!this.isAdressValid(boxAdress)){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            // TODO Check box status, do we need this ToDo? there are no invalid box status changes
+            //TODO @Reviewer please verify by comment in merge request
+            //TODO Check box status, do we need this ToDo?
+            //TODO since there are only two box statuses there are no invalid box status changes
 
             return new ResponseEntity<>(boxService.save(_box), HttpStatus.OK);
         } else {
