@@ -12,16 +12,19 @@ public class AseUserDAO {
     private String name;
     private String password;
     private String rFIDTokenString; // TODO: make AseUser interface and create subclasses. Dispatchers don't have
-                                    // rFIDTokenString
+    // rFIDTokenString
     // TODO: Should the rFIDTokenString be null for dispatchers? Depends on
     // database. Maybe doesn't allow null.
     private UserRole role;
+    private boolean isenabled;
+
 
     public AseUserDAO(String name, String password, String rFIDTokenString, UserRole role) {
         this.name = name;
         this.password = password;
         this.rFIDTokenString = rFIDTokenString;
         this.role = role;
+        this.isenabled = true;
     }
 
     public String getrFIDTokenString() {
@@ -52,12 +55,16 @@ public class AseUserDAO {
         return this.role;
     }
 
+    public boolean isEnabled() {
+        return this.isenabled;
+    }
+
     /*
      * TODO: (maybe) allow multiple roles for same user
      * public boolean addRole(UserRole role) {
      * return this.role.add(role);
      * }
-     * 
+     *
      * public boolean deleteRole(UserRole role) {
      * return this.role.remove(role);
      * }
