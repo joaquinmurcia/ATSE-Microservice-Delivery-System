@@ -1,6 +1,7 @@
-package edu.tum.ase.authentication_controller.config;
+package edu.tum.ase.asedelivery.usermngmt.config;
 
-import edu.tum.ase.authentication_controller.service.MongoUserDetailsService;
+import edu.tum.ase.asedelivery.usermngmt.service.MongoUserDetailsService;
+import edu.tum.ase.asedelivery.usermngmt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     MongoUserDetailsService mongoUserDetailsService;
+
     @Override
     public void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(mongoUserDetailsService);

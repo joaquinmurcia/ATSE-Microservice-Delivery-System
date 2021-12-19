@@ -1,7 +1,7 @@
-package edu.tum.ase.authentication_controller.controller;
+package edu.tum.ase.asedelivery.usermngmt.controller;
 
-import edu.tum.ase.authentication_controller.model.Project;
-import edu.tum.ase.authentication_controller.service.ProjectService;
+import edu.tum.ase.asedelivery.usermngmt.model.Project;
+import edu.tum.ase.asedelivery.usermngmt.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('test')")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public List<Project> getAllProject() {
         return projectService.getAllProjects();
     }

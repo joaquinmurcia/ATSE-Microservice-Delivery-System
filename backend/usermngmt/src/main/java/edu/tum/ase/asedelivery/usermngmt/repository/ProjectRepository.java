@@ -1,11 +1,10 @@
-package edu.tum.ase.authentication_controller.repository;
+package edu.tum.ase.asedelivery.usermngmt.repository;
 
 
-import edu.tum.ase.authentication_controller.model.Project;
+import edu.tum.ase.asedelivery.usermngmt.model.Project;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import java.util.List;
 
 public interface ProjectRepository extends MongoRepository<Project, String> {
     Project findByName(String name);

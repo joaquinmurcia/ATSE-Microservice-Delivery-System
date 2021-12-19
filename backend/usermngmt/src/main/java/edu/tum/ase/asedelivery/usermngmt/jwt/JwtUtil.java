@@ -1,15 +1,12 @@
-package edu.tum.ase.authentication_controller.jwt;
+package edu.tum.ase.asedelivery.usermngmt.jwt;
 
-import edu.tum.ase.authentication_controller.model.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 import io.jsonwebtoken.*;
-import org.apache.el.parser.AstFalse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.stereotype.Component;
 
-import java.security.*;
-import java.security.SignatureException;
-import java.util.Base64;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +15,10 @@ import java.util.Map;
 public class JwtUtil {
     @Autowired
     private KeyStoreManager keyStoreManager;
-    public String generateToken(AseUser userDetails) {
+    public String generateToken(AseUserDAO userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", userDetails.getAuthorities());
-        return createToken(claims, userDetails.getUsername());
+        claims.put("roles", userDetails.getRole());
+        return createToken(claims, userDetails.getName());
     }
     // Create JWS with both custom and registered claims, signed by
 // a private key.

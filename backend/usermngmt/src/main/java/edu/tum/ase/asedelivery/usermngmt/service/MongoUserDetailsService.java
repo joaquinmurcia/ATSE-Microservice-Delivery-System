@@ -1,17 +1,11 @@
-package edu.tum.ase.authentication_controller.service;
+package edu.tum.ase.asedelivery.usermngmt.service;
 
-import edu.tum.ase.authentication_controller.AuthenticationControllerApplication;
-import edu.tum.ase.authentication_controller.model.AseUser;
-import edu.tum.ase.authentication_controller.model.AseUserPrincipal;
-import edu.tum.ase.authentication_controller.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.stereotype.Component;
-import edu.tum.ase.authentication_controller.repository.UserRepository;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
+import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +16,7 @@ public class MongoUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AseUser user = userRepository.findByName(username);
+        AseUserDAO user = userRepository.findByName(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }

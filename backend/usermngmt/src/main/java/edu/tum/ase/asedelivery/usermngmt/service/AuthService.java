@@ -1,8 +1,8 @@
-package edu.tum.ase.authentication_controller.service;
+package edu.tum.ase.asedelivery.usermngmt.service;
 
-import edu.tum.ase.authentication_controller.jwt.JwtUtil;
-import edu.tum.ase.authentication_controller.model.AseUser;
-import edu.tum.ase.authentication_controller.repository.UserRepository;
+import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private MongoUserDetailsService mongoUserDetailsService;
+    private UserService mongoUserDetailsService;
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -53,7 +53,7 @@ public class AuthService {
         }
 
         // find if there is any user exists in the database based on the credential
-        final AseUser user = userRepository.findByName(username);
+        final AseUserDAO user = userRepository.findByName(username);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
 
         if (user != null) {

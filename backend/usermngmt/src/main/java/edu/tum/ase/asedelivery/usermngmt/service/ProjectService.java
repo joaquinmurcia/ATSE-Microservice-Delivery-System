@@ -1,7 +1,7 @@
-package edu.tum.ase.authentication_controller.service;
+package edu.tum.ase.asedelivery.usermngmt.service;
 
-import edu.tum.ase.authentication_controller.model.Project;
-import edu.tum.ase.authentication_controller.repository.ProjectRepository;
+import edu.tum.ase.asedelivery.usermngmt.model.Project;
+import edu.tum.ase.asedelivery.usermngmt.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

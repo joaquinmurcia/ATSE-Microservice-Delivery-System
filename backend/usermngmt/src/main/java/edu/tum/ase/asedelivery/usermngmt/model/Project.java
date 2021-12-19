@@ -1,4 +1,4 @@
-package edu.tum.ase.authentication_controller.model;
+package edu.tum.ase.asedelivery.usermngmt.model;
 
 import com.mongodb.lang.NonNull;
 import org.springframework.data.annotation.Id;

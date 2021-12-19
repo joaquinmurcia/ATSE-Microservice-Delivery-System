@@ -1,7 +1,9 @@
-package edu.tum.ase.authentication_controller.jwt;
+package edu.tum.ase.asedelivery.usermngmt.jwt;
 
-import edu.tum.ase.authentication_controller.service.ProjectService;
+import edu.tum.ase.asedelivery.usermngmt.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -24,6 +26,12 @@ public class KeyStoreManager {
     private String keyAlias = "aseprojectkey";
     private char[] password = "asease".toCharArray();
 
+//    public Set<String> listFilesUsingJavaIO(String dir) {
+//        return Stream.of(new File(dir).listFiles())
+//                .filter(file -> !file.isDirectory())
+//                .map(File::getName)
+//                .collect(Collectors.toSet());
+//    }
     public KeyStoreManager() throws KeyStoreException, IOException {
         loadKeyStore();
     }
@@ -34,7 +42,10 @@ public class KeyStoreManager {
 
         try {
 // Get the path to the keystore file in the resources folder
-            File keystoreFile = ResourceUtils.getFile("./src/main/java/edu/tum/ase/authentication_controller/jwt/ase_project.keystore");
+
+            File keystoreFile = ResourceUtils.getFile("classpath:ase_project.keystore");
+
+//ResourceUtils.getFile("./src/main/java/edu/tum/ase/asedelivery/usermngmt/jwt/ase_project.keystore");
             fis = new FileInputStream(keystoreFile);
             keyStore.load(fis, password);
             keyAlias = keyStore.aliases().nextElement();

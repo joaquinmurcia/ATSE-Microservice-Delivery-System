@@ -1,13 +1,11 @@
-package edu.tum.ase.authentication_controller.filter;
+package edu.tum.ase.asedelivery.usermngmt.filter;
 
-import edu.tum.ase.authentication_controller.jwt.JwtUtil;
-import edu.tum.ase.authentication_controller.model.AseUser;
-import edu.tum.ase.authentication_controller.model.AseUserPrincipal;
-import edu.tum.ase.authentication_controller.model.Project;
-import edu.tum.ase.authentication_controller.repository.ProjectRepository;
-import edu.tum.ase.authentication_controller.repository.UserRepository;
-import edu.tum.ase.authentication_controller.service.AuthService;
-import edu.tum.ase.authentication_controller.service.MongoUserDetailsService;
+import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
+import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
+import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
+import edu.tum.ase.asedelivery.usermngmt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -30,7 +28,7 @@ import java.security.SignatureException;
 public class AuthRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private MongoUserDetailsService mongoUserDetailsService;
+    private UserService mongoUserDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -88,7 +86,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // load a user from the database that has the same username as in the JWT token.
             User userDetails = null;
-            AseUser user = userRepository.findByName(username);
+            AseUserDAO user = userRepository.findByName(username);
             if (user == null){
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;
