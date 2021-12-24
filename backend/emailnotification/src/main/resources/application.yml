@@ -1,0 +1,20 @@
+spring:
+    mail:
+        protocol: smtp
+        host: smtp.gmail.com
+        port: 587
+        username: ASEDelivering@gmail.com
+        password: lhoeoixigpovxvvn
+        properties:
+          mail:
+            smtp:
+              auth: true
+              starttls:
+                enable: true
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:9009/eureka
