@@ -39,7 +39,6 @@ public class AuthRequestFilter extends OncePerRequestFilter {
     @Autowired
     UserRepository userRepository;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -57,13 +56,13 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         Cookie jwtCookie = null;
 
-        for (Cookie tmp :cookies){
-            if (tmp.getName().equals("jwt")){
+        for (Cookie tmp : cookies) {
+            if (tmp.getName().equals("jwt")) {
                 jwtCookie = tmp;
                 break;
             }
         }
-        if(jwtCookie == null) {
+        if (jwtCookie == null) {
             System.out.println("No JWT found");
             response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT given");
             return;
@@ -77,17 +76,16 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
             return;
         }
-
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // load a user from the database that has the same username as in the JWT token.
             User userDetails = null;
             AseUserDAO user = userRepository.findByName(username);
-            if (user == null){
+            if (user == null) {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;
 
@@ -97,20 +95,22 @@ public class AuthRequestFilter extends OncePerRequestFilter {
             authService.setAuthentication(userDetails, request);
             Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
             System.out.println(String.format("Authenticate Token Set:\n"
-                            + "Username: %s\n"
-                            + "Password: %s\n"
-                            + "Authority: %s\n",
+                    + "Username: %s\n"
+                    + "Password: %s\n"
+                    + "Authority: %s\n",
                     authContext.getPrincipal(),
                     authContext.getCredentials(),
                     authContext.getAuthorities().toString()));
         }
         filterChain.doFilter(request, response);
     }
-//
-//        @Override
-//        protected boolean shouldNotFilter(HttpServletRequest request)
-//                throws ServletException {
-//            String path = request.getRequestURI();
-//            return "/auth".equals(path) || "/auth/".equals(path);
-//        }
+    //
+    // @Override
+    // protected boolean shouldNotFilter(HttpServletRequest request)
+    // throws ServletException {
+    // String path = request.getRequestURI();
+    // return "/auth".equals(path) || "/auth/".equals(path);
+    // }
+    // ! Joaquin: have another version of this file from my own exercise, haven't
+    // checked diff with this one for improvement
 }

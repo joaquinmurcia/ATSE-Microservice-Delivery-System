@@ -1,44 +1,48 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.Box;
-import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
-import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
-import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
-import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
-import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
+import edu.tum.ase.asedelivery.boxmanagement.model.Box;
+import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
+import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
+import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
+import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
+import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
+import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 
 @RestController
 @RequestMapping("")
 public class DeliveryController {
-    // TODO Add role check not everybody should be allowed to request every delivery e.g. customers should only
-    //  be allowed to request their own delivery whereas the dispatcher should be able to see all, same is true for
-    //  updating and deleting deliveries
+    // TODO Add role check not everybody should be allowed to request every delivery
+    // e.g. customers should only
+    // be allowed to request their own delivery whereas the dispatcher should be
+    // able to see all, same is true for
+    // updating and deleting deliveries
 
     @Autowired
     DeliveryService deliveryService;
 
     RestTemplate restTemplate;
 
-    @RequestMapping(
-            value = "/deliveries",
-            method = RequestMethod.POST
-    )
+    @RequestMapping(value = "/deliveries", method = RequestMethod.POST)
     public ResponseEntity<List<Delivery>> createDeliveries(@RequestBody List<Delivery> deliveries) {
         try {
             // Check if delivery has a valid format
             for (Delivery delivery : deliveries) {
-                if (!delivery.isValid()){
+                if (!delivery.isValid()) {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
             }
@@ -46,18 +50,18 @@ public class DeliveryController {
             // TODO Check if delivery status (set to open if not already open)
             // TODO Check if a box exists and is used
 
-
-            for (Delivery delivery: deliveries) {
-                //Checks if delivery status is open else return bad request
-                //Delivery status for a new delivery always needs to be open
-                if (delivery.getDeliveryStatus() != DeliveryStatus.open){
+            for (Delivery delivery : deliveries) {
+                // Checks if delivery status is open else return bad request
+                // Delivery status for a new delivery always needs to be open
+                if (delivery.getDeliveryStatus() != DeliveryStatus.open) {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
-                //Checks if a box exists and isn't used else return a bad request
-                //TODO delivery.getTargetBox() must be the id of the box
-                Box box = restTemplate.getForObject("http://localhost:9002/boxes/{id}", Box.class, delivery.getTargetBox());
-                if (box == null || box.getBoxStatus() == BoxStatus.occupied){
+                // Checks if a box exists and isn't used else return a bad request
+                // TODO delivery.getTargetBox() must be the id of the box
+                Box box = restTemplate.getForObject("http://localhost:9002/boxes/{id}", Box.class,
+                        delivery.getTargetBox());
+                if (box == null || box.getBoxStatus() == BoxStatus.occupied) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
             }
@@ -73,10 +77,7 @@ public class DeliveryController {
         }
     }
 
-    @RequestMapping(
-            value = "/deliveries",
-            method = RequestMethod.GET
-    )
+    @RequestMapping(value = "/deliveries", method = RequestMethod.GET)
     public ResponseEntity<List<Delivery>> getDeliveries(@RequestBody Delivery payload) {
         try {
             List<Delivery> deliveries;
@@ -113,10 +114,7 @@ public class DeliveryController {
         }
     }
 
-    @RequestMapping(
-            value = "/deliveries/{id}",
-            method = RequestMethod.GET
-    )
+    @RequestMapping(value = "/deliveries/{id}", method = RequestMethod.GET)
     public ResponseEntity<Delivery> getDelivery(@PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
@@ -129,10 +127,7 @@ public class DeliveryController {
         }
     }
 
-    @RequestMapping(
-            value = "/deliveries/{id}",
-            method = RequestMethod.PUT
-    )
+    @RequestMapping(value = "/deliveries/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Delivery> updateDelivery(@PathVariable("id") String id, @RequestBody Delivery delivery) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
@@ -143,30 +138,34 @@ public class DeliveryController {
             _delivery.setResponsibleDriver(delivery.getResponsibleDriver());
             _delivery.setDeliveryStatus(delivery.getDeliveryStatus());
 
-            if (!delivery.isValid()){
+            if (!delivery.isValid()) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            //Target customer of a delivery cant be changed
-            if(!_delivery.getTargetCustomer().equals(delivery.getTargetCustomer())){
+            // Target customer of a delivery cant be changed
+            if (!_delivery.getTargetCustomer().equals(delivery.getTargetCustomer())) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            //Target box of a delivery cant be changed
-            if(!_delivery.getTargetBox().equals(delivery.getTargetBox())){
+            // Target box of a delivery cant be changed
+            if (!_delivery.getTargetBox().equals(delivery.getTargetBox())) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            //Responsible Driver of a delivery cant be changed
-            if(!_delivery.getResponsibleDriver().equals(delivery.getResponsibleDriver())){
+            // Responsible Driver of a delivery cant be changed
+            if (!_delivery.getResponsibleDriver().equals(delivery.getResponsibleDriver())) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            //These if statements ensure that the delivery status can only be changed in the right order
-            //1. open -> 2. pickedUp -> 3. delivered -> 1. open -> ...
-            if (_delivery.getDeliveryStatus() == DeliveryStatus.open && delivery.getDeliveryStatus() == DeliveryStatus.delivered){
+            // These if statements ensure that the delivery status can only be changed in
+            // the right order
+            // 1. open -> 2. pickedUp -> 3. delivered -> 1. open -> ...
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.open
+                    && delivery.getDeliveryStatus() == DeliveryStatus.delivered) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            if (_delivery.getDeliveryStatus() == DeliveryStatus.pickedUp && delivery.getDeliveryStatus() == DeliveryStatus.open){
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.pickedUp
+                    && delivery.getDeliveryStatus() == DeliveryStatus.open) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            if (_delivery.getDeliveryStatus() == DeliveryStatus.delivered && delivery.getDeliveryStatus() == DeliveryStatus.pickedUp){
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.delivered
+                    && delivery.getDeliveryStatus() == DeliveryStatus.pickedUp) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
@@ -181,10 +180,7 @@ public class DeliveryController {
         }
     }
 
-    @RequestMapping(
-            value = "/deliveries/{id}",
-            method = RequestMethod.DELETE
-    )
+    @RequestMapping(value = "/deliveries/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<HttpStatus> deleteDelivery(@PathVariable("id") String id) {
         try {
             deliveryService.deleteById(id);
@@ -197,10 +193,7 @@ public class DeliveryController {
         }
     }
 
-    @RequestMapping(
-            value = "/deliveries/{id}/pickup",
-            method = RequestMethod.POST
-    )
+    @RequestMapping(value = "/deliveries/{id}/pickup", method = RequestMethod.POST)
     public ResponseEntity<Delivery> pickupDelivery(@PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
@@ -210,7 +203,7 @@ public class DeliveryController {
             Delivery _delivery = deliveryOptional.get();
             _delivery.setDeliveryStatus(DeliveryStatus.pickedUp);
 
-            //TODO Send notification?
+            // TODO Send notification?
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {
@@ -218,10 +211,7 @@ public class DeliveryController {
         }
     }
 
-    @RequestMapping(
-            value = "/deliveries/{id}/deposit",
-            method = RequestMethod.POST
-    )
+    @RequestMapping(value = "/deliveries/{id}/deposit", method = RequestMethod.POST)
     public ResponseEntity<Delivery> depositDelivery(@PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
@@ -231,7 +221,7 @@ public class DeliveryController {
             Delivery _delivery = deliveryOptional.get();
             _delivery.setDeliveryStatus(DeliveryStatus.delivered);
 
-            //TODO Send notification?
+            // TODO Send notification?
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {
