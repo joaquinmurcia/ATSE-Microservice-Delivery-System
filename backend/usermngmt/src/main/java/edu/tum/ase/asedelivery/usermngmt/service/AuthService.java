@@ -2,15 +2,14 @@ package edu.tum.ase.asedelivery.usermngmt.service;
 
 import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
 import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.usermngmt.model.UserRole;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,8 +44,6 @@ public class AuthService {
             String[] decodedUsernamePassword = aux.split(":");
             username = decodedUsernamePassword[0];
             password = decodedUsernamePassword[1];//bcryptPasswordEncoder.encode(decodedUsernamePassword[1]);
-
-
         } else {
             // Handle what happens if that isn't the case
             throw new Exception("The authorization header is either empty or isn't Basic.");
@@ -78,6 +75,44 @@ public class AuthService {
         }
         System.out.println("idk what happen");
         return "";
+    }
+
+    public UserRole getAuthenticatedUserRole(String authorization) {
+        String username;
+
+        //findout user via JWT Token
+        if (authorization != null && authorization.startsWith("Basic")) {
+            String encodedUsernamePassword = authorization.substring("Basic ".length()).trim();
+            byte[] decodedUsernamePasswordBytes = Base64.getDecoder().decode(encodedUsernamePassword);
+            String aux = new String(decodedUsernamePasswordBytes, StandardCharsets.UTF_8);
+            String[] decodedUsernamePassword = aux.split(":");
+            username = decodedUsernamePassword[0];
+        } else {
+            // Handle what happens if that isn't the case
+            return null;
+        }
+
+        AseUserDAO user = mongoUserDetailsService.findByName(username);
+
+        return user.getRole();
+    }
+
+    public AseUserDAO getAuthenticatedUser(String authorization) {
+        String username;
+
+        //findout user via JWT Token
+        if (authorization != null && authorization.startsWith("Basic")) {
+            String encodedUsernamePassword = authorization.substring("Basic ".length()).trim();
+            byte[] decodedUsernamePasswordBytes = Base64.getDecoder().decode(encodedUsernamePassword);
+            String aux = new String(decodedUsernamePasswordBytes, StandardCharsets.UTF_8);
+            String[] decodedUsernamePassword = aux.split(":");
+            username = decodedUsernamePassword[0];
+        } else {
+            // Handle what happens if that isn't the case
+            return null;
+        }
+
+        return mongoUserDetailsService.findByName(username);
     }
 
     public void setAuthentication(User userDetails, HttpServletRequest request) {

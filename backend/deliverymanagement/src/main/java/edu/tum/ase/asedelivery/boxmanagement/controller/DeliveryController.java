@@ -12,11 +12,12 @@ import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,10 @@ public class DeliveryController {
             value = "/deliveries",
             method = RequestMethod.POST
     )
-    public ResponseEntity<List<Delivery>> createDeliveries(@RequestBody List<Delivery> deliveries) {
+    public ResponseEntity<List<Delivery>> createDeliveries(@RequestHeader HttpHeaders header, @RequestBody List<Delivery> deliveries) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         try {
             // Check if delivery has a valid format
             for (Delivery delivery : deliveries) {
@@ -58,8 +62,8 @@ public class DeliveryController {
                 AseUserDAO deliverer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getResponsibleDriver());
 
                 if (box == null || box.getBoxStatus() == BoxStatus.occupied ||
-                    customer == null || customer.getRole() != UserRole.ROLE_CUSTOMER ||
-                    deliverer == null || deliverer.getRole() != UserRole.ROLE_DELIVERER) {
+                        customer == null || customer.getRole() != UserRole.ROLE_CUSTOMER ||
+                        deliverer == null || deliverer.getRole() != UserRole.ROLE_DELIVERER) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
             }
@@ -76,12 +80,13 @@ public class DeliveryController {
             value = "/deliveries",
             method = RequestMethod.GET
     )
-    public ResponseEntity<List<Delivery>> getDeliveries(@RequestBody Delivery payload) {
+    public ResponseEntity<List<Delivery>> getDeliveries(@RequestHeader HttpHeaders header, @RequestBody Delivery payload) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         try {
             List<Delivery> deliveries;
             Query query = new Query();
-
-            // TODO Check permissions if user can perform query
 
             // CrisNullOrEmptyeate query
             if (!Validation.isNullOrEmpty(payload.getTargetBox())) {
@@ -116,13 +121,18 @@ public class DeliveryController {
             value = "/deliveries/{id}",
             method = RequestMethod.GET
     )
-    public ResponseEntity<Delivery> getDelivery(@PathVariable("id") String id) {
+    public ResponseEntity<Delivery> getDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        // TODO Check permissions if user can perform query
+        AseUserDAO authenticatedRequester = getAuthenticatedUser(header);
 
         if (deliveryOptional.isPresent()) {
-            return new ResponseEntity<>(deliveryOptional.get(), HttpStatus.OK);
+            //Only the delivery's customer and dispatchers are allowed to get deliveries
+            if (authenticatedRequester.getName().equals(deliveryOptional.get().getTargetCustomer()) || hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) {
+                return new ResponseEntity<>(deliveryOptional.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -132,11 +142,15 @@ public class DeliveryController {
             value = "/deliveries/{id}",
             method = RequestMethod.PUT
     )
-    public ResponseEntity<Delivery> updateDelivery(@PathVariable("id") String id, @RequestBody Delivery delivery) {
+    public ResponseEntity<Delivery> updateDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id, @RequestBody Delivery delivery) {
+        //Check authorization, status updates for dispatching and picking up are in own functions below
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
+
             _delivery.setTargetBox(delivery.getTargetBox());
             _delivery.setTargetCustomer(delivery.getTargetCustomer());
             _delivery.setResponsibleDriver(delivery.getResponsibleDriver());
@@ -179,11 +193,12 @@ public class DeliveryController {
             value = "/deliveries/{id}",
             method = RequestMethod.DELETE
     )
-    public ResponseEntity<HttpStatus> deleteDelivery(@PathVariable("id") String id) {
+    public ResponseEntity<HttpStatus> deleteDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         try {
             deliveryService.deleteById(id);
-
-            // TODO Check permissions if user can perform query
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -195,13 +210,19 @@ public class DeliveryController {
             value = "/deliveries/{id}/pickup",
             method = RequestMethod.POST
     )
-    public ResponseEntity<Delivery> pickupDelivery(@PathVariable("id") String id) {
+    public ResponseEntity<Delivery> pickupDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        // TODO Check permissions if delivery can deposit
+        AseUserDAO authenticatedRequester = getAuthenticatedUser(header);
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
+
+            //Only delivery's target customer can pickup a delivery
+            if (!authenticatedRequester.getName().equals(_delivery.getTargetCustomer())) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
             _delivery.setDeliveryStatus(DeliveryStatus.pickedUp);
 
             //TODO Send notification?
@@ -216,13 +237,19 @@ public class DeliveryController {
             value = "/deliveries/{id}/deposit",
             method = RequestMethod.POST
     )
-    public ResponseEntity<Delivery> depositDelivery(@PathVariable("id") String id) {
+    public ResponseEntity<Delivery> depositDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        // TODO Check permissions if deliverer can deposit
+        AseUserDAO authenticatedRequester = getAuthenticatedUser(header);
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
+
+            //Only delivery's target customer can deposit a delivery
+            if (!authenticatedRequester.getName().equals(_delivery.getResponsibleDriver())) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
             _delivery.setDeliveryStatus(DeliveryStatus.delivered);
 
             //TODO Send notification?
@@ -231,5 +258,23 @@ public class DeliveryController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    private boolean hasRequesterCorrectRole(HttpHeaders header, UserRole neededUserRole){
+        HttpEntity<Void> requestEntity = new HttpEntity<>(header);
+        ResponseEntity<UserRole> response = restTemplate.exchange("http://usermngmt/auth/userRole", HttpMethod.GET, requestEntity, UserRole.class);
+        UserRole authenticatedRequesterRole = response.getBody();
+
+        if (authenticatedRequesterRole != neededUserRole){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private AseUserDAO getAuthenticatedUser(HttpHeaders header){
+        HttpEntity<Void> requestEntity = new HttpEntity<>(header);
+        ResponseEntity<AseUserDAO> response = restTemplate.exchange("http://usermngmt/auth/user", HttpMethod.GET, requestEntity, AseUserDAO.class);
+        return response.getBody();
     }
 }
