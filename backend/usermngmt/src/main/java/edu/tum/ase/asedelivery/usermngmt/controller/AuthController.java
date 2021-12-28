@@ -2,8 +2,7 @@ package edu.tum.ase.asedelivery.usermngmt.controller;
 
 import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 import edu.tum.ase.asedelivery.usermngmt.model.UserRole;
-import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.tum.ase.asedelivery.usermngmt.service.AuthService;import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
