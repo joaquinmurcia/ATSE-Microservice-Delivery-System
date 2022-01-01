@@ -64,7 +64,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         }
         if (jwtCookie == null) {
             System.out.println("No JWT found");
-            response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT given");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "No JWT given");
             return;
         }
 
@@ -73,11 +73,11 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         try {
             username = jwtUtil.extractUsername(jwt);
             if (!jwtUtil.verifyJwtSignature(jwt)) {
-                response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Bad JWT");
                 return;
             }
         } catch (Exception e) {
-            response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Bad JWT");
             return;
         }
 
@@ -86,7 +86,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
             User userDetails = null;
             AseUserDAO user = userRepository.findByName(username);
             if (user == null) {
-                response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Bad JWT");
                 return;
 
             }

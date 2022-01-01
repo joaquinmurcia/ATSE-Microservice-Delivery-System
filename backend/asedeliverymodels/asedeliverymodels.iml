@@ -16,20 +16,20 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:4.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:bson:4.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:2.5.6" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-core:5.3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.26" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-mongodb:3.2.6" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-expression:5.3.11" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:4.2.11.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-aop:4.3.22.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:4.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:bson:4.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:2.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-core:5.3.13" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.13" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.13" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.32" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-mongodb:3.3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.3.13" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.13" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-expression:5.3.13" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:5.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.8" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.22" level="project" />
   </component>
 </module>

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -54,6 +55,20 @@ public class AuthController {
     )    @ResponseBody
     public String authGet() {
         return "Hya";
+    }
+
+    /**
+     * Implicitly validates the JWT by going through the AuthRequestFilter and returns the Authenticated principal if there is one.
+     * To be used my microservices to set their SecurityContext
+     * @return Authentication object of the authenticated principal if successful. Http.UNAUTHORIZED if JWT is not valid.
+     */
+    @RequestMapping(
+            value= "/authObject",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public Authentication validateJWTAndGetAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
 }
