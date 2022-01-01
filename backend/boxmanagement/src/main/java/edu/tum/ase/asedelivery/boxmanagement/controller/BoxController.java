@@ -1,5 +1,6 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
 import edu.tum.ase.asedelivery.boxmanagement.model.Address;
 import edu.tum.ase.asedelivery.boxmanagement.model.Box;
 import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
@@ -9,9 +10,9 @@ import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +26,16 @@ public class BoxController {
     @Autowired
     BoxService boxService;
 
+    RestTemplate restTemplate;
+
     @RequestMapping(
             value = "/boxes",
             method = RequestMethod.POST
     )
-    public ResponseEntity<List<Box>> createBoxes(@RequestBody List<Box> boxes) {
+    public ResponseEntity<List<Box>> createBoxes(@RequestHeader HttpHeaders header, @RequestBody List<Box> boxes) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         try {
             for (Box box : boxes) {
                 //Checks if box status is available, new boxes can only be available
@@ -55,12 +61,13 @@ public class BoxController {
             value = "/boxes",
             method = RequestMethod.GET
     )
-    public ResponseEntity<List<Box>> getBoxes(@RequestBody Box payload) {
+    public ResponseEntity<List<Box>> getBoxes(@RequestHeader HttpHeaders header, @RequestBody Box payload) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         try {
             List<Box> boxes;
             Query query = new Query();
-
-            // TODO Check permissions if user can perform query
 
             // Create query
 
@@ -99,10 +106,11 @@ public class BoxController {
             value = "/boxes/{id}",
             method = RequestMethod.GET
     )
-    public ResponseEntity<Box> getBox(@PathVariable("id") String id) {
-        Optional<Box> boxOptional = boxService.findById(id);
+    public ResponseEntity<Box> getBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        // TODO Check permissions if user can perform query
+        Optional<Box> boxOptional = boxService.findById(id);
 
         if (boxOptional.isPresent()) {
             return new ResponseEntity<>(boxOptional.get(), HttpStatus.OK);
@@ -115,7 +123,10 @@ public class BoxController {
             value = "/boxes/{id}",
             method = RequestMethod.PUT
     )
-    public ResponseEntity<Box> updateBox(@PathVariable("id") String id, @RequestBody Box box) {
+    public ResponseEntity<Box> updateBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id, @RequestBody Box box) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         Optional<Box> boxOptional = boxService.findById(id);
 
         if (boxOptional.isPresent()) {
@@ -128,8 +139,6 @@ public class BoxController {
             if(!this.isAdressValid(boxAdress)){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            // TODO Check box status, do we need this ToDo? there are no invalid box status changes
-
             return new ResponseEntity<>(boxService.save(_box), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -140,7 +149,10 @@ public class BoxController {
             value = "/boxes/{id}",
             method = RequestMethod.DELETE
     )
-    public ResponseEntity<HttpStatus> deleteBox(@PathVariable("id") String id) {
+    public ResponseEntity<HttpStatus> deleteBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
+        //Check authorization
+        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         try {
             boxService.deleteById(id);
 
@@ -165,5 +177,17 @@ public class BoxController {
         }
 
         return true;
+    }
+
+    private boolean hasRequesterCorrectRole(HttpHeaders header, UserRole neededUserRole){
+        HttpEntity<Void> requestEntity = new HttpEntity<>(header);
+        ResponseEntity<UserRole> response = restTemplate.exchange("http://usermngmt/auth/userRole", HttpMethod.GET, requestEntity, UserRole.class);
+        UserRole authenticatedRequesterRole = response.getBody();
+
+        if (authenticatedRequesterRole != neededUserRole){
+            return false;
+        } else {
+            return true;
+        }
     }
 }
