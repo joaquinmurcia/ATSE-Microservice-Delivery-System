@@ -1,11 +1,6 @@
 import React from 'react';
 import {makeStyles} from "@material-ui/core";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
 
 const initialList = [
@@ -29,9 +24,10 @@ const initialList = [
 const useStyles = makeStyles(() => {
     return {
         listStyle: {
-            backgroundColor: '#ffffff',
+            //backgroundColor: '#ffffff',
             listStyleType: 'none',
-            border: 'solid gray 2px',
+            //border: 'solid gray 2px',
+            overflowX: 'hidden'
         },
         cellStyle:{
            border: 'solid red 2px'
@@ -65,12 +61,12 @@ const DeliveriesList = () => {
     const [list, setList] = React.useState(initialList);
 
     const columns = [
-        { id: 'id', label: 'Id', minWidth: 100},
-        { id: 'targetBox', label: 'Box', minWidth: 170 },
-        { id: 'targetCustomer', label: 'Customer', minWidth: 100},
-        { id: 'responsibleDriver', label: 'Responsible Driver', minWidth: 170 },
-        { id: 'deliveryStatus', label: 'Status', minWidth: 170 },
-        { id: 'buttons', label: 'Actions', minWidth: 170 },
+        { id: 'id', label: 'Id', minWidth: 30},
+        { id: 'targetBox', label: 'Box', minWidth: 80 },
+        { id: 'targetCustomer', label: 'Customer', minWidth: 80},
+        { id: 'responsibleDriver', label: 'Responsible Driver', minWidth: 80 },
+        { id: 'deliveryStatus', label: 'Status', minWidth: 80 },
+        { id: 'buttons', label: 'Actions', minWidth: 90 },
     ];
 
     const deleteRow = id => {
@@ -82,7 +78,9 @@ const DeliveriesList = () => {
     };
 
     return (
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <Container>
+        <Paper  sx={{border: 1, borderRadius: 1}}>
+        <TableContainer>
             <Table stickyHeader aria-label="sticky table" className={listStyle}>
                 <TableHead>
                     <TableRow>
@@ -131,6 +129,8 @@ const DeliveriesList = () => {
                 </TableBody>
             </Table>
         </TableContainer>
+        </Paper>
+        </Container>
     );
 };
 

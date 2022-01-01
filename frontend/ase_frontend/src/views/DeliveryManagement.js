@@ -1,7 +1,7 @@
-import Button from "@mui/material/Button";
-import {TextField,Typography,Paper,Container} from "@mui/material"
+import {Container} from "@mui/material"
 import DeliveriesList from "./DeliveriesList";
 import AddNewForm from "./AddNewForm";
+import EditDeliveryForm from "./EditDeliveryForm";
 import {makeStyles} from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
@@ -16,10 +16,11 @@ function DeliveryManagement(){
     const { layout } = useStyles();
 
     return(
-        <Container >
-            <div className={layout}>
+        <Container maxWidth={false}>
+            <div className={layout} >
                 <DeliveriesList/>
                 <AddNewForm/>
+                <EditDeliveryForm/>
             </div>
         </Container>
     );
