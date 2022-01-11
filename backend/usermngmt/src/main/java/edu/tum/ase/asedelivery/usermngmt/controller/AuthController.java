@@ -65,8 +65,8 @@ public class AuthController {
             value = "user",
             method = RequestMethod.GET
     )
-    public ResponseEntity<AseUserDAO> getAuthenticatedUser(@RequestHeader("Authorization") String header){
-        AseUserDAO user = authService.getAuthenticatedUser(header);
+    public ResponseEntity<AseUserDAO> getAuthenticatedUser(HttpServletRequest request){
+        AseUserDAO user = authService.getAuthenticatedUser(request.getCookies());
         if (user == null){
             return new ResponseEntity<AseUserDAO>(HttpStatus.UNAUTHORIZED);
         } else {
