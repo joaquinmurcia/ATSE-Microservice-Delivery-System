@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,6 +70,7 @@ public class DeliveryController {
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -77,6 +79,7 @@ public class DeliveryController {
             value = "/deliveries",
             method = RequestMethod.GET
     )
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<List<Delivery>> getDeliveries(@RequestBody Delivery payload) {
         try {
             List<Delivery> deliveries;
@@ -102,6 +105,7 @@ public class DeliveryController {
             }
 
             deliveries = deliveryService.findAll(query);
+            System.out.println(deliveries.size() + " amount of deliveries");
 
             if (deliveries.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -109,6 +113,8 @@ public class DeliveryController {
 
             return new ResponseEntity<>(deliveries, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println("wtf");
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -2,11 +2,16 @@ package edu.tum.ase.asedelivery.boxmanagement.jwt;
 
 //import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import org.bouncycastle.jcajce.BCFKSLoadStoreParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -18,9 +23,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -43,8 +47,9 @@ public class JwtUtil {
         return keyFactory.generatePublic(publicKeySpec);
 
     }
+
     // Create a Parser to read info inside a JWT. This parser use the public key
-// to verify the signature of incoming JWT tokens
+    // to verify the signature of incoming JWT tokens
     private JwtParser loadJwtParser() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         return Jwts.parserBuilder()
                 .setSigningKey(loadPubKey())
@@ -72,11 +77,63 @@ public class JwtUtil {
     // Check if the JWT is signed by us, and is not expired
     public boolean verifyJwtSignature(String token) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         PublicKey publicKey = loadPubKey();
-
+        extractClaim(token, Claims::getId);
         String[] chunks = token.split("\\.");
         JwtParser parser = loadJwtParser();
 
         parser.parseClaimsJws(token);
         return !isTokenExpired(token);
+    }
+
+    public UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        String tmpname = extractUsername(token);
+
+        UserDetails userDetails = new UserDetails() {
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return null;
+            }
+
+            @Override
+            public String getPassword() {
+                return null;
+            }
+
+            @Override
+            public String getUsername() {
+                return tmpname;
+            }
+
+            @Override
+            public boolean isAccountNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isAccountNonLocked() {
+                return true;
+            }
+
+            @Override
+            public boolean isCredentialsNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+        };
+
+
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        Collection<SimpleGrantedAuthority> authorities =
+                Arrays.stream(claims.get("roles").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 }

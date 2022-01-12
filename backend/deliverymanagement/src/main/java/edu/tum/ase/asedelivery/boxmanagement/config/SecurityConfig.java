@@ -1,5 +1,6 @@
 package edu.tum.ase.asedelivery.boxmanagement.config;
 
+import edu.tum.ase.asedelivery.boxmanagement.filter.AuthRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 
@@ -22,31 +24,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    public void configure(AuthenticationManagerBuilder builder) throws Exception {
 //        builder.userDetailsService(mongoUserDetailsService);
 //    }
-//
+
+    @Autowired
+    AuthRequestFilter authRequestFilter;
+
 
 // Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .authorizeRequests() // 2. Require authentication in all
-                    .antMatchers("/**").authenticated()
-                    //.antMatchers("/auth").permitAll()
-                .and()
-                .httpBasic() // 3. Use Basic Authentication
-
-                .and()
-                .sessionManagement().disable();
+        http.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//                    .antMatchers("/**").authenticated()
+//                .and()
+//                .sessionManagement().disable();
     }
-    @Override
 
+    @Override
     @Bean
 // Define an authentication manager to execute authentication services
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 
     @Bean
 // Define an instance of Bcrypt for hashing passwords
