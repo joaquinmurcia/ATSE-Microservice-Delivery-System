@@ -15,12 +15,15 @@ function DeliveryManagement(){
 
     const { layout } = useStyles();
 
+    const isEditing = true;
+
     return(
         <Container maxWidth={false}>
             <div className={layout} >
                 <DeliveriesList/>
-                <AddNewForm/>
-                <EditDeliveryForm/>
+                {isEditing ? <EditDeliveryForm/> : <AddNewForm/>}
+
+
             </div>
         </Container>
     );

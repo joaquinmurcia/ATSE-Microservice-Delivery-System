@@ -1,25 +1,9 @@
-import React from 'react';
 import {makeStyles} from "@material-ui/core";
 import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
-
-const initialList = [
-    {     id : '1',
-        targetBox : 'Garching',
-        targetCustomer : 'Josef',
-        responsibleDriver : 'Erik',
-        deliveryStatus : 'pickedUp'},
-    { id : '2',
-        targetBox : 'Garching',
-        targetCustomer : 'Josef',
-        responsibleDriver : 'Erik',
-        deliveryStatus : 'pickedUp'},
-    { id : '3',
-        targetBox : 'Garching',
-        targetCustomer : 'Josef',
-        responsibleDriver : 'Erik',
-        deliveryStatus : 'pickedUp' },
-];
+import React, { useState } from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {getDeliveriesAsync, selectDeliveries} from "./deliveriesSlice";
 
 const useStyles = makeStyles(() => {
     return {
@@ -58,7 +42,10 @@ const useStyles = makeStyles(() => {
 
 const DeliveriesList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
-    const [list, setList] = React.useState(initialList);
+    //const [list2, setList] = React.useState([]);
+
+    useDispatch(getDeliveriesAsync());
+    const list = useSelector(selectDeliveries);
 
     const columns = [
         { id: 'id', label: 'Id', minWidth: 30},
@@ -70,11 +57,11 @@ const DeliveriesList = () => {
     ];
 
     const deleteRow = id => {
-        setList(list.filter(item => item.id !== id))
+        //setList(list.filter(item => item.id !== id))
     };
 
     function editElement(id) {
-        setList(list.filter(item => item.id !== id))
+        //setList(list.filter(item => item.id !== id))
     };
 
     return (
