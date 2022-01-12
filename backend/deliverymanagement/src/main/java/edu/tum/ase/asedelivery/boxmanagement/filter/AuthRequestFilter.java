@@ -1,11 +1,6 @@
-package edu.tum.ase.asedelivery.usermngmt.filter;
+package edu.tum.ase.asedelivery.boxmanagement.filter;
 
-import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
-import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
-import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
-import edu.tum.ase.asedelivery.usermngmt.service.UserService;
+import edu.tum.ase.asedelivery.boxmanagement.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -20,37 +15,34 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private UserService mongoUserDetailsService;
+//    @Autowired
+//    private UserService mongoUserDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    UserRepository userRepository;
+//    @Autowired
+//    private AuthService authService;
+//
+//    @Autowired
+//    UserRepository userRepository;
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String path = request.getRequestURI();
-
-        if ("/auth".equals(path)) {
-            System.out.println("gottem");
-            filterChain.doFilter(request, response);
-            return;
-        }
+//        String path = request.getRequestURI();
+//
+//        if ("/auth".equals(path)) {
+//            System.out.println("gottem");
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
         String username = null;
         String jwt = null;
@@ -74,36 +66,19 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         try {
             username = jwtUtil.extractUsername(jwt);
             if (!jwtUtil.verifyJwtSignature(jwt)) {
-                System.out.println("Bad Signature");
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;
             }
         }catch (Exception e){
-            System.out.println("Bad Sig or no username ot error");
             response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
             return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // load a user from the database that has the same username as in the JWT token.
-            User userDetails = null;
-            AseUserDAO user = userRepository.findByName(username);
-            if (user == null){
-                response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
-                return;
 
-            }
-
-            userDetails = new AseUserPrincipal(user).getUser();
-            authService.setAuthentication(userDetails, request);
-            Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println(String.format("Authenticate Token Set:\n"
-                            + "Username: %s\n"
-                            + "Password: %s\n"
-                            + "Authority: %s\n",
-                    authContext.getPrincipal(),
-                    authContext.getCredentials(),
-                    authContext.getAuthorities().toString()));
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            System.out.println("Security Context not set!");
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "Something went wrong");
+            return;
         }
         filterChain.doFilter(request, response);
     }
