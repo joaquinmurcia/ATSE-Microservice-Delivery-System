@@ -43,8 +43,9 @@ const useStyles = makeStyles(() => {
 const DeliveriesList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
     //const [list2, setList] = React.useState([]);
-
+    console.log('test1');
     useDispatch(getDeliveriesAsync());
+    console.log('test2');
     const list = useSelector(selectDeliveries);
 
     const columns = [
