@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,10 +33,8 @@ public class BoxController {
             value = "/boxes",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<List<Box>> createBoxes(@RequestHeader HttpHeaders header, @RequestBody List<Box> boxes) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         try {
             for (Box box : boxes) {
                 //Checks if box status is available, new boxes can only be available
@@ -61,10 +60,8 @@ public class BoxController {
             value = "/boxes",
             method = RequestMethod.GET
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<List<Box>> getBoxes(@RequestHeader HttpHeaders header, @RequestBody Box payload) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         try {
             List<Box> boxes;
             Query query = new Query();
@@ -106,10 +103,8 @@ public class BoxController {
             value = "/boxes/{id}",
             method = RequestMethod.GET
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<Box> getBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         Optional<Box> boxOptional = boxService.findById(id);
 
         if (boxOptional.isPresent()) {
@@ -123,10 +118,8 @@ public class BoxController {
             value = "/boxes/{id}",
             method = RequestMethod.PUT
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<Box> updateBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id, @RequestBody Box box) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         Optional<Box> boxOptional = boxService.findById(id);
 
         if (boxOptional.isPresent()) {
@@ -149,10 +142,8 @@ public class BoxController {
             value = "/boxes/{id}",
             method = RequestMethod.DELETE
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<HttpStatus> deleteBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         try {
             boxService.deleteById(id);
 
@@ -177,17 +168,5 @@ public class BoxController {
         }
 
         return true;
-    }
-
-    private boolean hasRequesterCorrectRole(HttpHeaders header, UserRole neededUserRole){
-        HttpEntity<Void> requestEntity = new HttpEntity<>(header);
-        ResponseEntity<UserRole> response = restTemplate.exchange("http://usermngmt/auth/userRole", HttpMethod.GET, requestEntity, UserRole.class);
-        UserRole authenticatedRequesterRole = response.getBody();
-
-        if (authenticatedRequesterRole != neededUserRole){
-            return false;
-        } else {
-            return true;
-        }
     }
 }

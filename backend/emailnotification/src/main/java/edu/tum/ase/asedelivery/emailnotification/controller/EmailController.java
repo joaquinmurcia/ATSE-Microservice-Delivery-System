@@ -2,16 +2,10 @@ package edu.tum.ase.asedelivery.emailnotification.controller;
 
 import edu.tum.ase.asedelivery.emailnotification.service.EMailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 @RestController
@@ -25,6 +19,7 @@ public class EmailController {
             value = "/deliveryCreated",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<String> sendCreatedDeliveryEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -36,9 +31,10 @@ public class EmailController {
     }
 
     @RequestMapping(
-            value = "/deliveryPlacedInBox",
+            value = "/deliveryDeposited",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<String> sendDeliveryPlacedInBoxEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -53,6 +49,7 @@ public class EmailController {
             value = "/deliveriesPickedUp",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<String> sendDeliveriesPickedUpEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -67,6 +64,4 @@ public class EmailController {
         boolean emailValid = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email).find();
         return emailValid;
     }
-
-
 }

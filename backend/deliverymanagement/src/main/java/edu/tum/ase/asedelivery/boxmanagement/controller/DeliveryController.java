@@ -25,10 +25,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("")
 public class DeliveryController {
-    // TODO Add role check not everybody should be allowed to request every delivery e.g. customers should only
-    //  be allowed to request their own delivery whereas the dispatcher should be able to see all, same is true for
-    //  updating and deleting deliveries
-
     @Autowired
     DeliveryService deliveryService;
 
@@ -38,10 +34,8 @@ public class DeliveryController {
             value = "/deliveries",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<List<Delivery>> createDeliveries(@RequestHeader HttpHeaders header, @RequestBody List<Delivery> deliveries) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         try {
             // Check if delivery has a valid format
             for (Delivery delivery : deliveries) {
@@ -70,6 +64,13 @@ public class DeliveryController {
             }
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
+
+            for (Delivery delivery: deliveries) {
+                AseUserDAO customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getTargetCustomer());
+                //ToDo uncomment once Email is implemented in user
+                //restTemplate.postForObject("http://emailnotification//deliveryCreated", customer.getMail(), String.class);
+            }
+
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -124,14 +125,16 @@ public class DeliveryController {
             value = "/deliveries/{id}",
             method = RequestMethod.GET
     )
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<Delivery> getDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        AseUserDAO authenticatedRequester = getAuthenticatedUser(header);
+        //ToDo call usermanagement here and get the User of this request(e.g. by the header)
+        AseUserDAO requestUser = null;
 
         if (deliveryOptional.isPresent()) {
             //Only the delivery's customer and dispatchers are allowed to get deliveries
-            if (authenticatedRequester.getName().equals(deliveryOptional.get().getTargetCustomer()) || hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) {
+            if (requestUser.getName().equals(deliveryOptional.get().getTargetCustomer()) || requestUser.getRole() == UserRole.ROLE_DISPATCHER) {
                 return new ResponseEntity<>(deliveryOptional.get(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -145,10 +148,8 @@ public class DeliveryController {
             value = "/deliveries/{id}",
             method = RequestMethod.PUT
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<Delivery> updateDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id, @RequestBody Delivery delivery) {
-        //Check authorization, status updates for dispatching and picking up are in own functions below
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
         if (deliveryOptional.isPresent()) {
@@ -196,10 +197,8 @@ public class DeliveryController {
             value = "/deliveries/{id}",
             method = RequestMethod.DELETE
     )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<HttpStatus> deleteDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
-        //Check authorization
-        if (!hasRequesterCorrectRole(header, UserRole.ROLE_DISPATCHER)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
         try {
             deliveryService.deleteById(id);
 
@@ -213,22 +212,24 @@ public class DeliveryController {
             value = "/deliveries/{id}/pickup",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<Delivery> pickupDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        AseUserDAO authenticatedRequester = getAuthenticatedUser(header);
+        //ToDo call usermanagement here and get the User of this request(e.g. by the header)
+        AseUserDAO requestUser = null;
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
 
             //Only delivery's target customer can pickup a delivery
-            if (!authenticatedRequester.getName().equals(_delivery.getTargetCustomer())) {
+            if (!requestUser.getName().equals(_delivery.getTargetCustomer())) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
             _delivery.setDeliveryStatus(DeliveryStatus.pickedUp);
-
-            //TODO Send notification?
+            //ToDo uncomment once usermanagement can be used
+            //restTemplate.postForObject("http://emailnotification//deliveriesPickedUp", requestUser.getMail(), String.class);
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {
@@ -240,44 +241,31 @@ public class DeliveryController {
             value = "/deliveries/{id}/deposit",
             method = RequestMethod.POST
     )
+    @PreAuthorize("hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<Delivery> depositDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        AseUserDAO authenticatedRequester = getAuthenticatedUser(header);
+        //ToDo call usermanagement here and get the User of this request(e.g. by the header)
+        AseUserDAO requestUser = null;
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
 
             //Only delivery's target customer can deposit a delivery
-            if (!authenticatedRequester.getName().equals(_delivery.getResponsibleDriver())) {
+            if (!requestUser.getName().equals(_delivery.getResponsibleDriver())) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
             _delivery.setDeliveryStatus(DeliveryStatus.delivered);
 
-            //TODO Send notification?
+            //ToDo call usermanagement here and get the User of the delivery
+            AseUserDAO customer = null;
+            //ToDo uncomment once usermanagement can be used
+            //restTemplate.postForObject("http://emailnotification//deliveryDeposited", customer.getMail(), String.class);
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    private boolean hasRequesterCorrectRole(HttpHeaders header, UserRole neededUserRole){
-        HttpEntity<Void> requestEntity = new HttpEntity<>(header);
-        ResponseEntity<UserRole> response = restTemplate.exchange("http://usermngmt/auth/userRole", HttpMethod.GET, requestEntity, UserRole.class);
-        UserRole authenticatedRequesterRole = response.getBody();
-
-        if (authenticatedRequesterRole != neededUserRole){
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private AseUserDAO getAuthenticatedUser(HttpHeaders header){
-        HttpEntity<Void> requestEntity = new HttpEntity<>(header);
-        ResponseEntity<AseUserDAO> response = restTemplate.exchange("http://usermngmt/auth/user", HttpMethod.GET, requestEntity, AseUserDAO.class);
-        return response.getBody();
     }
 }

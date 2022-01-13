@@ -19,30 +19,12 @@ import java.io.IOException;
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
 
-//    @Autowired
-//    private UserService mongoUserDetailsService;
-
     @Autowired
     private JwtUtil jwtUtil;
-
-//    @Autowired
-//    private AuthService authService;
-//
-//    @Autowired
-//    UserRepository userRepository;
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
-//        String path = request.getRequestURI();
-//
-//        if ("/auth".equals(path)) {
-//            System.out.println("gottem");
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
 
         String username = null;
         String jwt = null;
@@ -99,11 +81,4 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 authContext.getAuthorities().toString()));
         filterChain.doFilter(request, response);
     }
-//
-//        @Override
-//        protected boolean shouldNotFilter(HttpServletRequest request)
-//                throws ServletException {
-//            String path = request.getRequestURI();
-//            return "/auth".equals(path) || "/auth/".equals(path);
-//        }
 }

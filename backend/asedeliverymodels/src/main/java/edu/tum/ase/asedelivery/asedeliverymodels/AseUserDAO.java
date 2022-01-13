@@ -9,6 +9,7 @@ public class AseUserDAO {
     @Indexed(unique = true)
     @NonNull
     private String name;
+    private String email;
     private String password;
     private String rFIDTokenString; // TODO: make AseUser interface and create subclasses. Dispatchers don't have
                                     // rFIDTokenString
@@ -19,6 +20,7 @@ public class AseUserDAO {
     public AseUserDAO(String name, String password, String rFIDTokenString, UserRole role) {
         this.name = name;
         this.password = password;
+        this.email = email;
         this.rFIDTokenString = rFIDTokenString;
         this.role = role;
     }
@@ -33,6 +35,10 @@ public class AseUserDAO {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     public void setName(String name) {
