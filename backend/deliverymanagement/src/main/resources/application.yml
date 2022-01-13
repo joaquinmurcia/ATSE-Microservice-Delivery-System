@@ -10,7 +10,7 @@ spring:
 
       # Configure credential
       username: aseAdmin
-      password: test
+      password: ase
       authentication-database: admin
 
       # Configure Database Operation,
