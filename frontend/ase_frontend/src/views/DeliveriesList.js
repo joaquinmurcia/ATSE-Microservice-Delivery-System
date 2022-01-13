@@ -1,9 +1,8 @@
 import {makeStyles} from "@material-ui/core";
 import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
-import React, { useState } from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getDeliveriesAsync, selectDeliveries} from "./deliveriesSlice";
+import {getDeliveriesAsync, selectDeliveries, startEditElement, deleteElement} from "./deliveriesSlice";
 
 const useStyles = makeStyles(() => {
     return {
@@ -42,11 +41,11 @@ const useStyles = makeStyles(() => {
 
 const DeliveriesList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
-    //const [list2, setList] = React.useState([]);
-    console.log('test1');
-    useDispatch(getDeliveriesAsync());
-    console.log('test2');
+
+    const dispatch = useDispatch();
+    dispatch(getDeliveriesAsync());
     const list = useSelector(selectDeliveries);
+
 
     const columns = [
         { id: 'id', label: 'Id', minWidth: 30},
@@ -56,14 +55,6 @@ const DeliveriesList = () => {
         { id: 'deliveryStatus', label: 'Status', minWidth: 80 },
         { id: 'buttons', label: 'Actions', minWidth: 90 },
     ];
-
-    const deleteRow = id => {
-        //setList(list.filter(item => item.id !== id))
-    };
-
-    function editElement(id) {
-        //setList(list.filter(item => item.id !== id))
-    };
 
     return (
         <Container>
@@ -104,10 +95,10 @@ const DeliveriesList = () => {
                                         {row['deliveryStatus']}
                                     </TableCell>
                                     <TableCell>
-                                        <button type="button" className={editButtonStyle} onClick={() => editElement(row.id)}>
+                                        <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
                                             <ModeEdit/>
                                         </button>
-                                        <button type="button" className={deleteButtonStyle}  onClick={() => deleteRow(row.id)}>
+                                        <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteElement(row))}>
                                             <Delete/>
                                         </button>
                                     </TableCell>

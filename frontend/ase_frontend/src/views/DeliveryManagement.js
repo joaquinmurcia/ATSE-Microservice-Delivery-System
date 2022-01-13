@@ -3,6 +3,8 @@ import DeliveriesList from "./DeliveriesList";
 import AddNewForm from "./AddNewForm";
 import EditDeliveryForm from "./EditDeliveryForm";
 import {makeStyles} from "@material-ui/core";
+import {useSelector} from "react-redux";
+import {isEditState} from "./deliveriesSlice";
 
 const useStyles = makeStyles(() => ({
     layout: {
@@ -15,7 +17,7 @@ function DeliveryManagement(){
 
     const { layout } = useStyles();
 
-    const isEditing = true;
+    const isEditing = useSelector(isEditState);
 
     return(
         <Container maxWidth={false}>

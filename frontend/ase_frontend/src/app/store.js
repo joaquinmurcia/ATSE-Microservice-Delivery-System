@@ -3,6 +3,6 @@ import deliveriesReducer from '../views/deliveriesSlice';
 
 export const store = configureStore({
   reducer: {
-    deliveriesReducer
+    deliveries : deliveriesReducer
   },
 });

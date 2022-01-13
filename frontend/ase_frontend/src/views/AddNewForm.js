@@ -1,8 +1,12 @@
 import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material"
+import {useDispatch} from "react-redux";
 
 
 const AddNewForm = () => {
+
+    const dispatch = useDispatch();
+
     return (
         <Container>
             <Paper  sx={{border: 1, borderRadius: 1}}>
