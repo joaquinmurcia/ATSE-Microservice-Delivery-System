@@ -1,9 +1,5 @@
 package edu.tum.ase.asedelivery.usermngmt.jwt;
 
-import edu.tum.ase.asedelivery.usermngmt.service.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -62,6 +58,7 @@ public class KeyStoreManager {
     protected PublicKey getPublicKey() {
         try {
             Certificate cert = keyStore.getCertificate(keyAlias);
+            System.out.println(cert.getPublicKey().getAlgorithm());
             return cert.getPublicKey();
         } catch (Exception ex) {
             ex.printStackTrace();
