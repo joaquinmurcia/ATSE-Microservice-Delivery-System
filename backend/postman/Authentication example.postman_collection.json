@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "b4447c19-7561-449c-8bde-6f668bcade1e",
+		"name": "Authentication example",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Initial request to receive XSRF-Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"the_xsrf_cookie\", pm.cookies.get('XSRF-TOKEN'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "da72e80a-8e82-4d75-85ae-941c921b63f1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/auth",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Second request to receive JWT",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "pwd1",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "User1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{the_xsrf_cookie}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/auth",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Finally, perform authenticated requests",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "JSESSIONID",
+						"value": "AC0710BBEBF1552F77FCB54258249EC6",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6W3sicm9sZSI6InRlc3QifV0sInN1YiI6ImFzZGYiLCJpc3MiOiJhc2Vwcm9qZWN0IiwiaWF0IjoxNjM5MzkxODUxLCJleHAiOjE2Mzk0MDk4NTF9.qcOV0BCAF6qUAJMI20G8M9LhCwQ1kL_emB4bR2KhyHSVDg6nhymlIYTekVtOlejQyBcxTb0TsUsAaMyXJ-QzjsO8h9VwcENEmLmrBIBjdvTcpQUp5k1HIwYGu1YdZxj1xso6V6pR0Xc_qn4bSidvi4HB11AfVNi7bkHaNzQSrGgqOCot0rbN9IuqJktMNUFxG9Q0kFyExp2g6PPXOzdk92Dwpw1gf8qEi1yvR7iHTcv6z_kVSkvt1lxQ5C2CqmOnkRIZ8E-wes8E055kkxsYEvIntofqNZ4obiCOcvCLDByA-yeBb3bK70xZbT3AoNAQGrRZpaC1iFjHJjFMstaJKA",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8080/project",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"project"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "the_xsrf_cookie",
+			"value": ""
+		}
+	]
+}
