@@ -2,61 +2,33 @@ package edu.tum.ase.asedelivery.usermngmt.model;
 
 import com.mongodb.lang.NonNull;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Data
+@NoArgsConstructor
 @Document(collection = "users")
 public class AseUserDAO {
+
+    @Id
+    private String id;
     @Indexed(unique = true)
     @NonNull
     private String name;
     private String password;
-    private String rFIDTokenString; // TODO: make AseUser interface and create subclasses. Dispatchers don't have
-    // rFIDTokenString
-    // TODO: Should the rFIDTokenString be null for dispatchers? Depends on
-    // database. Maybe doesn't allow null.
+    private String rfidToken; // TODO: make AseUser interface and create subclasses. Dispatchers don't have rFIDTokenString Should the rFIDTokenString be null for dispatchers? Depends on database. Maybe doesn't allow null.
     private UserRole role;
-    private boolean isenabled;
+    private boolean isEnabled;
 
-
-    public AseUserDAO(String name, String password, String rFIDTokenString, UserRole role) {
+    public AseUserDAO(String name, String password, String rfidToken, UserRole role) {
         this.name = name;
         this.password = password;
-        this.rFIDTokenString = rFIDTokenString;
+        this.rfidToken = rfidToken;
         this.role = role;
-        this.isenabled = true;
-    }
-
-    public String getrFIDTokenString() {
-        return rFIDTokenString;
-    }
-
-    public void setrFIDTokenString(String rFIDTokenString) {
-        this.rFIDTokenString = rFIDTokenString;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserRole getRole() {
-        return this.role;
-    }
-
-    public boolean isEnabled() {
-        return this.isenabled;
+        this.isEnabled = true;
     }
 
     /*
@@ -69,4 +41,5 @@ public class AseUserDAO {
      * return this.role.remove(role);
      * }
      */
+
 }

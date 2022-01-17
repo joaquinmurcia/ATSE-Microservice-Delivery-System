@@ -24,6 +24,10 @@ spring:
           uri: lb://boxmanagement
           predicates:
             - Path=/boxmanagement/**
+        - id: usermanagement
+          uri: lb://usermanagement
+          predicates:
+            - Path=/usermanagement/**
 
 management:
   endpoint:

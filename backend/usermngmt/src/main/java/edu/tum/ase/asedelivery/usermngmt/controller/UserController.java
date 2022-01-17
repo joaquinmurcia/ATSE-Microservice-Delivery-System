@@ -1,33 +1,132 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.usermngmt.model.Constants;
+import edu.tum.ase.asedelivery.usermngmt.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 import edu.tum.ase.asedelivery.usermngmt.service.UserService;
+import org.springframework.web.client.RestTemplate;
 
-/* ?? in User Management, where it says "create users from e-mail", does it mean
-that the dispatcher will write the user data from e-mail or that it will be identified by
-his/her email? */
+import java.util.List;
+import java.util.Optional;
+
+
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
 public class UserController {
-    @Autowired
-    private UserService userService;
 
-    // TODO: add the other methods copying this structure (wait until you know
-    // whether exceptions are graded)
-    @PostMapping("/create")
-    public ResponseEntity<String> createUser(@RequestBody AseUserDAO user) {
-        // TODO: ?? Are exceptions graded?
-        userService.createUser(user);
-        return new ResponseEntity<>("user-created", HttpStatus.OK);
+    @Autowired
+    UserService userService;
+
+    RestTemplate restTemplate;
+
+    @RequestMapping(
+            value = "/users",
+            method = RequestMethod.POST
+    )
+    public ResponseEntity<List<AseUserDAO>> createUsers(@RequestBody List<AseUserDAO> users) {
+        try {
+            // TODO Validate users
+
+            List<AseUserDAO> _users = userService.saveAll(users);
+            return new ResponseEntity<>(_users, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            value = "/users",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<List<AseUserDAO>> getUsers(@RequestBody AseUserDAO payload) {
+        try {
+            List<AseUserDAO> users;
+            Query query = new Query();
+
+            // TODO Check permissions if user can perform query
+
+            if (!Validation.isNullOrEmpty(payload.getName())) {
+                query.addCriteria(Criteria.where(Constants.NAME).is(payload.getName()));
+            }
+
+            if (!Validation.isNullOrEmpty(payload.getRfidToken())) {
+                query.addCriteria(Criteria.where(Constants.RFID_TOKEN).is(payload.getRfidToken()));
+            }
+
+            users = userService.findAll(query);
+
+            if (users.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(
+            value = "/users/{id}",
+            method = RequestMethod.GET
+    )
+    public ResponseEntity<AseUserDAO> getUser(@PathVariable("id") String id) {
+        Optional<AseUserDAO> userOptional = userService.findById(id);
+
+        // TODO Check permissions if user can perform query
+
+        if (userOptional.isPresent()) {
+            return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(
+            value = "/users/{id}",
+            method = RequestMethod.PUT
+    )
+    public ResponseEntity<AseUserDAO> updateUser(@PathVariable("id") String id, @RequestBody AseUserDAO user) {
+        Optional<AseUserDAO> userOptional = userService.findById(id);
+
+        if (userOptional.isPresent()) {
+            AseUserDAO _user = userOptional.get();
+            _user.setName(user.getName());
+            _user.setPassword(user.getPassword());
+            _user.setRfidToken(user.getRfidToken());
+            _user.setRole(user.getRole());
+
+            // TODO Check if user values
+
+            return new ResponseEntity<>(userService.save(_user), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(
+            value = "/users/{id}",
+            method = RequestMethod.DELETE
+    )
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") String id) {
+        try {
+            userService.deleteById(id);
+
+            // TODO Check permissions if user can perform query
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
