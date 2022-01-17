@@ -61,14 +61,17 @@ public class DeliveryController {
                         deliverer == null || deliverer.getRole() != UserRole.ROLE_DELIVERER) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
+
+                //When a box is assigned to a delivery it then needs to be occupied
+                box.setBoxStatus(BoxStatus.occupied);
+                //ToDo add Token to box
             }
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
 
             for (Delivery delivery: deliveries) {
                 AseUserDAO customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getTargetCustomer());
-                //ToDo uncomment once Email is implemented in user
-                //restTemplate.postForObject("http://emailnotification//deliveryCreated", customer.getMail(), String.class);
+                restTemplate.postForObject("http://emailnotification//deliveryCreated", customer.getEmail(), String.class);
             }
 
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
