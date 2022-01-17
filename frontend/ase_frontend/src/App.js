@@ -1,7 +1,7 @@
 import './App.css';
 import Header from './Header';
 import UserManagement from './views/UserManagement';
-import DeliveryManagement from './views/DeliveryManagement';
+import DeliveryManagement from './views/Delivery/DeliveryManagement';
 import BoxManagement from "./views/BoxManagement";
 import {
     Routes,
