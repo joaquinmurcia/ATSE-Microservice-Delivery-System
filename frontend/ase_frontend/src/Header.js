@@ -9,13 +9,18 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 const headersData = [
+
     {
-        label: "UserManagement",
-        href: "/user-management",
+        label: "Box Management",
+        href: "/box-management",
     },
     {
-        label: "DeliveryManagement",
+        label: "Delivery Management",
         href: "/delivery-management",
+    },
+    {
+        label: "User Management",
+        href: "/user-management",
     },
     {
         label: "Log Out",
