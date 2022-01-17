@@ -22,6 +22,11 @@ const deliveriesSlice = createSlice({
     name: 'deliveries',
     initialState,
     reducers: {
+        addElement(state, action){
+            action.payload.id = state.list.length +1;
+            console.log(action.payload);
+            state.list.push(action.payload);
+        },
         startEditElement(state, action){
             state.isEdit = true;
             state.editId = action.payload.id;
@@ -31,6 +36,7 @@ const deliveriesSlice = createSlice({
             state.list.map( elem => elem.id === action.payload.id? action.payload : elem );
             state.isEdit = false;
             state.editId = 0;
+            console.log(action.payload);
         },
         cancelEdit(state){
             state.isEdit = false;
@@ -60,6 +66,6 @@ export const getDelivery = (state,action) => state.deliveries.list.filter(elem =
 
 export const getEditDelivery = (state) => state.deliveries.list.filter(elem => elem.id === state.deliveries.editId)[0];
 
-export const {startEditElement, editElement, cancelEdit, deleteElement} = deliveriesSlice.actions
+export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = deliveriesSlice.actions
 
 export default deliveriesSlice.reducer

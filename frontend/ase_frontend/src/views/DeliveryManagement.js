@@ -1,6 +1,6 @@
 import {Container} from "@mui/material"
 import DeliveriesList from "./DeliveriesList";
-import AddNewForm from "./AddNewForm";
+import AddNewDeliveryForm from "./AddNewDeliveryForm";
 import EditDeliveryForm from "./EditDeliveryForm";
 import {makeStyles} from "@material-ui/core";
 import {useSelector} from "react-redux";
@@ -23,7 +23,7 @@ function DeliveryManagement(){
         <Container maxWidth={false}>
             <div className={layout} >
                 <DeliveriesList/>
-                {isEditing ? <EditDeliveryForm/> : <AddNewForm/>}
+                {isEditing ? <EditDeliveryForm/> : <AddNewDeliveryForm/>}
 
 
             </div>
