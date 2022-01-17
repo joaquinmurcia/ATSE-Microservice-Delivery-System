@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.boxmanagement.utils;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
+import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
 
 public class Validation {
 

@@ -1,4 +1,4 @@
-package edu.tum.ase.asedelivery.usermngmt.model;
+package edu.tum.ase.asedelivery.asedeliverymodels;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,7 +10,7 @@ import java.util.Collections;
 public class AseUserPrincipal implements UserDetails {
     private User user;
 
-    public AseUserPrincipal(AseUserDAO user) {
+    public AseUserPrincipal(AseUser user) {
         this.user = new User(user.getName(), user.getPassword(),
                 user.isEnabled(), true, true, true, Collections.singleton(user.getRole()));
         ;

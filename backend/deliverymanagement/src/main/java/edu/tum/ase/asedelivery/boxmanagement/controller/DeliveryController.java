@@ -1,24 +1,16 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUserDAO;
-import edu.tum.ase.asedelivery.asedeliverymodels.Box;
-import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
-import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
-import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
-import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
+import edu.tum.ase.asedelivery.asedeliverymodels.*;
 import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.*;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,35 +37,45 @@ public class DeliveryController {
             }
 
             for (Delivery delivery: deliveries) {
-                //Checks if delivery status is open else return bad request
-                //Delivery status for a new delivery always needs to be open
-                if (delivery.getDeliveryStatus() != DeliveryStatus.open){
+                // Checks if delivery status is open else return bad request
+                // Delivery status for a new delivery always needs to be open
+                if (delivery.getDeliveryStatus() != DeliveryStatus.open) {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
-                //Checks if the box, customer and deliverer for a delivery is correct
-                Box box = restTemplate.getForObject("http://boxmanagement/boxes/{id}", Box.class, delivery.getTargetBox());
-                AseUserDAO customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getTargetCustomer());
-                AseUserDAO deliverer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getResponsibleDriver());
-
-                if (box == null || box.getBoxStatus() == BoxStatus.occupied ||
-                        customer == null || customer.getRole() != UserRole.ROLE_CUSTOMER ||
-                        deliverer == null || deliverer.getRole() != UserRole.ROLE_DELIVERER) {
+                // Checks if customer exists
+                AseUser targetCustomer = restTemplate.getForObject("lb://usermanagement/users/{id}", AseUser.class, delivery.getTargetCustomer());
+                if (targetCustomer == null || targetCustomer.isEnabled()) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
-                //When a box is assigned to a delivery it then needs to be occupied
-                box.setBoxStatus(BoxStatus.occupied);
-                //ToDo add Token to box
-            }
+                // Checks if deliverer exists
+                AseUser responsibleDeliverer = restTemplate.getForObject("lb://usermanagement/users/{id}", AseUser.class, delivery.getResponsibleDeliverer());
+                if (responsibleDeliverer == null || responsibleDeliverer.isEnabled()) {
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
 
-            List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
+                // Checks if a box exists
+                Box box = restTemplate.getForObject("lb://boxmanagement/boxes/{id}", Box.class, delivery.getTargetBox());
+                if (box == null || box.getBoxStatus() == BoxStatus.occupied) {
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                // Update box status
+                box.setBoxStatus(BoxStatus.occupied);
+                restTemplate.put(String.format("lb://boxmanagement/boxes/%s", box.getId()), box);
+
+                // Set rfid token of users in delivery
+                delivery.setResponsibleDelivererRfidToken(targetCustomer.getRfidToken());
+                delivery.setResponsibleDelivererRfidToken(responsibleDeliverer.getRfidToken());
+            }
 
             for (Delivery delivery: deliveries) {
                 AseUserDAO customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getTargetCustomer());
                 restTemplate.postForObject("http://emailnotification//deliveryCreated", customer.getEmail(), String.class);
             }
 
+            List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -101,8 +103,8 @@ public class DeliveryController {
                 query.addCriteria(Criteria.where(Constants.TARGET_CUSTOMER).is(payload.getTargetCustomer()));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getResponsibleDriver())) {
-                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(payload.getResponsibleDriver()));
+            if (!Validation.isNullOrEmpty(payload.getResponsibleDeliverer())) {
+                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(payload.getResponsibleDeliverer()));
             }
 
             if (!Validation.isNullOrEmpty(payload.getDeliveryStatus())) {
@@ -132,8 +134,10 @@ public class DeliveryController {
     public ResponseEntity<Delivery> getDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        //ToDo call usermanagement here and get the User of this request(e.g. by the header)
-        AseUserDAO requestUser = null;
+        //Calls authController because we need to get the user by the token
+        HttpEntity<String> httpEntity = new HttpEntity<>("body", header);
+        ResponseEntity<AseUser> responseRequestUser = restTemplate.exchange("http://usermngmt/user", HttpMethod.GET, httpEntity, AseUser.class);
+        AseUser requestUser = responseRequestUser.getBody();
 
         if (deliveryOptional.isPresent()) {
             //Only the delivery's customer and dispatchers are allowed to get deliveries
@@ -160,7 +164,7 @@ public class DeliveryController {
 
             _delivery.setTargetBox(delivery.getTargetBox());
             _delivery.setTargetCustomer(delivery.getTargetCustomer());
-            _delivery.setResponsibleDriver(delivery.getResponsibleDriver());
+            _delivery.setResponsibleDeliverer(delivery.getResponsibleDeliverer());
             _delivery.setDeliveryStatus(delivery.getDeliveryStatus());
 
             if (!delivery.isValid()){
@@ -175,7 +179,7 @@ public class DeliveryController {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
             //Responsible Driver of a delivery cant be changed
-            if(!_delivery.getResponsibleDriver().equals(delivery.getResponsibleDriver())){
+            if(!_delivery.getResponsibleDeliverer().equals(delivery.getResponsibleDeliverer())){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
             //These if statements ensure that the delivery status can only be changed in the right order
@@ -219,8 +223,10 @@ public class DeliveryController {
     public ResponseEntity<Delivery> pickupDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        //ToDo call usermanagement here and get the User of this request(e.g. by the header)
-        AseUserDAO requestUser = null;
+        //Calls authController because we need to get the user by the token
+        HttpEntity<String> httpEntity = new HttpEntity<>("body", header);
+        ResponseEntity<AseUser> responseRequestUser = restTemplate.exchange("http://usermngmt/user", HttpMethod.GET, httpEntity, AseUser.class);
+        AseUser requestUser = responseRequestUser.getBody();
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
@@ -231,8 +237,7 @@ public class DeliveryController {
             }
 
             _delivery.setDeliveryStatus(DeliveryStatus.pickedUp);
-            //ToDo uncomment once usermanagement can be used
-            //restTemplate.postForObject("http://emailnotification//deliveriesPickedUp", requestUser.getMail(), String.class);
+            restTemplate.postForObject("http://emailnotification//deliveriesPickedUp", requestUser.getEMail(), String.class);
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {
@@ -248,8 +253,10 @@ public class DeliveryController {
     public ResponseEntity<Delivery> depositDelivery(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
-        //ToDo call usermanagement here and get the User of this request(e.g. by the header)
-        AseUserDAO requestUser = null;
+        //Calls authController because we need to get the user by the token
+        HttpEntity<String> httpEntity = new HttpEntity<>("body", header);
+        ResponseEntity<AseUser> responseRequestUser = restTemplate.exchange("http://usermngmt/user", HttpMethod.GET, httpEntity, AseUser.class);
+        AseUser requestUser = responseRequestUser.getBody();
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
@@ -261,10 +268,10 @@ public class DeliveryController {
 
             _delivery.setDeliveryStatus(DeliveryStatus.delivered);
 
-            //ToDo call usermanagement here and get the User of the delivery
-            AseUserDAO customer = null;
-            //ToDo uncomment once usermanagement can be used
-            //restTemplate.postForObject("http://emailnotification//deliveryDeposited", customer.getMail(), String.class);
+            AseUser customer = new AseUser(_delivery.getTargetCustomer());
+            customer = restTemplate.getForObject("http://usermngmt/users", AseUser.class, customer);
+
+            restTemplate.postForObject("http://emailnotification//deliveryDeposited", customer.getMail(), String.class);
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {

@@ -1,10 +1,12 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
-import edu.tum.ase.asedelivery.usermngmt.model.UserRole;
-import edu.tum.ase.asedelivery.usermngmt.service.AuthService;import org.springframework.beans.factory.annotation.Autowired;
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
+import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +54,7 @@ public class AuthController {
             value = "userRole",
             method = RequestMethod.GET
     )
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<UserRole> getAuthenticatedUserRole(@RequestHeader("Authorization") String header){
         UserRole userRole = authService.getAuthenticatedUserRole(header);
         if (userRole == null){
@@ -65,12 +68,13 @@ public class AuthController {
             value = "user",
             method = RequestMethod.GET
     )
-    public ResponseEntity<AseUserDAO> getAuthenticatedUser(HttpServletRequest request){
-        AseUserDAO user = authService.getAuthenticatedUser(request.getCookies());
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<AseUser> getAuthenticatedUser(HttpServletRequest request){
+        AseUser user = authService.getAuthenticatedUser(request.getCookies());
         if (user == null){
-            return new ResponseEntity<AseUserDAO>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<AseUser>(HttpStatus.UNAUTHORIZED);
         } else {
-            return new ResponseEntity<AseUserDAO>(user, HttpStatus.OK);
+            return new ResponseEntity<AseUser>(user, HttpStatus.OK);
         }
     }
 

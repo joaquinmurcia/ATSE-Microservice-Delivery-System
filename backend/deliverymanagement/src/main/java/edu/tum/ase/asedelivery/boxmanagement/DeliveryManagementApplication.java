@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.boxmanagement;
 
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.asedelivery.boxmanagement.model.Delivery;
-import edu.tum.ase.asedelivery.boxmanagement.model.DeliveryStatus;
+import edu.tum.ase.asedelivery.asedeliverymodels.Delivery;
+import edu.tum.ase.asedelivery.asedeliverymodels.DeliveryStatus;
 import edu.tum.ase.asedelivery.boxmanagement.repository.DeliveryRepository;
 import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
 import org.slf4j.Logger;
@@ -40,12 +40,12 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 
 		// Create list of dummy deliveries
 		List<Delivery> deliveries = new ArrayList<Delivery>();
-		deliveries.add(new Delivery(null, "targetBox1", "targetCustomer1", "deliverer1", DeliveryStatus.open));
-		deliveries.add(new Delivery(null, "targetBox2", "targetCustomer2", "deliverer2", DeliveryStatus.open));
-		deliveries.add(new Delivery(null, "targetBox3", "targetCustomer3", "deliverer3", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox4", "targetCustomer4", "deliverer4", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox5", "targetCustomer5", "deliverer4", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox6", "targetCustomer6", "deliverer5", DeliveryStatus.delivered));
+		deliveries.add(new Delivery(null, "targetBox1", "targetCustomer1", "ctoken1","deliverer1", "rtoken1", DeliveryStatus.open));
+		deliveries.add(new Delivery(null, "targetBox2", "targetCustomer2", "ctoken1","deliverer2", "rtoken1", DeliveryStatus.open));
+		deliveries.add(new Delivery(null, "targetBox3", "targetCustomer3", "ctoken1","deliverer3", "rtoken1", DeliveryStatus.pickedUp));
+		deliveries.add(new Delivery(null, "targetBox4", "targetCustomer4", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
+		deliveries.add(new Delivery(null, "targetBox5", "targetCustomer5", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
+		deliveries.add(new Delivery(null, "targetBox6", "targetCustomer6", "ctoken1","deliverer5", "rtoken1",DeliveryStatus.delivered));
 
 		List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
 	}

@@ -2,40 +2,44 @@ package edu.tum.ase.asedelivery.usermngmt.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
+import java.util.Optional;
+import org.springframework.data.mongodb.core.query.Query;
 
-// TODO: test if this is the right name for the role (should I put only
-// ROLE_DISPATCHER...?)
+
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
-    /*
-     * ?? I want to have "createDeliverer". If I create this, this class is
-     * dependant from UserRole.
-     * Should I then create DelivererService to implement that method?
-     */
-    public AseUserDAO createUser(AseUserDAO user) {
-        return userRepository.save(user);
+    // Get data
+    public List<AseUser> findAll(Query query) {
+        return userRepository.findAll(query);
     }
 
-    public void deleteUser(AseUserDAO user) {
-        userRepository.delete(user);
-        return;
+    public Optional<AseUser> findById(String id) {
+        return userRepository.findById(id);
     }
 
-    public AseUserDAO findByName(String name) {
-        return userRepository.findByName(name);
+    // Store data
+    public AseUser save(AseUser delivery) {
+        return userRepository.save(delivery);
     }
 
-    public List<AseUserDAO> getAllUsers() {
-        // return userRepository.findAll();
-        return new ArrayList<AseUserDAO>(userRepository.findAll());
+    public List<AseUser> saveAll(List<AseUser> deliveries) {
+        return userRepository.saveAll(deliveries);
+    }
+
+    // Remove Data
+    public void deleteById(String id) {
+        userRepository.deleteById(id);
+    }
+
+    public List<AseUser> getAllUsers() {
+        return new ArrayList<AseUser>(userRepository.findAll());
     }
 }

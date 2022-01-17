@@ -1,9 +1,24 @@
 package edu.tum.ase.asedelivery.usermngmt.repository;
 
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
-//?? Do I even need this? The annotation @Repository wires a Bean to the UserRepository interface
 @Repository
-public class UserRepositoryImpl { // implements UserRepository
+public class UserRepositoryImpl implements UserRepositoryCustom {
 
+    private final MongoTemplate mongoTemplate;
+
+    @Autowired
+    public UserRepositoryImpl(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    @Override
+    public List<AseUser> findAll(Query query) {
+        return mongoTemplate.find(query, AseUser.class);
+    }
 }

@@ -1,11 +1,10 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
-import edu.tum.ase.asedelivery.boxmanagement.model.Address;
-import edu.tum.ase.asedelivery.boxmanagement.model.Box;
-import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
-import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
+import edu.tum.ase.asedelivery.asedeliverymodels.Address;
+import edu.tum.ase.asedelivery.asedeliverymodels.Box;
+import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
+import edu.tum.ase.asedelivery.asedeliverymodels.Constants;
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -65,18 +64,6 @@ public class BoxController {
         try {
             List<Box> boxes;
             Query query = new Query();
-
-            // Create query
-
-            /*
-            if (!Validation.isNullOrEmpty(payload.getAddress().toString())) {
-                query.addCriteria(Criteria.where(Constants.ADDRESS_STREET_NAME).is(payload.getAddress().getStreetName()));
-                query.addCriteria(Criteria.where(Constants.ADDRESS_STREET_NUMBER).is(payload.getAddress().getStreetName()));
-                query.addCriteria(Criteria.where(Constants.ADDRESS_POSTCODE).is(payload.getAddress().getPostcode()));
-                query.addCriteria(Criteria.where(Constants.ADDRESS_CITY).is(payload.getAddress().getCity()));
-                query.addCriteria(Criteria.where(Constants.ADDRESS_COUNTRY).is(payload.getAddress().getCountry()));
-            }
-           */
 
             // Create query
             if (!Validation.isNullOrEmpty(payload.getBoxStatus())) {
@@ -146,8 +133,6 @@ public class BoxController {
     public ResponseEntity<HttpStatus> deleteBox(@RequestHeader HttpHeaders header, @PathVariable("id") String id) {
         try {
             boxService.deleteById(id);
-
-            // TODO Check permissions if user can perform query
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {

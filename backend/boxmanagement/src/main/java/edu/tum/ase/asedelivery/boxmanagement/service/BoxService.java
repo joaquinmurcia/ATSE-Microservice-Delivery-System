@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.boxmanagement.service;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.Box;
+import edu.tum.ase.asedelivery.asedeliverymodels.Box;
 import edu.tum.ase.asedelivery.boxmanagement.repository.BoxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Query;

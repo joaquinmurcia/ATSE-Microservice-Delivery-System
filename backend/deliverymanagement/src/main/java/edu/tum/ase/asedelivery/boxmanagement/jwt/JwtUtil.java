@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 public class JwtUtil {
     @Autowired
 
-
-
     private PublicKey loadPubKey() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         // Read Public Key.
         File filePublicKey = ResourceUtils.getFile("classpath:public.key");

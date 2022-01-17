@@ -1,0 +1,31 @@
+[{ "id" : 1,
+    "targetBox" : "Garching",
+    "targetCustomer" : "Josef",
+    "responsibleDriver" : "Erik",
+    "deliveryStatus" : "pickedUp"
+  },
+  { "id" : 2,
+    "targetBox" : "Garching",
+    "targetCustomer" : "Josef",
+    "responsibleDriver" : "Erik",
+    "deliveryStatus" : "pickedUp"
+  },
+  { "id" : 3,
+    "targetBox" : "Garching",
+    "targetCustomer" : "Josef",
+    "responsibleDriver" : "Erik",
+    "deliveryStatus" : "pickedUp"
+  },
+  { "id" : 4,
+    "targetBox" : "Garching",
+    "targetCustomer" : "Josef",
+    "responsibleDriver" : "Erik",
+    "deliveryStatus" : "pickedUp"
+  },
+  { "id" : 5,
+    "targetBox" : "Garching",
+    "targetCustomer" : "Josef",
+    "responsibleDriver" : "Erik",
+    "deliveryStatus" : "pickedUp"
+  }
+]
