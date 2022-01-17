@@ -22,12 +22,6 @@ public class KeyStoreManager {
     private String keyAlias = "aseprojectkey";
     private char[] password = "asease".toCharArray();
 
-//    public Set<String> listFilesUsingJavaIO(String dir) {
-//        return Stream.of(new File(dir).listFiles())
-//                .filter(file -> !file.isDirectory())
-//                .map(File::getName)
-//                .collect(Collectors.toSet());
-//    }
     public KeyStoreManager() throws KeyStoreException, IOException {
         loadKeyStore();
     }
@@ -37,11 +31,9 @@ public class KeyStoreManager {
         FileInputStream fis = null;
 
         try {
-// Get the path to the keystore file in the resources folder
-
+            // Get the path to the keystore file in the resources folder
             File keystoreFile = ResourceUtils.getFile("classpath:ase_project.keystore");
 
-//ResourceUtils.getFile("./src/main/java/edu/tum/ase/asedelivery/usermngmt/jwt/ase_project.keystore");
             fis = new FileInputStream(keystoreFile);
             keyStore.load(fis, password);
             keyAlias = keyStore.aliases().nextElement();

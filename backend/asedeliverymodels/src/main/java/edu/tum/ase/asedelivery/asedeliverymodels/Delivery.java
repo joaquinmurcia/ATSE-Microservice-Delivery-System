@@ -14,7 +14,9 @@ public class Delivery {
     private String id;
     private String targetBox;
     private String targetCustomer;
-    private String responsibleDriver;
+    private String targetCustomerRFIDToken;
+    private String responsibleDeliverer;
+    private String responsibleDelivererRfidToken;
     private DeliveryStatus deliveryStatus;
 
     // Checks if the delivery object contains valid information
@@ -22,7 +24,7 @@ public class Delivery {
         try {
             if (Validation.isNullOrEmpty(this.targetBox)
                     || Validation.isNullOrEmpty(this.targetCustomer)
-                    || Validation.isNullOrEmpty(this.responsibleDriver)
+                    || Validation.isNullOrEmpty(this.responsibleDeliverer)
                     || Validation.isNullOrEmpty(this.deliveryStatus.toString())) {
                 return false;
             }
