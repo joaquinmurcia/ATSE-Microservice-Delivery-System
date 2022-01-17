@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import deliveriesReducer from '../views/deliveriesSlice';
+import deliveriesReducer from '../views/Delivery/deliveriesSlice';
 
 export const store = configureStore({
   reducer: {

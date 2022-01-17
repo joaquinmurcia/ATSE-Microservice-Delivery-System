@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import list from "../deliveryData.json";
+import list from "../../deliveryData.json";
 
 const initialState = {
     status: 'idle',
