@@ -31,12 +31,19 @@ const AddNewDeliveryForm = () => {
     }
 
     function getElem() {
-        return {
+        const newElement = {
             targetBox:  elemTargetBox,
             targetCustomer: elemTargetCustomer,
             responsibleDriver: elemResponsibleDriver,
             deliveryStatus: elemDeliveryStatus
         }
+
+        setTargetBox("");
+        setTargetCustomer("");
+        setResponsibleDriver("");
+        setDeliveryStatus("")
+
+        return newElement
     }
 
     return (
