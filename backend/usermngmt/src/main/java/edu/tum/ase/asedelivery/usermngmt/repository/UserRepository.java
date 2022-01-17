@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 
 @Repository
-public interface UserRepository extends MongoRepository<AseUserDAO, String> {
+public interface UserRepository extends MongoRepository<AseUserDAO, String>, UserRepositoryCustom {
     AseUserDAO findByName(String name);
 }
