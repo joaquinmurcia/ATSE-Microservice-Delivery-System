@@ -1,61 +1,45 @@
 package edu.tum.ase.asedelivery.asedeliverymodels;
 
 import com.mongodb.lang.NonNull;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+@Data
+@NoArgsConstructor
 @Document(collection = "users")
 public class AseUser {
-    // Define username, password and role properties
+
     @Id
     private String id;
-
-    Collection<? extends GrantedAuthority>  authorities;
-
-    @NonNull
-    private String password;
-
     @Indexed(unique = true)
     @NonNull
     private String name;
+    private String password;
+    private String rfidToken; // TODO: make AseUser interface and create subclasses. Dispatchers don't have rFIDTokenString Should the rFIDTokenString be null for dispatchers? Depends on database. Maybe doesn't allow null.
+    private UserRole role;
+    private boolean isEnabled;
 
-    // Getters and Setters
-
-    protected AseUser() {
-    }
-
-    public AseUser(String name, String password) {
+    public AseUser(String name, String password, String rfidToken, UserRole role) {
         this.name = name;
         this.password = password;
-
+        this.rfidToken = rfidToken;
+        this.role = role;
+        this.isEnabled = true;
     }
 
+    /*
+     * TODO: (maybe) allow multiple roles for same user
+     * public boolean addRole(UserRole role) {
+     * return this.role.add(role);
+     * }
+     *
+     * public boolean deleteRole(UserRole role) {
+     * return this.role.remove(role);
+     * }
+     */
 
-    public String getUsername() {
-        return this.name;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities= new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("test"));
-        return authorities;
-    }
 }

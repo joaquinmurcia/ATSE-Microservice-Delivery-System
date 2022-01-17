@@ -1,20 +1,38 @@
 spring:
-    mail:
-        protocol: smtp
-        host: smtp.gmail.com
-        port: 587
-        username: ASEDelivering@gmail.com
-        password: lhoeoixigpovxvvn
-        properties:
-          mail:
-            smtp:
-              auth: true
-              starttls:
-                enable: true
+  application:
+    name: emailnotification
+  mail:
+      protocol: smtp
+      host: smtp.gmail.com
+      port: 587
+      username: ASEDelivering@gmail.com
+      password: lhoeoixigpovxvvn
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+
+server:
+  port: 9005
 
 eureka:
   client:
     registerWithEureka: true
     fetchRegistry: false
     serviceUrl:
-      defaultZone: http://localhost:9009/eureka
+      defaultZone: http://localhost:9001/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+logging:
+  level:
+    edu:
+      tum:
+        ase: DEBUG
+    root: DEBUG
