@@ -50,6 +50,18 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
+                // Checks if customer exists
+                AseUser targetCustomer = restTemplate.getForObject("lb://usermanagement/users/{id}", AseUser.class, delivery.getTargetCustomer());
+                if (targetCustomer == null || targetCustomer.isEnabled()){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                // Checks if deliverer exists
+                AseUser responsibleDeliverer = restTemplate.getForObject("lb://usermanagement/users/{id}", AseUser.class, delivery.getResponsibleDeliverer());
+                if (responsibleDeliverer == null || responsibleDeliverer.isEnabled()){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
                 // Checks if a box exists
                 Box box = restTemplate.getForObject("lb://boxmanagement/boxes/{id}", Box.class, delivery.getTargetBox());
                 if (box == null || box.getBoxStatus() == BoxStatus.occupied){
@@ -60,11 +72,10 @@ public class DeliveryController {
                 box.setBoxStatus(BoxStatus.occupied);
                 restTemplate.put(String.format("lb://boxmanagement/boxes/%s", box.getId()), box);
 
+                // Set rfid token of users in delivery
+                delivery.setResponsibleDelivererRfidToken(targetCustomer.getRfidToken());
+                delivery.setResponsibleDelivererRfidToken(responsibleDeliverer.getRfidToken());
             }
-
-            // TODO Check if customer exists
-            // TODO Check if driver exists
-            // TODO Store driver id and rfid token of users in delivery
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
@@ -96,8 +107,8 @@ public class DeliveryController {
                 query.addCriteria(Criteria.where(Constants.TARGET_CUSTOMER).is(payload.getTargetCustomer()));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getResponsibleDriver())) {
-                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(payload.getResponsibleDriver()));
+            if (!Validation.isNullOrEmpty(payload.getResponsibleDeliverer())) {
+                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(payload.getResponsibleDeliverer()));
             }
 
             if (!Validation.isNullOrEmpty(payload.getDeliveryStatus())) {
@@ -146,7 +157,7 @@ public class DeliveryController {
             Delivery _delivery = deliveryOptional.get();
             _delivery.setTargetBox(delivery.getTargetBox());
             _delivery.setTargetCustomer(delivery.getTargetCustomer());
-            _delivery.setResponsibleDriver(delivery.getResponsibleDriver());
+            _delivery.setResponsibleDeliverer(delivery.getResponsibleDeliverer());
             _delivery.setDeliveryStatus(delivery.getDeliveryStatus());
 
             if (!delivery.isValid()){
@@ -161,7 +172,7 @@ public class DeliveryController {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
             //Responsible Driver of a delivery cant be changed
-            if(!_delivery.getResponsibleDriver().equals(delivery.getResponsibleDriver())){
+            if(!_delivery.getResponsibleDeliverer().equals(delivery.getResponsibleDeliverer())){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
             //These if statements ensure that the delivery status can only be changed in the right order
