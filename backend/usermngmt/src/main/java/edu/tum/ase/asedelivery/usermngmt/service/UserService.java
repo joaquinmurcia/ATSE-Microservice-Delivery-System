@@ -2,9 +2,9 @@ package edu.tum.ase.asedelivery.usermngmt.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import java.util.Optional;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,20 +17,20 @@ public class UserService {
     private UserRepository userRepository;
 
     // Get data
-    public List<AseUserDAO> findAll(Query query) {
+    public List<AseUser> findAll(Query query) {
         return userRepository.findAll(query);
     }
 
-    public Optional<AseUserDAO> findById(String id) {
+    public Optional<AseUser> findById(String id) {
         return userRepository.findById(id);
     }
 
     // Store data
-    public AseUserDAO save(AseUserDAO delivery) {
+    public AseUser save(AseUser delivery) {
         return userRepository.save(delivery);
     }
 
-    public List<AseUserDAO> saveAll(List<AseUserDAO> deliveries) {
+    public List<AseUser> saveAll(List<AseUser> deliveries) {
         return userRepository.saveAll(deliveries);
     }
 
@@ -39,7 +39,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public List<AseUserDAO> getAllUsers() {
-        return new ArrayList<AseUserDAO>(userRepository.findAll());
+    public List<AseUser> getAllUsers() {
+        return new ArrayList<AseUser>(userRepository.findAll());
     }
 }

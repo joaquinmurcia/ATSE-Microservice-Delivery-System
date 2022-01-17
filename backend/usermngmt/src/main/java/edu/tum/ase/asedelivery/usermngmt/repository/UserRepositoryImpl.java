@@ -1,13 +1,11 @@
 package edu.tum.ase.asedelivery.usermngmt.repository;
 
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
-
 
 @Repository
 public class UserRepositoryImpl implements UserRepositoryCustom {
@@ -20,7 +18,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public List<AseUserDAO> findAll(Query query) {
-        return mongoTemplate.find(query, AseUserDAO.class);
+    public List<AseUser> findAll(Query query) {
+        return mongoTemplate.find(query, AseUser.class);
     }
 }

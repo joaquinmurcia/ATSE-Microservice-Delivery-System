@@ -2,9 +2,9 @@ package edu.tum.ase.asedelivery.usermngmt;
 
 import java.util.Arrays;
 import java.util.List;
-
 import com.mongodb.client.MongoClient;
-
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
-import edu.tum.ase.asedelivery.usermngmt.model.UserRole;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import edu.tum.ase.asedelivery.usermngmt.service.UserService;
 
@@ -52,15 +49,15 @@ public class UserMngmtApplication implements CommandLineRunner {
 			userRepository.deleteAll();
 		}
 		// Create test users with hashed Bcrypt password and role
-		AseUserDAO[] users = {
-				new AseUserDAO("User1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUserDAO("User2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
-				new AseUserDAO("User3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1",
+		AseUser[] users = {
+				new AseUser("User1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
+				new AseUser("User2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
+				new AseUser("User3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1",
 						UserRole.ROLE_DISPATCHER), };
-		List<AseUserDAO> usersList = Arrays.asList(users);
+		List<AseUser> usersList = Arrays.asList(users);
 		userRepository.saveAll(usersList);
 
-		List<AseUserDAO> retrievedUsersList = userService.getAllUsers();
+		List<AseUser> retrievedUsersList = userService.getAllUsers();
 		log.info("No. users: " + retrievedUsersList.size());
 	}
 

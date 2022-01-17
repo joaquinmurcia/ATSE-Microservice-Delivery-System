@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.usermngmt.filter;
 
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUserPrincipal;
 import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
 import edu.tum.ase.asedelivery.usermngmt.service.UserService;
@@ -20,9 +20,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
@@ -87,7 +84,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // load a user from the database that has the same username as in the JWT token.
             User userDetails = null;
-            AseUserDAO user = userRepository.findByName(username);
+            AseUser user = userRepository.findByName(username);
             if (user == null){
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;

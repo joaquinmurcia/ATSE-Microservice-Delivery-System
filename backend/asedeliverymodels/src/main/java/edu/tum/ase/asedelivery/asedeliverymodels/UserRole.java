@@ -1,4 +1,4 @@
-package edu.tum.ase.asedelivery.usermngmt.model;
+package edu.tum.ase.asedelivery.asedeliverymodels;
 
 import org.springframework.security.core.GrantedAuthority;
 

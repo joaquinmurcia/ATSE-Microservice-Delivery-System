@@ -1,11 +1,10 @@
 package edu.tum.ase.asedelivery.usermngmt.jwt;
 
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.stereotype.Component;
-
 import java.security.PublicKey;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ import java.util.Map;
 public class JwtUtil {
     @Autowired
     private KeyStoreManager keyStoreManager;
-    public String generateToken(AseUserDAO userDetails) {
+    public String generateToken(AseUser userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", userDetails.getRole());
         return createToken(claims, userDetails.getName());

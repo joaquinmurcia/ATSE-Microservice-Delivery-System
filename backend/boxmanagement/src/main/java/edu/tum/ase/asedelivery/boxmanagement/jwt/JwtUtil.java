@@ -1,7 +1,5 @@
 package edu.tum.ase.asedelivery.boxmanagement.jwt;
 
-//import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -32,8 +30,6 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
     @Autowired
-
-
 
     private PublicKey loadPubKey() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         // Read Public Key.

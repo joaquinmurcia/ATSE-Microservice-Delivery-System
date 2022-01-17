@@ -1,9 +1,9 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
-import edu.tum.ase.asedelivery.boxmanagement.model.Address;
-import edu.tum.ase.asedelivery.boxmanagement.model.Box;
-import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
-import edu.tum.ase.asedelivery.boxmanagement.model.Constants;
+import edu.tum.ase.asedelivery.asedeliverymodels.Address;
+import edu.tum.ase.asedelivery.asedeliverymodels.Box;
+import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
+import edu.tum.ase.asedelivery.asedeliverymodels.Constants;
 import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;

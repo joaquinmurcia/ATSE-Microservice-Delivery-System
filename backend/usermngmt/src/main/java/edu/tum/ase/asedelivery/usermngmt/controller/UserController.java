@@ -1,7 +1,7 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
-import edu.tum.ase.asedelivery.usermngmt.model.AseUserDAO;
-import edu.tum.ase.asedelivery.usermngmt.model.Constants;
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.asedeliverymodels.Constants;
 import edu.tum.ase.asedelivery.usermngmt.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -33,11 +33,11 @@ public class UserController {
             value = "/users",
             method = RequestMethod.POST
     )
-    public ResponseEntity<List<AseUserDAO>> createUsers(@RequestBody List<AseUserDAO> users) {
+    public ResponseEntity<List<AseUser>> createUsers(@RequestBody List<AseUser> users) {
         try {
             // TODO Validate users
 
-            List<AseUserDAO> _users = userService.saveAll(users);
+            List<AseUser> _users = userService.saveAll(users);
             return new ResponseEntity<>(_users, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -49,9 +49,9 @@ public class UserController {
             value = "/users",
             method = RequestMethod.GET
     )
-    public ResponseEntity<List<AseUserDAO>> getUsers(@RequestBody AseUserDAO payload) {
+    public ResponseEntity<List<AseUser>> getUsers(@RequestBody AseUser payload) {
         try {
-            List<AseUserDAO> users;
+            List<AseUser> users;
             Query query = new Query();
 
             // TODO Check permissions if user can perform query
@@ -80,8 +80,8 @@ public class UserController {
             value = "/users/{id}",
             method = RequestMethod.GET
     )
-    public ResponseEntity<AseUserDAO> getUser(@PathVariable("id") String id) {
-        Optional<AseUserDAO> userOptional = userService.findById(id);
+    public ResponseEntity<AseUser> getUser(@PathVariable("id") String id) {
+        Optional<AseUser> userOptional = userService.findById(id);
 
         // TODO Check permissions if user can perform query
 
@@ -96,11 +96,11 @@ public class UserController {
             value = "/users/{id}",
             method = RequestMethod.PUT
     )
-    public ResponseEntity<AseUserDAO> updateUser(@PathVariable("id") String id, @RequestBody AseUserDAO user) {
-        Optional<AseUserDAO> userOptional = userService.findById(id);
+    public ResponseEntity<AseUser> updateUser(@PathVariable("id") String id, @RequestBody AseUser user) {
+        Optional<AseUser> userOptional = userService.findById(id);
 
         if (userOptional.isPresent()) {
-            AseUserDAO _user = userOptional.get();
+            AseUser _user = userOptional.get();
             _user.setName(user.getName());
             _user.setPassword(user.getPassword());
             _user.setRfidToken(user.getRfidToken());
