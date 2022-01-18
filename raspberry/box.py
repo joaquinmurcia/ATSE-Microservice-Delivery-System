@@ -93,22 +93,36 @@ class Box:
         self.deliveries = []
         return
 
-    def __open(self):
+    def __open(self,pi_stuff):
+        pi_stuff.green_on()
+        
+        # Wait for photo_sensor to turn to 1 = Box is open
+        while(pi_stuff.get_brightness() != 1):
+            pass
         print("OPENED BOX")
+        time.sleep(1)
+        # Wait for photo_sensor to turn to 0 = Box is closed
+        while(pi_stuff.get_brightness() != 0):
+            pass
+        print("Closed BOX")
+
+        pi_stuff.green_off()
+
         return
 
-    def request_open(self, token):
+    def request_open(self, token, pi_stuff):
+        print("open_requested")
         ret = False
 
         if self.status == Box_status.IN_PROGRESS:
             if token in self.__deliverer_tokens:
-                self.__open()
+                self.__open(pi_stuff)
                 self.__delivered(token)
                 ret = True
 
         if self.status == Box_status.OCCUPIED:
             if self.__customer_token == token:
-                self.__open()
+                self.__open(pi_stuff)
                 self.__picked_up()
                 ret = True
 

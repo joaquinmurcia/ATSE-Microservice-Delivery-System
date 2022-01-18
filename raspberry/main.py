@@ -25,7 +25,6 @@ class perpetualTimer:
         self.thread.cancel()
 
 
-print("dirname:     ", os.path.dirname(__file__))
 valid_ids = pi_stuff.load_ids(os.path.dirname(__file__) + "/user_ids.json")
 reader, led = pi_stuff.init_hardware()
 
@@ -43,11 +42,10 @@ while True:
 
         print("Detected token with id:", id, "and content: ", text)
 
-        success = box.me.request_open(str(id))
+        success = box.me.request_open(str(id), pi_stuff)
 
         if success:
             print("Access Granted!")
-            pi_stuff.blink_green()
         else:
             print("Access denied!")
             pi_stuff.blink_red()
