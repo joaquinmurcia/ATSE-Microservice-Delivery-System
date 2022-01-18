@@ -55,6 +55,11 @@ def blink_red():
     sleep(3)
     GPIO.output(led_red, GPIO.LOW)
 
+def blink_red_short():
+    GPIO.output(led_red, GPIO.HIGH)
+    sleep(.5)
+    GPIO.output(led_red, GPIO.LOW)
+
 
 def write(asdf):
     try:
