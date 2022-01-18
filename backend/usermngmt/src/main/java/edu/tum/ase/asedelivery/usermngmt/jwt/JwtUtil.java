@@ -27,7 +27,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuer("aseProject")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5)) // Expires after 5 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Expires after 5 hours
                 .signWith(keyStoreManager.getPrivateKey(), SignatureAlgorithm.RS256)
                 .compact();
         return jwt;

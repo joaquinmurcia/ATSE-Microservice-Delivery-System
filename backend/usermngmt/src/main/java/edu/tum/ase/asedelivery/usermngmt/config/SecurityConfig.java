@@ -39,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic() // 3. Use Basic Authentication
 
                 .and()
-                .sessionManagement().disable();
+                .sessionManagement().disable()
+                .csrf().disable();
     }
     @Override
 
