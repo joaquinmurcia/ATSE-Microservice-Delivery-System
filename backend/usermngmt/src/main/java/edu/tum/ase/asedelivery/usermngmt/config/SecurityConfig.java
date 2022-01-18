@@ -25,9 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         builder.userDetailsService(mongoUserDetailsService);
     }
 
-
-// Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
-
+    // Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -45,14 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
 
     @Bean
-// Define an authentication manager to execute authentication services
+    // Define an authentication manager to execute authentication services
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
 
     @Bean
-// Define an instance of Bcrypt for hashing passwords
+    // Define an instance of Bcrypt for hashing passwords
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
