@@ -74,7 +74,7 @@ class Box:
         index = self.__deliverer_tokens.index(token)
         self.deliveries[index]["deliveryStatus"] = "delivered"
         delivery = self.deliveries[index]
-        set_delivery_delivered(delivery["deliveryID"])
+        ret = set_delivery_delivered(delivery["deliveryID"])
 
         # TODO: check if token still has a delivery outstanding before deleting
         self.__deliverer_tokens.remove(token)
@@ -83,10 +83,14 @@ class Box:
         return
 
     def __picked_up(self):
-        set_delivery_picked_up()
+        for delivery in self.deliveries:
+            set_delivery_picked_up(delivery["deliveryID"])
+                
+        
         # status: pickedUp
         self.status = Box_status.AVAILABLE
         self.__customer_token = None
+        self.deliveries = []
         return
 
     def __open(self):
@@ -182,7 +186,7 @@ def response_to_json(response_bytes):
 def getXSRFToken():
     r = httpRequest("GET ", auth_url + "/auth", params)
     if r.status_code == 503:
-        raise Exception("Auth GET status code: ", r.status_code)
+        raise Exception("Failed to get Auth - status code: ", r.status_code)
     return r.cookies
 
 
@@ -233,26 +237,25 @@ def set_delivery_delivered(delivery):
     data["deliveryStatus"] = "delivered"
 
     r = httpRequest_customHeader("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data,headers=getBaseHeaders(jwt))
-
     if r.status_code != 200:
-        raise Exception("Failed to update delivery status (status code: " + str(r.status_code) + ")")
-    return r.content
+        raise Exception("Failed to set delivery id " + delivery["deliveryID"] + " to delivered (status code: " + str(r.status_code) + ")")
+
+    return r
 
 
 def set_delivery_picked_up(delivery):
- 
+    data = {}
+    data["deliveryStatus"] = "pickedUp"
 
-    r = httpRequest("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data)
-
+    r = httpRequest_customHeader("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data,headers=getBaseHeaders(jwt))
     if r.status_code != 200:
-        raise Exception("Failed to update delivery status (status code: " + str(r.status_code) + ")")
-    return r.content
+        raise Exception("Failed to set delivery id " + delivery["deliveryID"] + " to picked-up (status code: " + str(r.status_code) + ")")
+
+    return r
 
 
 # Cookies will automatically be stored by python
 ret_cookies = getXSRFToken()
-
-# print("Active cookies:" + str([c.name for c in session.cookies]))
 
 ret_cookies = get_jwt("User1", "pwd1")
 
@@ -261,32 +264,37 @@ for c in ret_cookies:
         jwt = c.value
 
 def update_deliveries():
-    # try:
-    deliveries_bytes = get_my_deliveries()
-    deliveries = response_to_json(deliveries_bytes)    
-    # TODO check if new deliveries were made
-    if deliveries_bytes == b'' and me.deliveries != []:  # sanity check
-        raise Exception("Received no assigned deliveries but current delivery is not over")
+    try:
+        deliveries_bytes = get_my_deliveries()
+        deliveries = response_to_json(deliveries_bytes)    
+        if deliveries_bytes == b'' and me.deliveries != []:  # sanity check
+            raise Exception("Received deliveries empty but current delivery is not done.")
+        deliveries = [deliveries] # NOTE: Cast to arrays as long as there is only one delivery
 
-    deliveries = [deliveries]
-    me.check_new_deliveries(deliveries)
+        me.check_new_deliveries(deliveries)
 
-    # except Exception as inst:
-    #     print(traceback.format_exc())
-    #     print(inst.args)
+    except Exception as inst:
+        print(traceback.format_exc())
+        print(inst.args)
 
 
-update_deliveries()
 
-print(me.status)
+WAIT_TIME_SECONDS = 10
 
-me.request_open("rtoken1")
+ticker = threading.Event()
+while True:
+    if not ticker.wait(WAIT_TIME_SECONDS):
+        update_deliveries()
 
-print(me.status)
 
-# WAIT_TIME_SECONDS = 10
+# update_deliveries()
 
-# ticker = threading.Event()
-# while True:
-#     if not ticker.wait(WAIT_TIME_SECONDS):
-#         update_deliveries()
+# print(me.status)
+
+# me.request_open("rtoken1")
+
+# print(me.status)
+
+# me.request_open("ctoken1")
+
+# print(me.status)
