@@ -47,7 +47,7 @@ public class BoxManagementApplication implements CommandLineRunner {
 		Address address2 = new Address("Straße", 2, 12345, "Stadt", "Land");
 		Address address3 = new Address("Straße", 3, 12345, "Stadt", "Land");
 
-		boxes.add(new Box(null, address1, BoxStatus.available, "deliveryID1"));
+		boxes.add(new Box("targetBox1", address1, BoxStatus.available, "deliveryID1"));
 		boxes.add(new Box(null, address1, BoxStatus.available, "deliveryID2"));
 		boxes.add(new Box(null, address2, BoxStatus.occupied, "deliveryID3"));
 		boxes.add(new Box(null, address2, BoxStatus.occupied, "deliveryID4"));
