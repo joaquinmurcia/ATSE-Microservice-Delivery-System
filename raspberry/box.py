@@ -38,19 +38,7 @@ class Box_status(Enum):
 class Box:
     box_id = "targetBox1"
     status = Box_status.AVAILABLE
-
-    """
-    delivery = {}
-    delivery["id"] = delivery
-    delivery["targetBox"] = me.box_id
-    delivery["targetCustomer"] = 2
-    delivery["targetCustomerRFIDToken"] = 2
-    delivery["responsibleDeliverer"] = 2
-    delivery["responsibleDelivererRfidToken"] = 2
-    delivery["deliveryStatus"] = "pickedUp"
-    """
     deliveries = []
-
     __deliverer_tokens = []
     __customer_token = None
 
@@ -76,7 +64,6 @@ class Box:
         delivery = self.deliveries[index]
         ret = set_delivery_delivered(delivery["deliveryID"])
 
-        # TODO: check if token still has a delivery outstanding before deleting
         self.__deliverer_tokens.remove(token)
 
         self.status = Box_status.OCCUPIED
@@ -94,16 +81,23 @@ class Box:
         return
 
     def __open(self,pi_stuff):
-        pi_stuff.green_on()
+        pi_stuff.blink_green()
         
         # Wait for photo_sensor to turn to 1 = Box is open
         while(pi_stuff.get_brightness() != 1):
             pass
         print("OPENED BOX")
+
+        start = time.time()
         time.sleep(1)
         # Wait for photo_sensor to turn to 0 = Box is closed
+
+        wait_time = 10
         while(pi_stuff.get_brightness() != 0):
-            pass
+            end = time.time()
+            if (end - start > wait_time):
+                pi_stuff.blink_red_short()
+                time.sleep(.5)
         print("Closed BOX")
 
         pi_stuff.green_off()
@@ -142,7 +136,6 @@ class Box:
                     self.__new_delivery(incoming_delivery)
             else:
                 pass
-                # TODO: update delivery?
 
     def list_current_deliveries(self):
         if len(self.deliveries) == 0:
