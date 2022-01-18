@@ -19,7 +19,7 @@ class Box_status(Enum):
 
 
 class Box:
-    box_id = "box1"
+    box_id = "targetBox1"
     status = Box_status.AVAILABLE
     deliveries = []
 
@@ -141,7 +141,7 @@ def get_my_box_info():
 
 def get_my_deliveries():
     data = {}
-    data["targetBox"] = "box1"
+    data["targetBox"] = me.box_id
 
     r = httpRequest("GET ", box_url + "/boxes" + me.box_id, params, content=data)
     if r.status_code != 200:
