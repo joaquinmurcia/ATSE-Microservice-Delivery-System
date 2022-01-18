@@ -10,14 +10,6 @@ const EditUserFrom = () => {
     const dispatch = useDispatch();
     const elementToChange = useSelector(getEditUser);
 
-    /*
-    { id: 'id', label: 'Id', minWidth: 30},
-        { id: 'name', label: 'Name', minWidth: 80 },
-        { id: 'password', label: 'Password', minWidth: 80},
-        { id: 'role', label: 'Role', minWidth: 80 },
-        { id: 'buttons', label: 'Actions', minWidth: 90 },
-     */
-
     const[elemName,setName] = useState(elementToChange.name);
     const[elemPassword,setPassword] = useState(elementToChange.password);
     const[elemRole,setRole] = useState(elementToChange.role);
@@ -48,17 +40,17 @@ const EditUserFrom = () => {
                 <Typography component="h1" variant="h6" align="center" marginBottom={5}>
                     Change Delivery No {elementToChange.id}
                 </Typography>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetBox" label="Target Box" value={elemName} onChange={handleChangeName}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="name" label="Name" value={elemName} onChange={handleChangeName}/>
                 <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetCustomer" label="Target Customer" value={elemPassword} onChange={handleChangePassword}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={elemPassword} onChange={handleChangePassword}/>
                 <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
-                    <InputLabel id="selectStatus">Status</InputLabel>
-                    <Select name="deliveryStatus" labelId="selectStatus" label="" value={elemRole} onChange={handleChangeRole}>
+                    <InputLabel id="selectRole">Status</InputLabel>
+                    <Select name="role" labelId="selectRole" label="" value={elemRole} onChange={handleChangeRole}>
                         <MenuItem value=""><em>None</em></MenuItem>
-                        <MenuItem value="open">Open</MenuItem>
-                        <MenuItem value="pickedUp">Picked Up</MenuItem>
-                        <MenuItem value="delivered">Delivered</MenuItem>
+                        <MenuItem value="customer">Customer</MenuItem>
+                        <MenuItem value="deliverer">Deliverer</MenuItem>
+                        <MenuItem value="dispatcher">Dispatcher</MenuItem>
                     </Select>
                 </FormControl>
                 <br/>
