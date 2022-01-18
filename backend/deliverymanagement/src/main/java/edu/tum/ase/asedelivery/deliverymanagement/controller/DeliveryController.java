@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/deliveries")
@@ -159,36 +160,21 @@ public class DeliveryController {
 
         if (deliveryOptional.isPresent()) {
             Delivery _delivery = deliveryOptional.get();
-            _delivery.setTargetBox(delivery.getTargetBox());
-            _delivery.setTargetCustomer(delivery.getTargetCustomer());
-            _delivery.setResponsibleDeliverer(delivery.getResponsibleDeliverer());
-            _delivery.setDeliveryStatus(delivery.getDeliveryStatus());
 
-            if (!delivery.isValid()){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            //Target customer of a delivery cant be changed
-            if(!_delivery.getTargetCustomer().equals(delivery.getTargetCustomer())){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            //Target box of a delivery cant be changed
-            if(!_delivery.getTargetBox().equals(delivery.getTargetBox())){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            //Responsible Driver of a delivery cant be changed
-            if(!_delivery.getResponsibleDeliverer().equals(delivery.getResponsibleDeliverer())){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
             //These if statements ensure that the delivery status can only be changed in the right order
-            //1. open -> 2. pickedUp -> 3. delivered -> 1. open -> ...
-            if (_delivery.getDeliveryStatus() == DeliveryStatus.open && delivery.getDeliveryStatus() == DeliveryStatus.delivered){
+            //1. open -> 2. delivered -> 3. pickedup -> 1. open -> ...
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.open && delivery.getDeliveryStatus() == DeliveryStatus.pickedUp){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            if (_delivery.getDeliveryStatus() == DeliveryStatus.pickedUp && delivery.getDeliveryStatus() == DeliveryStatus.open){
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.pickedUp && delivery.getDeliveryStatus() == DeliveryStatus.delivered){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            if (_delivery.getDeliveryStatus() == DeliveryStatus.delivered && delivery.getDeliveryStatus() == DeliveryStatus.pickedUp){
+            if (_delivery.getDeliveryStatus() == DeliveryStatus.delivered && delivery.getDeliveryStatus() == DeliveryStatus.open){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+
+            if (!delivery.getDeliveryStatus().equals(_delivery.getDeliveryStatus())){
+                _delivery.setDeliveryStatus(delivery.getDeliveryStatus());
             }
 
             // TODO Check if delivery status (set to open if not already open)
