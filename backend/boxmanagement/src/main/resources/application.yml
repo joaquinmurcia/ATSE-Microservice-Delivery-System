@@ -43,3 +43,5 @@ logging:
       tum:
         ase: DEBUG
     root: DEBUG
+
+debug: true

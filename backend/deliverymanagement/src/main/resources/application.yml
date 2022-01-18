@@ -37,9 +37,9 @@ eureka:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVER:localhost}:9001/eureka
 
-logging:
-  level:
-    edu:
-      tum:
-        ase: DEBUG
-    root: DEBUG
+#logging:
+#  level:
+#    edu:
+#      tum:
+#        ase: DEBUG
+#    root: DEBUG

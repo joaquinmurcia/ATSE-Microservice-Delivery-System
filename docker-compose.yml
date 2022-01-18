@@ -3,10 +3,13 @@ version: '3'
 services:
   discovery:
     image: ase-discovery
+    container_name: ase-discovery
     build: ./backend/eureka-discovery-service
     ports:
       - "9001:9001"
     working_dir: /opt/app
+    networks:
+      - ase-network
 
   gateway:
     image: ase-gateway
@@ -18,6 +21,8 @@ services:
       - EUREKA_SERVER=discovery
     depends_on:
       - discovery
+    networks:
+      - ase-network
 
   usermngmt:
     image: ase-usermngmt
@@ -34,6 +39,24 @@ services:
     depends_on:
       - discovery
       - gateway
+    networks:
+      - ase-network
+
+  boxmanagement:
+    image: ase-boxmanagement
+    build: ./backend/boxmanagement
+    # restart: always # This will be ignored if we deploy in docker swarm
+    ports:
+      - "9002:9002"
+    working_dir: /opt/app
+    environment:
+      - EUREKA_SERVER=discovery
+    depends_on:
+      - discovery
+      - gateway
+    networks:
+      ase-network:
+        ipv4_address: 172.59.0.13 # ONLY NEEDED FOR DEBUG
 
     #deploy:  # This will be considered only in docker swarm.
     #  replicas: 2
@@ -67,3 +90,12 @@ services:
       - ./ase-mongo1:/data/db # Up to the : you can change it, what comes afterwards is kinda standard //TODO: fix auth bug
     #command: [--auth]
     restart: always
+
+# ONLY NEEDED FOR DEBUG
+networks:
+  ase-network:
+    external: true
+    # ADD -subnet to the config
+    #ipam:
+    #  config:
+    #    - subnet: 172.59.0.0/16

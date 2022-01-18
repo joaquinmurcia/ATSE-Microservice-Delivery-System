@@ -33,7 +33,10 @@ public class JwtUtil {
 
     private PublicKey loadPubKey() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         // Read Public Key.
+        System.out.println("1aaaaaclasspath:public.key");
         File filePublicKey = ResourceUtils.getFile("classpath:public.key");
+        //filePublicKey = ResourceUtils.getFile("./boxmanagement/target/classes/public.key");
+        System.out.println("2aaaaaclasspath:public.key");
         FileInputStream fis = new FileInputStream(filePublicKey);
 
         byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
