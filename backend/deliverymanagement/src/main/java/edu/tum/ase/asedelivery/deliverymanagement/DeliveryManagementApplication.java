@@ -40,7 +40,7 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 
 		// Create list of dummy deliveries
 		List<Delivery> deliveries = new ArrayList<Delivery>();
-		deliveries.add(new Delivery("deliveryID1", "targetBox1", "targetCustomer1", "ctoken1","deliverer1", "rtoken1", DeliveryStatus.open));
+		deliveries.add(new Delivery("deliveryID1", "targetBox1", "targetCustomer1", "108560888149","deliverer1", "520413243569", DeliveryStatus.open));
 		deliveries.add(new Delivery(null, "targetBox2", "targetCustomer2", "ctoken1","deliverer2", "rtoken1", DeliveryStatus.open));
 		deliveries.add(new Delivery(null, "targetBox3", "targetCustomer3", "ctoken1","deliverer3", "rtoken1", DeliveryStatus.pickedUp));
 		deliveries.add(new Delivery(null, "targetBox4", "targetCustomer4", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
