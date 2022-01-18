@@ -25,33 +25,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         builder.userDetailsService(mongoUserDetailsService);
     }
 
-
-// Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
-
+    // Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .authorizeRequests() // 2. Require authentication in all endpoints except login
-                    .antMatchers("/**").authenticated()
-                    .antMatchers("/auth").permitAll()
-                .and()
-                .httpBasic() // 3. Use Basic Authentication
-
-                .and()
-                .sessionManagement().disable();
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        .and()
+        .authorizeRequests()
+            .antMatchers("/**").authenticated()
+            .antMatchers("/auth").permitAll()
+        .and()
+        .httpBasic()
+        .and()
+        .sessionManagement().disable()
+        .csrf().disable();
     }
     @Override
 
     @Bean
-// Define an authentication manager to execute authentication services
+    // Define an authentication manager to execute authentication services
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
 
     @Bean
-// Define an instance of Bcrypt for hashing passwords
+    // Define an instance of Bcrypt for hashing passwords
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
