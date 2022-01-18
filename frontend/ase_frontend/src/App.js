@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './Header';
-import UserManagement from './views/UserManagement';
+import UserManagement from './views/User/UserManagement';
 import DeliveryManagement from './views/Delivery/DeliveryManagement';
 import BoxManagement from "./views/BoxManagement";
 import {

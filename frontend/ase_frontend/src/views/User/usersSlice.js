@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const initialState = {
     status: 'idle',
@@ -9,16 +9,16 @@ const initialState = {
 }
 
 
-export const getDeliveriesAsync = createAsyncThunk(
+export const getUsersAsync = createAsyncThunk(
     'GET',
     async (arg, thunkAPI) => {
-        const response = await fetch('http://localhost:9000/deliverymanagement/deliveries');//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
+        const response = await fetch('http://localhost:9000/usermanagement/users');//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
         return response;
     }
 );
 
-const deliveriesSlice = createSlice({
-    name: 'deliveries',
+const usersSlice = createSlice({
+    name: 'users',
     initialState,
     reducers: {
         addElement(state, action){
@@ -49,7 +49,7 @@ const deliveriesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getDeliveriesAsync.fulfilled, (state, action) => {
+            .addCase(getUsersAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
                 state.list = action.payload;
             });
@@ -57,14 +57,14 @@ const deliveriesSlice = createSlice({
 
 })
 
-export const selectDeliveries = (state) => state.deliveries.list;
+export const selectUsers = (state) => state.users.list;
 
-export const isEditState = (state) => state.deliveries.isEdit;
+export const isEditState = (state) => state.users.isEdit;
 
-export const getDelivery = (state,action) => state.deliveries.list.filter(elem => elem.id !== action.payload.id)[0];
+export const getUser = (state,action) => state.users.list.filter(elem => elem.id !== action.payload.id)[0];
 
-export const getEditDelivery = (state) => state.deliveries.list.filter(elem => elem.id === state.deliveries.editId)[0];
+export const getEditUser = (state) => state.users.list.filter(elem => elem.id === state.users.editId)[0];
 
-export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = deliveriesSlice.actions
+export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = usersSlice.actions
 
-export default deliveriesSlice.reducer
+export default usersSlice.reducer
