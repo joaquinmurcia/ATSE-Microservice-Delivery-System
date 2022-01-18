@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import edu.tum.ase.asedelivery.usermngmt.service.UserService;
@@ -27,6 +28,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @RequestMapping(
             value = "",
             method = RequestMethod.POST
@@ -34,6 +38,10 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<List<AseUser>> createUsers(@RequestBody List<AseUser> users) {
         try {
+            for (AseUser user : users) {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            }
+
             List<AseUser> _users = userService.saveAll(users);
             return new ResponseEntity<>(_users, HttpStatus.CREATED);
 
@@ -109,7 +117,7 @@ public class UserController {
             value = "/{id}",
             method = RequestMethod.PUT
     )
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
+    @PreAuthorize("hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<AseUser> updateUser(@PathVariable("id") String id, @RequestBody AseUser user) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
 
