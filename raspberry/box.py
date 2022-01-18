@@ -6,7 +6,7 @@ from enum import Enum
 import traceback
 import threading, time
 
-hostname = "localhost"
+hostname = "10.42.0.1" #"localhost"
 port = 9000
 
 auth_url = " http://" + hostname + ":" + str(port) + "/usermanagement"
@@ -55,9 +55,9 @@ class Box:
     __customer_token = None
 
     def __new_delivery(self, delivery):
+        
         info = get_delivery_info(delivery["deliveryID"])
         info = response_to_json(info)
-
         new_customer_token = info["targetCustomerRFIDToken"]
         new_deliverer_token = info["responsibleDelivererRfidToken"]
 
@@ -129,6 +129,16 @@ class Box:
             else:
                 pass
                 # TODO: update delivery?
+
+    def list_current_deliveries(self):
+        if len(self.deliveries) == 0:
+            print("No active deliveries")
+            return
+        else:
+            print("Active Deliveries: ")
+            for delivery in self.deliveries:
+                print(delivery)
+                print()
 
 me = Box()
 
@@ -272,29 +282,8 @@ def update_deliveries():
         deliveries = [deliveries] # NOTE: Cast to arrays as long as there is only one delivery
 
         me.check_new_deliveries(deliveries)
+        me.list_current_deliveries()
 
     except Exception as inst:
         print(traceback.format_exc())
         print(inst.args)
-
-
-
-WAIT_TIME_SECONDS = 10
-
-ticker = threading.Event()
-while True:
-    if not ticker.wait(WAIT_TIME_SECONDS):
-        update_deliveries()
-
-
-# update_deliveries()
-
-# print(me.status)
-
-# me.request_open("rtoken1")
-
-# print(me.status)
-
-# me.request_open("ctoken1")
-
-# print(me.status)
