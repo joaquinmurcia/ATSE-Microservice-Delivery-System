@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  discovery:
+    image: ase-discovery
+    build: ./backend/eureka-discovery-service
+    ports:
+      - "9001:9001"
+    working_dir: /opt/app
+
+  gateway:
+    image: ase-gateway
+    build: ./backend/gateway
+    ports:
+      - "9000:9000"
+    working_dir: /opt/app
+    environment:
+      - EUREKA_SERVER=discovery
+    depends_on:
+      - discovery
+
+  usermngmt:
+    image: ase-usermngmt
+    build: ./backend/usermngmt
+    # restart: always # This will be ignored if we deploy in docker swarm
+    ports:
+      - "9004:9004"
+    working_dir: /opt/app
+    environment:
+      - EUREKA_SERVER=discovery
+      - MONGO_DB_HOSTNAME=mongo
+      - MONGO_DB_USERNAME=aseAdmin
+      - MONGO_DB_PASSWORD=ase
+    depends_on:
+      - discovery
+      - gateway
+
+    #deploy:  # This will be considered only in docker swarm.
+    #  replicas: 2
+    #  update_config:
+    #    parallelism: 1
+    #    delay: 20s
+    #  restart_policy:
+    #    condition: on-failure
+    #    delay: 10s
+    #    max_attempts: 5
+  #frontend-service:
+  #  image: frontend-12
+  #  depends_on:
+  #    - springboot
+  #    - mongo
+  #  ports:
+  #    - "3000:3000"
+  #  environment:
+  #    - BACKEND_HOSTNAME=springboot
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=aseAdmin
+      - MONGO_INITDB_ROOT_PASSWORD=ase
+      - MONGO_INITDB_DATABASE=aseProject
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./ase-mongo1:/data/db # Up to the : you can change it, what comes afterwards is kinda standard //TODO: fix auth bug
+    #command: [--auth]
+    restart: always
