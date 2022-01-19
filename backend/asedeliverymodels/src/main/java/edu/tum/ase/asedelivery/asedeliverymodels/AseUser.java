@@ -20,6 +20,7 @@ public class AseUser {
     private String name;
     private String password;
     private String rfidToken; // TODO: make AseUser interface and create subclasses. Dispatchers don't have rFIDTokenString Should the rFIDTokenString be null for dispatchers? Depends on database. Maybe doesn't allow null.
+    private String email;
     private UserRole role;
     private boolean isEnabled;
 
@@ -31,20 +32,13 @@ public class AseUser {
         this.isEnabled = true;
     }
 
-    public AseUser(String name) {
-        this.name = name;
-        this.password = null;
-        this.rfidToken = null;
-        this.role = null;
-        this.isEnabled = false;
-    }
-
     // Checks if the delivery object contains valid information
     public boolean isValid() {
         try {
             if (Validation.isNullOrEmpty(this.name)
                     || Validation.isNullOrEmpty(this.password)
                     || Validation.isNullOrEmpty(this.rfidToken)
+                    || Validation.isNullOrEmpty(this.email)
                     || Validation.isNullOrEmpty(this.role.toString())) {
                 return false;
             }

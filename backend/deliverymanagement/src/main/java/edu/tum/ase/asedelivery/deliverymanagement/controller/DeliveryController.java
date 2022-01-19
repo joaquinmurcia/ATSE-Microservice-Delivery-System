@@ -80,7 +80,7 @@ public class DeliveryController {
             }
 
             for (Delivery delivery: deliveries) {
-                AseUserDAO customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUserDAO.class, delivery.getTargetCustomer());
+                AseUser customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUser.class, delivery.getTargetCustomer());
                 restTemplate.postForObject("http://emailnotification//deliveryCreated", customer.getEmail(), String.class);
             }
 
