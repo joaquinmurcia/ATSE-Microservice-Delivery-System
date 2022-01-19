@@ -100,8 +100,6 @@ class Box:
                 time.sleep(.5)
         print("Closed BOX")
 
-        pi_stuff.green_off()
-
         return
 
     def request_open(self, token, pi_stuff):
@@ -274,7 +272,7 @@ def set_delivery_picked_up(delivery):
 # Cookies will automatically be stored by python
 ret_cookies = getXSRFToken()
 
-ret_cookies = get_jwt("User1", "pwd1")
+ret_cookies = get_jwt("User3", "pwd3")
 
 for c in ret_cookies:
     if c.name == "jwt":
