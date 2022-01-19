@@ -1,4 +1,4 @@
-package edu.tum.ase.asedelivery.boxmanagement.utils;
+package edu.tum.ase.asedelivery.deliverymanagement.utils;
 
 import edu.tum.ase.asedelivery.asedeliverymodels.DeliveryStatus;
 

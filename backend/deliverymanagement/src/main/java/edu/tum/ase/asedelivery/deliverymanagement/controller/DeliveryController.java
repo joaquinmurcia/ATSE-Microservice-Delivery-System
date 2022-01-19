@@ -1,8 +1,8 @@
-package edu.tum.ase.asedelivery.boxmanagement.controller;
+package edu.tum.ase.asedelivery.deliverymanagement.controller;
 
 import edu.tum.ase.asedelivery.asedeliverymodels.*;
-import edu.tum.ase.asedelivery.boxmanagement.service.DeliveryService;
-import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
+import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
+import edu.tum.ase.asedelivery.deliverymanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

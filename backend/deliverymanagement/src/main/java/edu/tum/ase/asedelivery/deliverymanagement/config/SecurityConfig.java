@@ -1,6 +1,6 @@
-package edu.tum.ase.asedelivery.boxmanagement.config;
+package edu.tum.ase.asedelivery.deliverymanagement.config;
 
-import edu.tum.ase.asedelivery.boxmanagement.filter.AuthRequestFilter;
+import edu.tum.ase.asedelivery.deliverymanagement.filter.AuthRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

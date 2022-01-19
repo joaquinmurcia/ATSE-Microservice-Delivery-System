@@ -1,4 +1,4 @@
-package edu.tum.ase.asedelivery.boxmanagement.repository;
+package edu.tum.ase.asedelivery.deliverymanagement.repository;
 
 import edu.tum.ase.asedelivery.asedeliverymodels.Delivery;
 import org.springframework.beans.factory.annotation.Autowired;
