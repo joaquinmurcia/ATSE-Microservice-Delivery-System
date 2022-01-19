@@ -50,34 +50,6 @@ public class AuthController {
         return new ResponseEntity<String>("Here you go",HttpStatus.OK);
     }
 
-    @RequestMapping(
-            value = "userRole",
-            method = RequestMethod.GET
-    )
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<UserRole> getAuthenticatedUserRole(@RequestHeader("Authorization") String header){
-        UserRole userRole = authService.getAuthenticatedUserRole(header);
-        if (userRole == null){
-            return new ResponseEntity<UserRole>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<UserRole>(userRole, HttpStatus.OK);
-        }
-    }
-
-    @RequestMapping(
-            value = "user",
-            method = RequestMethod.GET
-    )
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<AseUser> getAuthenticatedUser(HttpServletRequest request){
-        AseUser user = authService.getAuthenticatedUser(request.getCookies());
-        if (user == null){
-            return new ResponseEntity<AseUser>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<AseUser>(user, HttpStatus.OK);
-        }
-    }
-
     // Implement an Endpoint to find a project with a given name
     @RequestMapping(
             value = "",

@@ -73,46 +73,6 @@ public class AuthService {
         return "";
     }
 
-    public UserRole getAuthenticatedUserRole(String authorization) {
-        String username;
-
-        //findout user via JWT Token
-        if (authorization != null && authorization.startsWith("Basic")) {
-            String encodedUsernamePassword = authorization.substring("Basic ".length()).trim();
-            byte[] decodedUsernamePasswordBytes = Base64.getDecoder().decode(encodedUsernamePassword);
-            String aux = new String(decodedUsernamePasswordBytes, StandardCharsets.UTF_8);
-            String[] decodedUsernamePassword = aux.split(":");
-            username = decodedUsernamePassword[0];
-        } else {
-            // Handle what happens if that isn't the case
-            return null;
-        }
-
-        AseUser user = mongoUserDetailsService.findByName(username);
-
-        return user.getRole();
-    }
-
-    public AseUser getAuthenticatedUser(Cookie[] cookies) {
-        String username;
-        String jwt;
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("jwt")) {
-                jwt = cookie.getValue();
-                // If the JWT expires or not signed by us, send an error to the client
-                if (jwtUtil.verifyJwtSignature(jwt)) {
-                    // Extract the username from the JWT token.
-                    username = jwtUtil.extractUsername(jwt);
-                    return mongoUserDetailsService.findByName(username);
-                } else {
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
     public void setAuthentication(User userDetails, HttpServletRequest request) {
         System.out.println("setAuthentication I guess");
     }
