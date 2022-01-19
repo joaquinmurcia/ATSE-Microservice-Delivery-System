@@ -8,12 +8,25 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class AseUserPrincipal implements UserDetails {
-    private User user;
+    private final String id;
+    private final User user;
 
     public AseUserPrincipal(AseUser user) {
-        this.user = new User(user.getName(), user.getPassword(),
-                user.isEnabled(), true, true, true, Collections.singleton(user.getRole()));
-        ;
+        this.id = user.getId();
+        this.user = new User(user.getName(), user.getPassword(), user.isEnabled(), true, true, true, Collections.singleton(user.getRole()));
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public User getUser(){
+        return this.user;
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
     }
 
     @Override
@@ -24,15 +37,6 @@ public class AseUserPrincipal implements UserDetails {
     @Override
     public String getPassword() {
         return user.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.getUsername();
-    }
-
-    public User getUser(){
-        return this.user;
     }
 
     @Override

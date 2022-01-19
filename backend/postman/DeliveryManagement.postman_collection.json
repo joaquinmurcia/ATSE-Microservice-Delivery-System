@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cbb4708f-9286-45fc-aea3-fb588cc2d381",
+		"_postman_id": "e0c8f48b-76cf-42e1-9325-2cb635a9dfed",
 		"name": "DeliveryManagement",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -24,7 +24,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n    \"targetBox\": \"box1\",\n    \"targetCustomer\": \"customer1\",\n    \"responsibleDriver\": \"driver1\",\n    \"deliveryStatus\": \"open\"\n},\n{\n    \"targetBox\": \"box2\",\n    \"targetCustomer\": \"customer2\",\n    \"responsibleDriver\": \"driver2\",\n    \"deliveryStatus\": \"open\"\n},\n{\n    \"targetBox\": \"box3\",\n    \"targetCustomer\": \"customer2\",\n    \"responsibleDriver\": \"driver3\",\n    \"deliveryStatus\": \"open\"\n}]",
+					"raw": "[\n    {\n        \"targetBox\": \"61e561a402bc19016db5e0e8\",\n        \"targetCustomer\": \"61e6ec1ef5fec84fc84ec3c6\",\n        \"responsibleDeliverer\": \"61e6ec1ef5fec84fc84ec3c7\",\n        \"deliveryStatus\": \"open\"\n    }\n]",
 					"options": {
 						"raw": {
 							"language": "json"

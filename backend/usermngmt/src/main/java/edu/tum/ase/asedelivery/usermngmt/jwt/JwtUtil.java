@@ -20,20 +20,20 @@ public class JwtUtil {
         return createToken(claims, userDetails.getName());
     }
     // Create JWS with both custom and registered claims, signed by
-// a private key.
+    // a private key.
     private String createToken(Map<String, Object> claims, String subject) {
         String jwt = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
-                .setIssuer("aseproject")
+                .setIssuer("aseProject")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 5)) // Expires after 5 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Expires after 5 hours
                 .signWith(keyStoreManager.getPrivateKey(), SignatureAlgorithm.RS256)
                 .compact();
         return jwt;
     }
     // Create a Parser to read info inside a JWT. This parser use the public key
-// to verify the signature of incoming JWT tokens
+    // to verify the signature of incoming JWT tokens
     private JwtParser loadJwtParser() {
         return Jwts.parserBuilder()
                 .setSigningKey(keyStoreManager.getPublicKey())
