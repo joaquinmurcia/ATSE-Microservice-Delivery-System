@@ -51,6 +51,7 @@ services:
     working_dir: /opt/app
     environment:
       - EUREKA_SERVER=discovery
+      - PUBLIC_KEY_PATH=./public.key # TODO: This is surely not the right way to do it. See your notes 19.01
     depends_on:
       - discovery
       - gateway
