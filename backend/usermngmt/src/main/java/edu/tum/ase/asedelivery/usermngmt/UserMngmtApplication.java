@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
@@ -18,6 +19,15 @@ import edu.tum.ase.asedelivery.usermngmt.service.UserService;
 
 // TODO: Look for all println and delete
 
+//!If problems, maybe this works
+/*@SpringBootApplication(exclude = {
+        MongoAutoConfiguration.class,
+        MongoDataAutoConfiguration.class
+})
+@SpringBootApplication(exclude = {
+		MongoDataAutoConfiguration.class
+})*/
+//!
 @SpringBootApplication
 @EnableMongoRepositories(basePackageClasses = { UserRepository.class })
 public class UserMngmtApplication implements CommandLineRunner {
@@ -37,6 +47,7 @@ public class UserMngmtApplication implements CommandLineRunner {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public static void main(String[] args) {
+		System.out.println("4aaaaa");
 		SpringApplication.run(UserMngmtApplication.class, args);
 	}
 

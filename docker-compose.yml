@@ -34,8 +34,9 @@ services:
     environment:
       - EUREKA_SERVER=discovery
       - MONGO_DB_HOSTNAME=mongo
-      - MONGO_DB_USERNAME=aseAdmin
-      - MONGO_DB_PASSWORD=ase
+      #- MONGO_DB_USERNAME=aseAdmin
+      #- MONGO_DB_PASSWORD=ase
+      - KEYSTORE_PATH=./ase_project.keystore
     depends_on:
       - discovery
       - gateway
@@ -51,6 +52,7 @@ services:
     working_dir: /opt/app
     environment:
       - EUREKA_SERVER=discovery
+      - MONGO_DB_HOSTNAME=mongo
       - PUBLIC_KEY_PATH=./public.key # TODO: This is surely not the right way to do it. See your notes 19.01
     depends_on:
       - discovery
@@ -84,13 +86,17 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=aseAdmin
       - MONGO_INITDB_ROOT_PASSWORD=ase
-      - MONGO_INITDB_DATABASE=aseProject
+      - MONGO_INITDB_DATABASE=userManagement
     ports:
       - "27017:27017"
     volumes:
-      - ./ase-mongo1:/data/db # Up to the : you can change it, what comes afterwards is kinda standard //TODO: fix auth bug
+      - ./ase-mongo3:/data/db # Up to the : you can change it, what comes afterwards is kinda standard //TODO: fix auth bug
     #command: [--auth]
     restart: always
+    networks:
+      ase-network:
+        ipv4_address: 172.59.0.14 # ONLY NEEDED FOR DEBUG
+
 
 # ONLY NEEDED FOR DEBUG
 networks:

@@ -3,15 +3,16 @@ spring:
     name: boxmanagement
   data:
     mongodb:
+      uri: mongodb://aseAdmin:ase@${MONGO_DB_HOSTNAME:localhost}:27017/boxManagement?authSource=admin
       # Configure database location
-      host: localhost
-      port: 27017
-      database: boxManagement
-
-      # Configure credential
-      username: aseAdmin
-      password: ase
-      authentication-database: admin
+      #host: localhost
+      #port: 27017
+      #database: boxManagement
+#
+      ## Configure credential
+      #username: aseAdmin
+      #password: ase
+      #authentication-database: admin
 
       # Configure Database Operation,
       # allow creating index automatically from the code
@@ -37,11 +38,11 @@ management:
       exposure:
         include: health
 
-logging:
-  level:
-    edu:
-      tum:
-        ase: DEBUG
-    root: DEBUG
+#logging:
+#  level:
+#    edu:
+#      tum:
+#        ase: DEBUG
+#    root: DEBUG
 
-debug: true
+#debug: true
