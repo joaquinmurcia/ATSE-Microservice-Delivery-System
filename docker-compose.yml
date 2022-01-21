@@ -117,15 +117,21 @@ services:
     #    condition: on-failure
     #    delay: 10s
     #    max_attempts: 5
-  #frontend-service:
-  #  image: frontend-12
-  #  depends_on:
-  #    - springboot
-  #    - mongo
-  #  ports:
-  #    - "3000:3000"
-  #  environment:
-  #    - BACKEND_HOSTNAME=springboot
+  frontend:
+    image: ase-frontend
+    depends_on:
+      - discovery
+      - gateway
+      - mongo
+      - usermngmt
+      - boxmanagement
+      - deliverymanagement
+    ports:
+      - "3000:3000"
+    networks:
+        - ase-network
+    environment:
+      - BACKEND_HOSTNAME=springboot
 
   mongo:
     image: mongo
