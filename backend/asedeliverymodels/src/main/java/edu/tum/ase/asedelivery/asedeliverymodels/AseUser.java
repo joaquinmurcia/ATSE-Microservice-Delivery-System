@@ -32,6 +32,16 @@ public class AseUser {
         this.isEnabled = true;
     }
 
+    public AseUser(String id, String email, String name, String password, String rfidToken, UserRole role) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.rfidToken = rfidToken;
+        this.role = role;
+        this.isEnabled = true;
+    }
+
     // Checks if the delivery object contains valid information
     public boolean isValid() {
         try {

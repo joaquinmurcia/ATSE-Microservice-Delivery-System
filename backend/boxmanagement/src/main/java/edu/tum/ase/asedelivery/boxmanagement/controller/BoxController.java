@@ -150,14 +150,14 @@ public class BoxController {
             method = RequestMethod.PUT
     )
     @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<HttpStatus> addDelivery(@PathVariable("id") String id, @PathVariable("deliveryID") String deliveryID, @RequestHeader("Cookie") String cookie) {
+    public ResponseEntity<Box> addDelivery(@PathVariable("id") String id, @PathVariable("deliveryID") String deliveryID, @RequestHeader("Cookie") String cookie) {
         try {
             Optional<Box> boxOptional = boxService.findById(id);
 
             if(boxOptional.isPresent()) {
                 Box _box = boxOptional.get();
 
-                if (_box.getDeliveryIDs() == null){
+                if (_box.getDeliveryIDs() == null || _box.getDeliveryIDs().size() == 0){
                     List<String> deliveryIDs = new ArrayList<String>();
                     deliveryIDs.add(deliveryID);
                     _box.setDeliveryIDs(deliveryIDs);
@@ -170,8 +170,8 @@ public class BoxController {
                     headers.set("Cookie", cookie);
 
                     // Checks if delivery customer is the same customer as the already existing delivieries
-                    ResponseEntity<Delivery> firstDelivery = restTemplate.exchange(String.format("http://localhost:9001/%s", firstDeliveryID), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
-                    ResponseEntity<Delivery> toBeAddedDelivery = restTemplate.exchange(String.format("http://localhost:9001/%s", deliveryID), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
+                    ResponseEntity<Delivery> firstDelivery = restTemplate.exchange(String.format("http://localhost:9003/deliveries/%s", firstDeliveryID), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
+                    ResponseEntity<Delivery> toBeAddedDelivery = restTemplate.exchange(String.format("http://localhost:9003/deliveries/%s", deliveryID), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
 
                     //If Customer check is valid add delivery to box
                     if(Objects.requireNonNull(firstDelivery.getBody()).getTargetCustomer().equals(Objects.requireNonNull(toBeAddedDelivery.getBody()).getTargetCustomer())) {
@@ -195,7 +195,7 @@ public class BoxController {
             method = RequestMethod.PUT
     )
     @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<HttpStatus> pickupDeliveries(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
+    public ResponseEntity<Box> pickupDeliveries(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
         try {
             Optional<Box> boxOptional = boxService.findById(id);
 
@@ -207,19 +207,25 @@ public class BoxController {
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Cookie", cookie);
 
+                List<String> deliveriesPickedUp = new ArrayList<String>();
+
                 for (String deliveryID : _box.getDeliveryIDs()){
 
-                    ResponseEntity<Delivery> delivery = restTemplate.exchange(String.format("http://localhost:9001/%s", deliveryID), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
+                    ResponseEntity<Delivery> delivery = restTemplate.exchange(String.format("http://localhost:9003/deliveries/%s", deliveryID), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
                     customerID = delivery.getBody().getTargetCustomer();
 
                     //Check if delivery was placed in box
                     if (Objects.requireNonNull(delivery.getBody()).getDeliveryStatus() == DeliveryStatus.delivered) {
-                        ResponseEntity<HttpStatus> httpResponse = restTemplate.exchange(String.format("http://localhost:9001/pickup/%s", deliveryID), HttpMethod.PUT, new HttpEntity<>(headers), HttpStatus.class);
-                        if(httpResponse.getBody() != HttpStatus.OK){
-                            return new ResponseEntity<>(HttpStatus.CONFLICT);
-                        }
-                        _box.getDeliveryIDs().remove(deliveryID);
+                        deliveriesPickedUp.add(deliveryID);
                     }
+                }
+
+                for(String deliveryIDPickedUp: deliveriesPickedUp) {
+                    ResponseEntity<HttpStatus> httpResponse = restTemplate.exchange(String.format("http://localhost:9003/deliveries/pickup/%s", deliveryIDPickedUp), HttpMethod.PUT, new HttpEntity<>(headers), HttpStatus.class);
+                    if(httpResponse.getStatusCode() != HttpStatus.OK){
+                        return new ResponseEntity<>(HttpStatus.CONFLICT);
+                    }
+                    _box.getDeliveryIDs().remove(deliveryIDPickedUp);
                 }
 
                 //If all deliveries are picked-up set the box status to available and send mail to customer
@@ -232,7 +238,7 @@ public class BoxController {
                         return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                     }
 
-                    restTemplate.postForObject("http://emailnotification//deliveriesPickedUp", targetCustomer.getBody().getEmail(), String.class);
+                    restTemplate.exchange("http://localhost:9005/email/deliveriesPickedUp", HttpMethod.POST, new HttpEntity<>(targetCustomer.getBody().getEmail(), headers), String.class);
                 }
 
                 boxService.save(_box);

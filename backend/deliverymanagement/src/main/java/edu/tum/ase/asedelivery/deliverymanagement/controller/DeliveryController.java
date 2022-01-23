@@ -38,16 +38,16 @@ public class DeliveryController {
                 }
             }
 
+            // Create headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Cookie", cookie);
+
             for (Delivery delivery: deliveries) {
                 // Checks if delivery status is open else return bad request
                 // Delivery status for a new delivery always needs to be open
                 if (delivery.getDeliveryStatus() != DeliveryStatus.open) {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
-
-                // Create headers
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Cookie", cookie);
 
                 // Checks if customer exists
                 ResponseEntity<AseUser> targetCustomer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getTargetCustomer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
@@ -67,24 +67,37 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
-                // add delivery to box
-                box.getBody().setBoxStatus(BoxStatus.occupied);
-                ResponseEntity<HttpStatus> httpResponse = restTemplate.exchange(String.format("http://localhost:9002/%s/addDelivery/%s", delivery.getTargetBox(), delivery.getId()), HttpMethod.PUT, new HttpEntity<>(box.getBody(), headers), HttpStatus.class);
-                if (!(httpResponse.getBody() == HttpStatus.OK)){
-                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-                }
-
                 // Set rfid token of users in delivery
                 delivery.setResponsibleDelivererRfidToken(targetCustomer.getBody().getRfidToken());
                 delivery.setResponsibleDelivererRfidToken(responsibleDeliverer.getBody().getRfidToken());
             }
 
             for (Delivery delivery: deliveries) {
-                AseUser customer = restTemplate.getForObject("http://usermngmt/users/{id}", AseUser.class, delivery.getTargetCustomer());
-                restTemplate.postForObject("http://emailnotification//deliveryCreated", customer.getEmail(), String.class);
+                ResponseEntity<AseUser> customer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getTargetCustomer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
+                if (!Objects.requireNonNull(customer.getBody()).isEnabled()){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                restTemplate.postForObject("http://localhost:9005/email/deliveryCreated", customer.getBody().getEmail(), String.class);
             }
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
+
+            for (Delivery delivery: deliveries) {
+                // Get Box of delivery
+                ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", delivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
+                if (Objects.requireNonNull(box.getBody()).getBoxStatus() == BoxStatus.occupied){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                // add delivery to box
+                box.getBody().setBoxStatus(BoxStatus.occupied);
+                ResponseEntity<Box> httpResponse = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s/addDelivery/%s", delivery.getTargetBox(), delivery.getId()), HttpMethod.PUT, new HttpEntity<>(box.getBody(), headers), Box.class);
+                if (!(httpResponse.getStatusCode() == HttpStatus.OK)){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+            }
+
             return new ResponseEntity<>(_deliveries, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -295,7 +308,7 @@ public class DeliveryController {
 
     @RequestMapping(
             value = "/{id}/deposit",
-            method = RequestMethod.POST
+            method = RequestMethod.PUT
     )
     @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<Delivery> depositDelivery(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
@@ -315,7 +328,7 @@ public class DeliveryController {
             }
 
             _delivery.setDeliveryStatus(DeliveryStatus.delivered);
-            restTemplate.postForObject("http://emailnotification/deliveriesPickedUp", targetCustomer.getBody().getEmail(), String.class);
+            restTemplate.exchange("http://localhost:9005/email/deliveryDeposited", HttpMethod.POST, new HttpEntity<>(targetCustomer.getBody().getEmail(), headers), String.class);
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {

@@ -34,7 +34,7 @@ public class EmailController {
             value = "/deliveryDeposited",
             method = RequestMethod.POST
     )
-    @PreAuthorize("hasAuthority('ROLE_DELIVERER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<String> sendDeliveryPlacedInBoxEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -49,7 +49,7 @@ public class EmailController {
             value = "/deliveriesPickedUp",
             method = RequestMethod.POST
     )
-    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
     public ResponseEntity<String> sendDeliveriesPickedUpEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -61,7 +61,7 @@ public class EmailController {
     }
 
     private boolean isEmailAdressValid(String email) {
-        boolean emailValid = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email).find();
+        boolean emailValid = Pattern.compile("^[A-Z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE).matcher(email).find();
         return emailValid;
     }
 }
