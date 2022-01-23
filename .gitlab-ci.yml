@@ -6,14 +6,17 @@ stages:
   - package
   - publish
 
-build: # I believe this is the name of the job, but coincidentally, it's the same as the stage's name
+build:
   stage: build
   image: java:8
   rules:
     - changes:
-      - compose-app/backend-service/src/**/* #All files in the directory and in subsequent subdirectories
+      - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/boxmanagement/Dockerfile
+      when: never
   script:
-    - cd ./compose-app/backend-service
+    - cd ./backend/boxmanagement
     - chmod +x mvnw
     - ./mvnw clean compile
 
