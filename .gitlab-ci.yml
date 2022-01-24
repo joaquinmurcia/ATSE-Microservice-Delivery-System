@@ -1,12 +1,9 @@
-variables:
-  PERSONAL_ACCESS_TOKEN: "glpat-VzjTqUBLaYp52-GZTnHy"
-
 stages:
   - build
   - package
   - publish
 
-build:
+build-boxmanagement:
   stage: build
   image: java:8
   rules:
@@ -20,50 +17,120 @@ build:
     - chmod +x mvnw
     - ./mvnw clean compile
 
-package:
-  stage: package
+build-deliverymanagement:
+  stage: build
   image: java:8
   rules:
     - changes:
-      - compose-app/backend-service/src/**/*
+      - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/deliverymanagement/Dockerfile
+      when: never
   script:
-    - cd ./compose-app/backend-service
+    - cd ./backend/deliverymanagement
     - chmod +x mvnw
-    - ./mvnw package
-  #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
-  cache:
-    paths:
-      - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
-  #artifacts:
-  #  expire_in: 1 day
-  #  paths:
-  #    - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+    - ./mvnw clean compile
 
-docker-build:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  cache:
-    paths:
-      - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+build-emailnotification:
+  stage: build
+  image: java:8
+  rules:
+    - changes:
+      - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/emailnotification/Dockerfile
+      when: never
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/compose-app/backend-service
-    - docker build -t $CI_REGISTRY/group/project/backend-12:latest .
-    - docker build -t $CI_REGISTRY/group/project/frontend-12:latest .
+    - cd ./backend/emailnotification
+    - chmod +x mvnw
+    - ./mvnw clean compile
 
-docker-push:
-  stage: publish
-  when: always
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
+build-eureka-discovery-service:
+  stage: build
+  image: java:8
+  rules:
+    - changes:
+      - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/eureka-discovery-service/Dockerfile
+      when: never
   script:
-    - docker login -u glpat-VzjTqUBLaYp52-GZTnHy $CI_REGISTRY #! You need to create a deploy token with read and write registry permissions (bug)
-    - docker push $CI_REGISTRY/group/project/backend-12:latest
-    - docker push $CI_REGISTRY/group/project/frontend-12:latest
+    - cd ./backend/eureka-discovery-service
+    - chmod +x mvnw
+    - ./mvnw clean compile
+
+build-gateway:
+  stage: build
+  image: java:8
+  rules:
+    - changes:
+      - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/gateway/Dockerfile
+      when: never
+  script:
+    - cd ./backend/gateway
+    - chmod +x mvnw
+    - ./mvnw clean compile
+
+build-usernmgnmt:
+  stage: build
+  image: java:8
+  rules:
+    - changes:
+      - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/usernmgnmt/Dockerfile
+      when: never
+  script:
+    - cd ./backend/usernmgnmt
+    - chmod +x mvnw
+    - ./mvnw clean compile
+
+#package:
+#  stage: package
+#  image: java:8
+#  rules:
+#    - changes:
+#      - compose-app/backend-service/src/**/*
+#  script:
+#    - cd ./compose-app/backend-service
+#    - chmod +x mvnw
+#    - ./mvnw package
+#  #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
+#  cache:
+#    paths:
+#      - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+#  #artifacts:
+#  #  expire_in: 1 day
+#  #  paths:
+#  #    - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+#
+#docker-build:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  cache:
+#    paths:
+#      - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/compose-app/backend-service
+#    - docker build -t $CI_REGISTRY/group/project/backend-12:latest .
+#    - docker build -t $CI_REGISTRY/group/project/frontend-12:latest .
+#
+#docker-push:
+#  stage: publish
+#  when: always
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  script:
+#    - docker login -u glpat-VzjTqUBLaYp52-GZTnHy $CI_REGISTRY #! You need to create a deploy token with read and write registry #permissions (bug)
+#    - docker push $CI_REGISTRY/group/project/backend-12:latest
+#    - docker push $CI_REGISTRY/group/project/frontend-12:latest
 
   
   
