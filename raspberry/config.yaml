@@ -1,0 +1,7 @@
+# Each pick-up box has a configuration file that will be manually defined and stored in the Raspberry
+# Pi. The configuration file contains the ID of the box in the delivery system, name, and address of
+# the box.
+
+box_id: "targetBox1"
+name: "TestBox"
+address: "Boltzmannstrasse 3 85748 Garching"
