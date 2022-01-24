@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 
@@ -28,17 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+        http.csrf().disable()
                 .authorizeRequests() // 2. Require authentication in all endpoints except login
-                    .antMatchers("/**").authenticated()
                     .antMatchers("/auth").permitAll()
-                .and()
-                .httpBasic() // 3. Use Basic Authentication
-
-                .and()
-                .sessionManagement().disable()
-                .csrf().disable();
+                    .antMatchers("/**").permitAll()
+                    .and()
+                    .httpBasic() // 3. Use Basic Authentication
+                    .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
     }
     @Override
 
