@@ -4,11 +4,19 @@ import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.spec.InvalidKeySpecException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -73,5 +81,54 @@ public class JwtUtil {
         return true;
 
 
+    }
+    public UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        String tmpname = extractUsername(token);
+
+        UserDetails userDetails = new UserDetails() {
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return null;
+            }
+
+            @Override
+            public String getPassword() {
+                return null;
+            }
+
+            @Override
+            public String getUsername() {
+                return tmpname;
+            }
+
+            @Override
+            public boolean isAccountNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isAccountNonLocked() {
+                return true;
+            }
+
+            @Override
+            public boolean isCredentialsNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+        };
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        Collection<SimpleGrantedAuthority> authorities =
+                Arrays.stream(claims.get("roles").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 }

@@ -8,7 +8,9 @@ import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
 import edu.tum.ase.asedelivery.usermngmt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
@@ -48,11 +50,23 @@ public class AuthRequestFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if ("/error".equals(path)) {
+            System.out.println("gottem");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String username = null;
         String jwt = null;
         Cookie[] cookies = request.getCookies();
         Cookie jwtCookie = null;
+
+        if (cookies == null){
+            System.out.println("No JWT found");
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT given");
+            return;
+
+        }
 
         for (Cookie tmp :cookies){
             if (tmp.getName().equals("jwt")){
@@ -81,7 +95,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // load a user from the database that has the same username as in the JWT token.
             User userDetails = null;
             AseUser user = userRepository.findByName(username);
@@ -93,15 +107,25 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
             userDetails = new AseUserPrincipal(user).getUser();
             authService.setAuthentication(userDetails, request);
-            Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println(String.format("Authenticate Token Set:\n"
-                            + "Username: %s\n"
-                            + "Password: %s\n"
-                            + "Authority: %s\n",
-                    authContext.getPrincipal(),
-                    authContext.getCredentials(),
-                    authContext.getAuthorities().toString()));
-        }
+            UsernamePasswordAuthenticationToken authentication = null;
+            try {
+                authentication = jwtUtil.getAuthentication(jwt, SecurityContextHolder.getContext().getAuthentication());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Failed to generate authentication object :(");
+            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+//        }
+        Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(String.format("Authenticate Token Set:\n"
+                        + "Username: %s\n"
+                        + "Password: %s\n"
+                        + "Authority: %s\n",
+                authContext.getPrincipal(),
+                authContext.getCredentials(),
+                authContext.getAuthorities().toString()));
+
         filterChain.doFilter(request, response);
     }
 //
