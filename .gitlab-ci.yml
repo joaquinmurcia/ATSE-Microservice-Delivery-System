@@ -5,7 +5,7 @@ stages:
 
 build-boxmanagement:
   stage: build
-  image: java:8
+  image: maven:latest
   rules:
     - changes:
       - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
@@ -19,7 +19,7 @@ build-boxmanagement:
 
 build-deliverymanagement:
   stage: build
-  image: java:8
+  image: maven:latest
   rules:
     - changes:
       - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
@@ -33,7 +33,7 @@ build-deliverymanagement:
 
 build-emailnotification:
   stage: build
-  image: java:8
+  image: maven:latest
   rules:
     - changes:
       - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
@@ -47,7 +47,7 @@ build-emailnotification:
 
 build-eureka-discovery-service:
   stage: build
-  image: java:8
+  image: maven:latest
   rules:
     - changes:
       - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
@@ -61,7 +61,7 @@ build-eureka-discovery-service:
 
 build-gateway:
   stage: build
-  image: java:8
+  image: maven:latest
   rules:
     - changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
@@ -75,7 +75,7 @@ build-gateway:
 
 build-usernmgnmt:
   stage: build
-  image: java:8
+  image: maven:latest
   rules:
     - changes:
       - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
