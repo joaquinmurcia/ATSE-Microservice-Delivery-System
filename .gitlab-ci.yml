@@ -139,7 +139,7 @@ build-usernmgnmt:
 #    - target/demo-0.0.1-SNAPSHOT.jar
 
 
-#test:
+#testt:
 #  stage: test
 #  script:
 #    - mvn $MAVEN_CLI_OPTS test
