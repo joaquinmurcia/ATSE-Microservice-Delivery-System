@@ -4,6 +4,7 @@ from requests import Session
 import json
 from enum import Enum
 import traceback
+import yaml
 import threading, time
 
 # hostname = "10.42.0.1"
@@ -31,12 +32,25 @@ params = {
 
 class Box:
     box_id = "targetBox1"
+    name = ""
+    address = ""
     deliveries = []
     __deliverer_tokens = []
     __customer_token = None
 
+    def __init__(self,box_id, name, address):
+        """ Create a new point at the origin """
+        self.box_id = box_id
+        self.name = name
+        self.address = address
+        self.deliveries = []
+        self.__deliverer_tokens = []
+        self.__customer_token = None
+
     def info(self):
         print("ID: " + self.box_id)
+        print( "Name: " + str(self.name))
+        print("Address: " + str(self.address))
         print("-"*24)
         print("deliveries:")
         for delivery in self.deliveries:
@@ -185,7 +199,12 @@ class Box:
                 print()
 
 
-me = Box()
+me = None
+
+with open("config.yaml", "r") as stream:
+    tmp = yaml.safe_load(stream)
+    print(tmp)
+    me = Box(tmp["box_id"], tmp["name"], tmp["address"])
 
 
 def httpRequest(method, url, params, headers=" ", content=" ", auth=" "):
@@ -233,6 +252,8 @@ def getBaseHeaders(jwt=""):
 
 
 def response_to_json(response_bytes):
+    if response_bytes == b"":
+        return []
     response_string = response_bytes.decode("utf8").replace("'", '"')
     response = json.loads(response_string)
     return response
@@ -325,11 +346,10 @@ for c in ret_cookies:
 def update_deliveries():
     try:
         deliveries_bytes = get_my_deliveries()
-        deliveries = response_to_json(deliveries_bytes)
         if deliveries_bytes == b"" and me.deliveries != []:  # sanity check
             raise Exception("Received deliveries empty but current delivery is not done. Resetting...")
             # TODO: REset box
-
+        deliveries = response_to_json(deliveries_bytes)
         deliveries = deliveries
 
         me.check_new_deliveries(deliveries)
