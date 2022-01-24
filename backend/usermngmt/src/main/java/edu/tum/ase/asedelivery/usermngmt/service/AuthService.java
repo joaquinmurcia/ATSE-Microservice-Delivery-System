@@ -2,6 +2,7 @@ package edu.tum.ase.asedelivery.usermngmt.service;
 
 import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
 import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -39,8 +41,6 @@ public class AuthService {
             String[] decodedUsernamePassword = aux.split(":");
             username = decodedUsernamePassword[0];
             password = decodedUsernamePassword[1];//bcryptPasswordEncoder.encode(decodedUsernamePassword[1]);
-
-
         } else {
             // Handle what happens if that isn't the case
             throw new Exception("The authorization header is either empty or isn't Basic.");
@@ -48,12 +48,11 @@ public class AuthService {
 
         // find if there is any user exists in the database based on the credential
         final AseUser user = userRepository.findByName(username);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
-
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         if (user != null) {
 
             // find if there is any user exists in the database based on the credential.
-            if (bcryptPasswordEncoder.matches(password,user.getPassword())) {
+            if (bcryptPasswordEncoder.matches(password, user.getPassword())) {
                 // Remove the setAuthentication() as we do not want to keep the
                 // user authenticated in the upcoming requests. The user has to attach
                 // our generated JWT for every request they sent to the server.

@@ -1,6 +1,6 @@
-package edu.tum.ase.asedelivery.deliverymanagement.filter;
+package edu.tum.ase.asedelivery.boxmanagement.filter;
 
-import edu.tum.ase.asedelivery.deliverymanagement.jwt.JwtUtil;
+import edu.tum.ase.asedelivery.boxmanagement.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -81,5 +81,4 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 authContext.getAuthorities().toString()));
         filterChain.doFilter(request, response);
     }
-
 }

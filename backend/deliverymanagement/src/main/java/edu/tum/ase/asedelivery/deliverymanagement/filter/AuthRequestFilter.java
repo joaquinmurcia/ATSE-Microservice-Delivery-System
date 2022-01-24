@@ -31,13 +31,13 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         Cookie jwtCookie = null;
 
-        for (Cookie tmp :cookies){
-            if (tmp.getName().equals("jwt")){
+        for (Cookie tmp : cookies) {
+            if (tmp.getName().equals("jwt")) {
                 jwtCookie = tmp;
                 break;
             }
         }
-        if(jwtCookie == null) {
+        if (jwtCookie == null) {
             System.out.println("No JWT found");
             response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT given");
             return;
@@ -51,7 +51,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
             return;
@@ -81,5 +81,4 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 authContext.getAuthorities().toString()));
         filterChain.doFilter(request, response);
     }
-
 }

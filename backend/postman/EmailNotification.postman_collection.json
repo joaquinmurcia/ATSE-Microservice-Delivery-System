@@ -1,0 +1,33 @@
+{
+	"info": {
+		"_postman_id": "5f172eb5-a7f6-4cbe-9779-7de05524dfa7",
+		"name": "EmailNotification",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Deliveries Deposited",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "test@test.de"
+				},
+				"url": {
+					"raw": "http://localhost:9005/email/deliveryDeposited",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9005",
+					"path": [
+						"email",
+						"deliveryDeposited"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

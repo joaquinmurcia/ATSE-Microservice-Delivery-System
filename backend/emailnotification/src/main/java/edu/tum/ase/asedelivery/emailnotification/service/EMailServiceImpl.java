@@ -15,13 +15,12 @@ public class EMailServiceImpl{
     public void sendSimpleMessage(String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        //String text = String.format(emailController.templateSimpleMessage().getText());
 
         message.setFrom("noreply@aseDelivery.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        //emailController.getJavaMailSender().send(message);
+
         emailSender.send(message);
     }
 

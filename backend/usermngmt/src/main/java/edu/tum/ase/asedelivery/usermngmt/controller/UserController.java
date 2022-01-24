@@ -41,12 +41,17 @@ public class UserController {
             for (AseUser user : users) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
+            for (AseUser user : users) {
+                if (!user.isValid()) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            }
 
             List<AseUser> _users = userService.saveAll(users);
             return new ResponseEntity<>(_users, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,7 +90,7 @@ public class UserController {
 
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

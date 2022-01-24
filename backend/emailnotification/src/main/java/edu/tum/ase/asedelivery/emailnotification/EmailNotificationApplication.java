@@ -26,7 +26,8 @@ public class EmailNotificationApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		//mailService.sendSimpleMessage("enterMail here", "Test Mail", "ASE Delivery test Email");
+		//Call this to send a mail
+		//mailService.sendSimpleMessage("", "Test Mail", "ASE Delivery test Email");
 
 		log.info("Send test EMail");
 	}

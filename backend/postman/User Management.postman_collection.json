@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4441bfe7-2479-431b-81e4-9ad4f3635f8a",
+		"_postman_id": "d582f9bb-8aa7-45d6-aec3-96aeb9a78d3b",
 		"name": "User Management",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -53,13 +53,20 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9004/users",
+					"raw": "localhost:9004/users/:id",
 					"host": [
 						"localhost"
 					],
 					"port": "9004",
 					"path": [
-						"users"
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "TestCustomer1"
+						}
 					]
 				}
 			},

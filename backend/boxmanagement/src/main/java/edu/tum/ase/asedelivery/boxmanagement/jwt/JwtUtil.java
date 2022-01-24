@@ -1,4 +1,4 @@
-package edu.tum.ase.asedelivery.deliverymanagement.jwt;
+package edu.tum.ase.asedelivery.boxmanagement.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
