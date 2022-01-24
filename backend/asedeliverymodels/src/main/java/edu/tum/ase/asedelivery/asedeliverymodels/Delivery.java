@@ -37,4 +37,16 @@ public class Delivery {
             return false;
         }
     }
+
+    public Delivery copyWith(Delivery delivery){
+        if (delivery.id == null) {delivery.id = this.id;}
+        if (delivery.targetBox == null) {delivery.targetBox = this.targetBox;}
+        if (delivery.targetCustomer == null) {delivery.targetCustomer = this.targetCustomer;}
+        if (delivery.targetCustomerRFIDToken == null) {delivery.targetCustomerRFIDToken = this.targetCustomerRFIDToken;}
+        if (delivery.responsibleDeliverer == null) {delivery.responsibleDeliverer = this.responsibleDeliverer;}
+        if (delivery.responsibleDelivererRfidToken == null) {delivery.responsibleDelivererRfidToken = this.responsibleDelivererRfidToken;}
+        if (delivery.deliveryStatus == null) {delivery.deliveryStatus = this.deliveryStatus;}
+
+        return delivery;
+    }
 }

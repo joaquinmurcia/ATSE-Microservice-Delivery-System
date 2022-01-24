@@ -1,0 +1,104 @@
+{
+	"info": {
+		"_postman_id": "d582f9bb-8aa7-45d6-aec3-96aeb9a78d3b",
+		"name": "User Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9004/users",
+					"host": [
+						"localhost"
+					],
+					"port": "9004",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9004/users/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "9004",
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "TestCustomer1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Get User By Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"61e6dba8c42af7316d73ae2b\",\n    \"name\": \"User1\",\n    \"password\": \"test\",\n    \"rfidToken\": \"RFIDToken2\",\n    \"role\": \"ROLE_DISPATCHER\",\n    \"enabled\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9004/users/61e6dba8c42af7316d73ae2b",
+					"host": [
+						"localhost"
+					],
+					"port": "9004",
+					"path": [
+						"users",
+						"61e6dba8c42af7316d73ae2b"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

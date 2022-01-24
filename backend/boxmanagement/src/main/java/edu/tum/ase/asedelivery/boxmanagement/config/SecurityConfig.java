@@ -21,8 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class).
-        csrf().disable();
+        http.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class)
+        .csrf().disable();
     }
 
     @Override

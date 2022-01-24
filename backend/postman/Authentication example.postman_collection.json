@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b4447c19-7561-449c-8bde-6f668bcade1e",
+		"_postman_id": "ed0eccef-4a9a-49f3-949e-064f84908a40",
 		"name": "Authentication example",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -55,12 +55,12 @@
 					"basic": [
 						{
 							"key": "password",
-							"value": "pwd1",
+							"value": "pwd3",
 							"type": "string"
 						},
 						{
 							"key": "username",
-							"value": "User1",
+							"value": "User3",
 							"type": "string"
 						}
 					]
@@ -74,15 +74,11 @@
 					}
 				],
 				"url": {
-					"raw": "http://127.0.0.1:8080/auth",
-					"protocol": "http",
+					"raw": "localhost:9004/auth",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"localhost"
 					],
-					"port": "8080",
+					"port": "9004",
 					"path": [
 						"auth"
 					]

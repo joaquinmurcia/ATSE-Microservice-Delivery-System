@@ -80,3 +80,11 @@
 # Support for Project snippet scope
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+
+
+# python stuff
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+/backend/asedeliverymodels/asedeliverymodels.iml

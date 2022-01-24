@@ -1,9 +1,12 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
+import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
 import edu.tum.ase.asedelivery.usermngmt.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +43,7 @@ public class AuthController {
         jwtCookie.setHttpOnly(true);
 
         // and expires after a period
-        jwtCookie.setMaxAge(1 * 24 * 60 * 60); // expires in 1 days
+        jwtCookie.setMaxAge(24 * 60 * 60); // expires in 1 days
 
         // Then include the cookie into the response
         response.addCookie(jwtCookie);

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cbb4708f-9286-45fc-aea3-fb588cc2d381",
+		"_postman_id": "92bcb741-0ef1-46a4-b5cd-f0deeca27103",
 		"name": "DeliveryManagement",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -24,7 +24,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n    \"targetBox\": \"box1\",\n    \"targetCustomer\": \"customer1\",\n    \"responsibleDriver\": \"driver1\",\n    \"deliveryStatus\": \"open\"\n},\n{\n    \"targetBox\": \"box2\",\n    \"targetCustomer\": \"customer2\",\n    \"responsibleDriver\": \"driver2\",\n    \"deliveryStatus\": \"open\"\n},\n{\n    \"targetBox\": \"box3\",\n    \"targetCustomer\": \"customer2\",\n    \"responsibleDriver\": \"driver3\",\n    \"deliveryStatus\": \"open\"\n}]",
+					"raw": "[\n    {\n        \"targetBox\": \"targetBoxTest\",\n        \"targetCustomer\": \"TestCustomer1\",\n        \"responsibleDeliverer\": \"TestDeliverer1\",\n        \"deliveryStatus\": \"open\"\n    }\n]",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -55,7 +55,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"targetBox\": \"box1\"\n}",
+					"raw": "{\n    \"targetCustomer\": \"TestCustomer1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -157,6 +157,140 @@
 			"response": []
 		},
 		{
+			"name": "Collect Deliveries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {  \n            \"id\": \"deliveryTestID\"\n    }\n]\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/deliverymanagement/deliveries/collectDeliveries",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"deliverymanagement",
+						"deliveries",
+						"collectDeliveries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit Delivery",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/deliverymanagement/deliveries/:id/deposit",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"deliverymanagement",
+						"deliveries",
+						":id",
+						"deposit"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "deliveryTestID"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pickup Delivery",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/deliverymanagement/deliveries/pickup/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"deliverymanagement",
+						"deliveries",
+						"pickup",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "deliveryTestID"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Delivery",
 			"event": [
 				{
@@ -185,7 +319,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}",
+					"raw": "localhost:9000/deliverymanagement/deliveries/:delivery_id",
 					"host": [
 						"localhost"
 					],
@@ -193,48 +327,13 @@
 					"path": [
 						"deliverymanagement",
 						"deliveries",
-						"{{delivery_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Pickup Delivery",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+						":delivery_id"
+					],
+					"variable": [
+						{
+							"key": "delivery_id",
+							"value": "deliveryTestID"
 						}
-					}
-				},
-				"url": {
-					"raw": "localhost:9000/deliverymanagement/deliveries/{{delivery_id}}/pickup",
-					"host": [
-						"localhost"
-					],
-					"port": "9000",
-					"path": [
-						"deliverymanagement",
-						"deliveries",
-						"{{delivery_id}}",
-						"pickup"
 					]
 				}
 			},

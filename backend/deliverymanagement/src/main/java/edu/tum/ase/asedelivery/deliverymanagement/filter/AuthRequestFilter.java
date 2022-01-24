@@ -1,17 +1,11 @@
-package edu.tum.ase.asedelivery.boxmanagement.filter;
+package edu.tum.ase.asedelivery.deliverymanagement.filter;
 
-import edu.tum.ase.asedelivery.boxmanagement.jwt.JwtUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import org.springframework.security.core.userdetails.UserDetails;
+import edu.tum.ase.asedelivery.deliverymanagement.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,12 +15,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
@@ -43,13 +31,13 @@ public class AuthRequestFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         Cookie jwtCookie = null;
 
-        for (Cookie tmp :cookies){
-            if (tmp.getName().equals("jwt")){
+        for (Cookie tmp : cookies) {
+            if (tmp.getName().equals("jwt")) {
                 jwtCookie = tmp;
                 break;
             }
         }
-        if(jwtCookie == null) {
+        if (jwtCookie == null) {
             System.out.println("No JWT found");
             response.sendError(HttpStatus.BAD_REQUEST.value(), "No JWT given");
             return;
@@ -63,7 +51,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
                 return;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpStatus.BAD_REQUEST.value(), "Bad JWT");
             return;
@@ -93,5 +81,4 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                 authContext.getAuthorities().toString()));
         filterChain.doFilter(request, response);
     }
-
 }
