@@ -11,6 +11,13 @@ spring:
     name: gateway
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/usermanagement/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
       discovery:
         locator:
           enabled: true
