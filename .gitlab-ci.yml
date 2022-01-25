@@ -38,15 +38,15 @@ build-asedeliverymodels:
 build-boxmanagement:
   stage: build
   image: maven:latest
-  rules:
-    - changes:
-        - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
-    - changes:
-        - backend/boxmanagement/Dockerfile
-      when: never
-  cache:
-    paths:
-      - backend/asedeliverymodels/target/asedeliverymodels-0.0.1-SNAPSHOT.jar
+  #rules:
+  #  - changes:
+  #      - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #      - backend/boxmanagement/Dockerfile
+  #    when: never
+  #cache:
+  #  paths:
+  #    - backend/asedeliverymodels/target/asedeliverymodels-0.0.1-SNAPSHOT.jar
   script:
     - cd ./backend/boxmanagement
     - chmod +x mvnw
