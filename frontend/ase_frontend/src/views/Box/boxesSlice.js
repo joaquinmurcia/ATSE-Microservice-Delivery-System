@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -9,16 +8,17 @@ const initialState = {
 
 }
 
-export const getDeliveriesAsync = createAsyncThunk(
+
+export const getBoxAsync = createAsyncThunk(
     'GET',
     async (arg, thunkAPI) => {
-        const response = await fetch('http://localhost:9000/deliverymanagement/deliveries');//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
+        const response = await fetch('http://localhost:9000/boxmanagement/boxes');
         return response;
     }
 );
 
-const deliveriesSlice = createSlice({
-    name: 'deliveries',
+const boxesSlice = createSlice({
+    name: 'boxes',
     initialState,
     reducers: {
         addElement(state, action){
@@ -49,7 +49,7 @@ const deliveriesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getDeliveriesAsync.fulfilled, (state, action) => {
+            .addCase(getBoxAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
                 state.list = action.payload;
             });
@@ -57,14 +57,14 @@ const deliveriesSlice = createSlice({
 
 })
 
-export const selectDeliveries = (state) => state.deliveries.list;
+export const selectBoxes = (state) => state.boxes.list;
 
-export const isEditState = (state) => state.deliveries.isEdit;
+export const isEditState = (state) => state.boxes.isEdit;
 
-export const getDelivery = (state,action) => state.deliveries.list.filter(elem => elem.id !== action.payload.id)[0];
+export const getBox = (state,action) => state.boxes.list.filter(elem => elem.id !== action.payload.id)[0];
 
-export const getEditDelivery = (state) => state.deliveries.list.filter(elem => elem.id === state.deliveries.editId)[0];
+export const getEditBox = (state) => state.boxes.list.filter(elem => elem.id === state.boxes.editId)[0];
 
-export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = deliveriesSlice.actions
+export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = boxesSlice.actions
 
-export default deliveriesSlice.reducer
+export default boxesSlice.reducer
