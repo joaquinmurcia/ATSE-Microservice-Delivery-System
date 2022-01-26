@@ -1,6 +1,7 @@
 package edu.tum.ase.asedelivery.boxmanagement.controller;
 
 import edu.tum.ase.asedelivery.asedeliverymodels.*;
+import edu.tum.ase.asedelivery.asedeliverymodels.Box;
 import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
 import edu.tum.ase.asedelivery.boxmanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;

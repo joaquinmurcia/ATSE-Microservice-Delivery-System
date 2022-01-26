@@ -28,4 +28,44 @@ public class Box {
 
         return box;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public BoxStatus getBoxStatus() {
+        return boxStatus;
+    }
+
+    public void setBoxStatus(BoxStatus boxStatus) {
+        this.boxStatus = boxStatus;
+    }
+
+    public List<String> getDeliveryIDs() {
+        return deliveryIDs;
+    }
+
+    public void setDeliveryIDs(List<String> deliveryIDs) {
+        this.deliveryIDs = deliveryIDs;
+    }
+
+    public String getRaspberryPiID() {
+        return raspberryPiID;
+    }
+
+    public void setRaspberryPiID(String raspberryPiID) {
+        this.raspberryPiID = raspberryPiID;
+    }
 }

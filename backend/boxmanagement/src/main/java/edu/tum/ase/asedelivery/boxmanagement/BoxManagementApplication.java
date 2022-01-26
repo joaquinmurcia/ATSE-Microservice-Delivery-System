@@ -67,8 +67,9 @@ public class BoxManagementApplication implements CommandLineRunner {
 		boxes.add(new Box(null, address2, BoxStatus.available, deliveryIDs3, null));
 		boxes.add(new Box(null, address2, BoxStatus.available, deliveryIDs4, null));
 		boxes.add(new Box(null, address3, BoxStatus.available, deliveryIDs5, null));*/
+		//boxes.add(new Box("targetBoxTest", address1, BoxStatus.available, new ArrayList<String>(), "asdf"));
 
-		boxes.add(new Box("targetBoxTest", address1, BoxStatus.available, new ArrayList<String>(), null));
+		//boxes.add(new Box("targetBoxTest", address1, BoxStatus.available, new ArrayList<String>(), null));
 
 		List<Box> _boxes = boxService.saveAll(boxes);
 	}
