@@ -1,0 +1,10 @@
+edu/tum/ase/asedelivery/asedeliverymodels/Constants.class
+edu/tum/ase/asedelivery/asedeliverymodels/Validation.class
+edu/tum/ase/asedelivery/asedeliverymodels/UserRole.class
+edu/tum/ase/asedelivery/asedeliverymodels/Address.class
+edu/tum/ase/asedelivery/asedeliverymodels/AseUserPrincipal.class
+edu/tum/ase/asedelivery/asedeliverymodels/Box.class
+edu/tum/ase/asedelivery/asedeliverymodels/Delivery.class
+edu/tum/ase/asedelivery/asedeliverymodels/BoxStatus.class
+edu/tum/ase/asedelivery/asedeliverymodels/DeliveryStatus.class
+edu/tum/ase/asedelivery/asedeliverymodels/AseUser.class
