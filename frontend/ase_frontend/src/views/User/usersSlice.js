@@ -12,7 +12,7 @@ const initialState = {
 export const getUsersAsync = createAsyncThunk(
     'GET',
     async (arg, thunkAPI) => {
-        const response = await fetch('http://localhost:9000/usermanagement/users');//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
+        const response = await fetch('http://127.0.0.1:9000/usermanagement/users');//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
         return response;
     }
 );

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container} from "@mui/material";
+import axios from 'axios';
+
+const instance = axios.create({
+    withCredentials: true,
+    baseURL: "http://127.0.0.1:9000"
+ })
 
 function Login(){
 
@@ -15,31 +21,53 @@ function Login(){
         setPassword(e.target.value);
     }
 
-    function loginRequest() {
+    const getJwt = async () => {
         const temp = window.btoa(userName + ":" + password);
-        console.log(temp);
+
+
+        const { data } = await instance.post(`/usermanagement/auth`,{},{headers:{Authorization: "Basic " + temp, withCredentials: true}});
+        console.log(data)
+        //const { data1 } = await instance.post(`/usermanagement/users`,{},{headers:{Authorization: "Basic " + temp, withCredentials: true}});
+
+        const { data2 } = await instance.get(`/deliverymanagement/deliveries`,{headers:{withCredentials: true}});
+      }
+      
+
+    function loginRequest() {
+        getJwt();
+
+        const temp = window.btoa(userName + ":" + password);
+/*
         const requestOptions = {
             method: "POST",
+            credentials: 'include',
             headers: {
               Authorization: "Basic " + temp
             }
         }
-        const response = fetch('http://localhost:9000/usermanagement/auth', requestOptions).then(handleResponse);
+
+        console.log("eyyy")
+        console.log(temp);
+        const response = fetch('http://127.0.0.1:9000/usermanagement/auth', requestOptions).then(handleResponse);
+
         return response
+        */
 
     }
 
     function handleResponse(response) {
         console.log(response);
+        fetch('http://127.0.0.1:9000/deliverymanagement/deliveries',{credentials:'include'});
+
         return response.text().then(text => {
-            const data = text && JSON.parse(text);
+            const data = text //&& JSON.parse(text);
             if (!response.ok) {
                 if (response.status === 401) {
                     // auto logout if 401 response returned from api
                     //logout();
                     //                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  location.reload(true);
                 }
-
+                console.log("ayo");
                 const error = (data && data.message) || response.statusText;
                 return Promise.reject(error);
             }

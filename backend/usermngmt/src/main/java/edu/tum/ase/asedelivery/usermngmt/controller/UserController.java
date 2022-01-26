@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 
 @Controller
+@CrossOrigin(origins="http://localhost:3000",allowCredentials="true")
 @RequestMapping("/users")
 public class UserController {
 

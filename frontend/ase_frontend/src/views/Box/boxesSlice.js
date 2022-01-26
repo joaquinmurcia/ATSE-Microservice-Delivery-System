@@ -12,7 +12,7 @@ const initialState = {
 export const getBoxAsync = createAsyncThunk(
     'GET',
     async (arg, thunkAPI) => {
-        const response = await fetch('http://localhost:9000/boxmanagement/boxes');
+        const response = await fetch('http://127.0.0.1:9000/boxmanagement/boxes');
         return response;
     }
 );

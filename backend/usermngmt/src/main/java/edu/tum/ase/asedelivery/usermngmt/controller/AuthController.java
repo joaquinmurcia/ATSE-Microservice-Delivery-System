@@ -40,11 +40,12 @@ public class AuthController {
         Cookie jwtCookie = new Cookie("jwt", jwt);
 
         // Configure the cookie to be HttpOnly
-        jwtCookie.setHttpOnly(true);
+        // jwtCookie.setHttpOnly(true);
 
         // and expires after a period
         jwtCookie.setMaxAge(24 * 60 * 60); // expires in 1 days
-
+        jwtCookie.setPath("/");
+        //jwtCookie.setSecure(true);
         // Then include the cookie into the response
         response.addCookie(jwtCookie);
         return new ResponseEntity<String>("Here you go",HttpStatus.OK);
