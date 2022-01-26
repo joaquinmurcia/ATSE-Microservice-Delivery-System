@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container} from "@mui/material";
-import axios from 'axios';
 
-const instance = axios.create({
-    withCredentials: true,
-    baseURL: "http://127.0.0.1:9000"
- })
 
 function Login(){
 
@@ -21,23 +16,12 @@ function Login(){
         setPassword(e.target.value);
     }
 
-    const getJwt = async () => {
-        const temp = window.btoa(userName + ":" + password);
-
-
-        const { data } = await instance.post(`/usermanagement/auth`,{},{headers:{Authorization: "Basic " + temp, withCredentials: true}});
-        console.log(data)
-        //const { data1 } = await instance.post(`/usermanagement/users`,{},{headers:{Authorization: "Basic " + temp, withCredentials: true}});
-
-        const { data2 } = await instance.get(`/deliverymanagement/deliveries`,{headers:{withCredentials: true}});
-      }
       
 
     function loginRequest() {
-        getJwt();
 
         const temp = window.btoa(userName + ":" + password);
-/*
+
         const requestOptions = {
             method: "POST",
             credentials: 'include',
@@ -51,13 +35,17 @@ function Login(){
         const response = fetch('http://127.0.0.1:9000/usermanagement/auth', requestOptions).then(handleResponse);
 
         return response
-        */
+        
 
     }
 
     function handleResponse(response) {
         console.log(response);
-        fetch('http://127.0.0.1:9000/deliverymanagement/deliveries',{credentials:'include'});
+        const requestOptions = {
+            method: "GET",
+            credentials:"include"
+        }
+        fetch('http://127.0.0.1:9000/deliverymanagement/deliveries/deliveryTestID',requestOptions);
 
         return response.text().then(text => {
             const data = text //&& JSON.parse(text);
