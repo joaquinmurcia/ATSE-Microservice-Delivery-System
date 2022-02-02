@@ -12,7 +12,12 @@ const initialState = {
 export const getDeliveriesAsync = createAsyncThunk(
     'GET',
     async (arg, thunkAPI) => {
-        const response = await fetch('http://127.0.0.1:9000/deliverymanagement/deliveries',{credentials:'same-origin'});//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
+        const requestOptions = {
+            method: "GET",
+            credentials:"include"
+        }
+        const response = await fetch('http://127.0.0.1:9000/deliverymanagement/deliveries',requestOptions).then((data)=> data.json());//await fetch('https://localhost:9000/deliverymanagement/deliveries').then((data)=> data.json());
+        console.log(response);
         return response;
     }
 );

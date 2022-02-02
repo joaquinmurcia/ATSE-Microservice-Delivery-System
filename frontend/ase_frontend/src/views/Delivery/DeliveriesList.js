@@ -51,7 +51,7 @@ const DeliveriesList = () => {
         { id: 'id', label: 'Id', minWidth: 30},
         { id: 'targetBox', label: 'Box', minWidth: 80 },
         { id: 'targetCustomer', label: 'Customer', minWidth: 80},
-        { id: 'responsibleDriver', label: 'Responsible Driver', minWidth: 80 },
+        { id: 'responsibleDeliverer', label: 'Responsible Deliverer', minWidth: 80 },
         { id: 'deliveryStatus', label: 'Status', minWidth: 80 },
         { id: 'buttons', label: 'Actions', minWidth: 90 },
     ];
@@ -89,7 +89,7 @@ const DeliveriesList = () => {
                                         {row['targetCustomer']}
                                     </TableCell>
                                     <TableCell>
-                                        {row['responsibleDriver']}
+                                        {row['responsibleDeliverer']}
                                     </TableCell>
                                     <TableCell>
                                         {row['deliveryStatus']}

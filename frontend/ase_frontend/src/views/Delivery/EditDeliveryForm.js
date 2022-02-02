@@ -12,7 +12,7 @@ const EditDeliveryFrom = () => {
 
     const[elemTargetBox,setTargetBox] = useState(elementToChange.targetBox);
     const[elemTargetCustomer,setTargetCustomer] = useState(elementToChange.targetCustomer);
-    const[elemResponsibleDriver,setResponsibleDriver] = useState(elementToChange.responsibleDriver);
+    const[elemResponsibleDeliverer,setResponsibleDeliverer] = useState(elementToChange.responsibleDriver);
     const[elemDeliveryStatus,setDeliveryStatus] = useState(elementToChange.deliveryStatus);
 
     const handleChangeTargetBox = (e) => {
@@ -23,8 +23,8 @@ const EditDeliveryFrom = () => {
         setTargetCustomer(e.target.value);
     }
 
-    const handleChangeResponsibleDriver = (e) => {
-        setResponsibleDriver(e.target.value);
+    const handleChangeResponsibleDeliverer = (e) => {
+        setResponsibleDeliverer(e.target.value);
     }
 
     const handleChangeDeliveryStatus = (e) => {
@@ -35,7 +35,7 @@ const EditDeliveryFrom = () => {
         return {
             targetBox:  elemTargetBox,
             targetCustomer: elemTargetCustomer,
-            responsibleDriver: elemResponsibleDriver,
+            responsibleDeliverer: elemResponsibleDeliverer,
             deliveryStatus: elemDeliveryStatus
         }
     }
@@ -50,7 +50,7 @@ const EditDeliveryFrom = () => {
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetCustomer" label="Target Customer" value={elemTargetCustomer} onChange={handleChangeTargetCustomer}/>
                 <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDriver" label="Responsible Driver" value={elemResponsibleDriver} onChange={handleChangeResponsibleDriver}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDeliverer" label="Responsible Deliverer" value={elemResponsibleDeliverer} onChange={handleChangeResponsibleDeliverer}/>
                 <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectStatus">Status</InputLabel>

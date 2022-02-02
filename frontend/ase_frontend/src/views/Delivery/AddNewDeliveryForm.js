@@ -11,7 +11,7 @@ const AddNewDeliveryForm = () => {
 
     const[elemTargetBox,setTargetBox] = useState("");
     const[elemTargetCustomer,setTargetCustomer] = useState("");
-    const[elemResponsibleDriver,setResponsibleDriver] = useState("");
+    const[elemResponsibleDeliverer,setResponsibleDeliverer] = useState("");
     const[elemDeliveryStatus,setDeliveryStatus] = useState("");
 
     const handleChangeTargetBox = (e) => {
@@ -22,8 +22,8 @@ const AddNewDeliveryForm = () => {
         setTargetCustomer(e.target.value);
     }
 
-    const handleChangeResponsibleDriver = (e) => {
-        setResponsibleDriver(e.target.value);
+    const handleChangeResponsibleDeliverer = (e) => {
+        setResponsibleDeliverer(e.target.value);
     }
 
     const handleChangeDeliveryStatus = (e) => {
@@ -34,13 +34,13 @@ const AddNewDeliveryForm = () => {
         const newElement = {
             targetBox:  elemTargetBox,
             targetCustomer: elemTargetCustomer,
-            responsibleDriver: elemResponsibleDriver,
+            responsibleDeliverer: elemResponsibleDeliverer,
             deliveryStatus: elemDeliveryStatus
         }
 
         setTargetBox("");
         setTargetCustomer("");
-        setResponsibleDriver("");
+        setResponsibleDeliverer("");
         setDeliveryStatus("")
 
         return newElement
@@ -56,7 +56,7 @@ const AddNewDeliveryForm = () => {
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetCustomer" label="Target Customer" value={elemTargetCustomer} onChange={handleChangeTargetCustomer}/>
                 <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDriver" label="Responsible Driver" value={elemResponsibleDriver} onChange={handleChangeResponsibleDriver}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDeliverer" label="Responsible Deliverer" value={elemResponsibleDeliverer} onChange={handleChangeResponsibleDeliverer}/>
                 <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectStatus">Status</InputLabel>
