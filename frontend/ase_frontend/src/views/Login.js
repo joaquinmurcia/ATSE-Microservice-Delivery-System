@@ -5,8 +5,8 @@ import {TextField, Typography, Paper, Container} from "@mui/material";
 
 function Login(){
 
-    const[userName,setUserName] = useState("");
-    const[password,setPassword] = useState("");
+    const[userName,setUserName] = useState("User3");
+    const[password,setPassword] = useState("pwd3");
 
     const handleUserName = (e) => {
         setUserName(e.target.value);
@@ -45,10 +45,10 @@ function Login(){
             method: "GET",
             credentials:"include"
         }
-        fetch('http://127.0.0.1:9000/deliverymanagement/deliveries/deliveryTestID',requestOptions);
-
+        const res = fetch('http://127.0.0.1:9000/deliverymanagement/deliveries/deliveryTestID',requestOptions);
+        console.log(res);
         return response.text().then(text => {
-            const data = text //&& JSON.parse(text);
+            const data = text; //&&JSON.parse(text);
             if (!response.ok) {
                 if (response.status === 401) {
                     // auto logout if 401 response returned from api
@@ -59,7 +59,7 @@ function Login(){
                 const error = (data && data.message) || response.statusText;
                 return Promise.reject(error);
             }
-
+            console.log(data);
             return data;
         });
     }
