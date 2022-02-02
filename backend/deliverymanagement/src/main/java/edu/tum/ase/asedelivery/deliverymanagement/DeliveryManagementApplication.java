@@ -42,10 +42,7 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 		/*List<Delivery> deliveries = new ArrayList<Delivery>();
 		deliveries.add(new Delivery("deliveryID1", "targetBox1", "targetCustomer1", "108560888149","deliverer1", "520413243569", DeliveryStatus.open));
 		deliveries.add(new Delivery("deliveryID2", "targetBox1", "targetCustomer2", "108560888149","deliverer2", "rtoken1", DeliveryStatus.open));
-		deliveries.add(new Delivery(null, "targetBox3", "targetCustomer3", "ctoken1","deliverer3", "rtoken1", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox4", "targetCustomer4", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox5", "targetCustomer5", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox6", "targetCustomer6", "ctoken1","deliverer5", "rtoken1",DeliveryStatus.delivered));*/
+*/
 
 		List<Delivery> deliveries = new ArrayList<Delivery>();
 		deliveries.add(new Delivery("deliveryTestID", "targetBoxTest", "TestCustomer1", "108560888149","TestDeliverer1", "520413243569", DeliveryStatus.delivered));

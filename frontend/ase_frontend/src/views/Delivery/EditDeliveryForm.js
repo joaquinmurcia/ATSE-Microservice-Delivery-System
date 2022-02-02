@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {cancelEdit, editElement, getEditDelivery} from "./deliveriesSlice";
+import {cancelEdit, editDeliveryAsync, getEditDelivery} from "./deliveriesSlice";
 
 
 const EditDeliveryFrom = () => {
@@ -12,7 +12,7 @@ const EditDeliveryFrom = () => {
 
     const[elemTargetBox,setTargetBox] = useState(elementToChange.targetBox);
     const[elemTargetCustomer,setTargetCustomer] = useState(elementToChange.targetCustomer);
-    const[elemResponsibleDeliverer,setResponsibleDeliverer] = useState(elementToChange.responsibleDriver);
+    const[elemResponsibleDeliverer,setResponsibleDeliverer] = useState(elementToChange.responsibleDeliverer);
     const[elemDeliveryStatus,setDeliveryStatus] = useState(elementToChange.deliveryStatus);
 
     const handleChangeTargetBox = (e) => {
@@ -44,7 +44,7 @@ const EditDeliveryFrom = () => {
         <Container>
             <Paper  sx={{border: 1, borderRadius: 1}}>
                 <Typography component="h1" variant="h6" align="center" marginBottom={5}>
-                    Change Delivery No {elementToChange.id}
+                    Change Delivery No: {elementToChange.id}
                 </Typography>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetBox" label="Target Box" value={elemTargetBox} onChange={handleChangeTargetBox}/>
                 <br/>
@@ -62,7 +62,7 @@ const EditDeliveryFrom = () => {
                     </Select>
                 </FormControl>
                 <br/>
-                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editElement(getElem()))}>Change</Button>
+                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editDeliveryAsync(getElem()))}>Change</Button>
                 <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="error" onClick={()=> dispatch(cancelEdit())}>Cancel</Button>
             </Paper>
         </Container>

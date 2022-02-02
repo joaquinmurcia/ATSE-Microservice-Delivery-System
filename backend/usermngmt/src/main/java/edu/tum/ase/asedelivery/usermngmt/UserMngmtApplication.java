@@ -51,8 +51,11 @@ public class UserMngmtApplication implements CommandLineRunner {
 		// Create test users with hashed Bcrypt password and role
 		AseUser[] users = {
 				new AseUser("User1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUser("TestCustomer1", "test@test.com","TestCustomer", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUser("TestDeliverer1", null, "User2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
+				new AseUser("TestCustomer1", "test@test.com","TestCustomer1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
+				new AseUser("TestCustomer2", "test@test.com","TestCustomer2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
+				new AseUser("TestCustomer3", "test@test.com","TestCustomer3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
+				new AseUser("TestDeliverer1", null, "TestDeliverer1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_DELIVERER),
+				new AseUser("TestDeliverer2", null, "TestDeliverer2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
 				new AseUser("User3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1", UserRole.ROLE_DISPATCHER), };
 		List<AseUser> usersList = Arrays.asList(users);
 		userRepository.saveAll(usersList);

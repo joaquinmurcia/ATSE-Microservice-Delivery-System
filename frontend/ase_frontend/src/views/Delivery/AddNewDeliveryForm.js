@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material"
 import {useDispatch} from "react-redux";
 import React, {useState} from "react";
-import {addElement} from "./deliveriesSlice";
+import {addDeliveryAsync} from "./deliveriesSlice";
 
 
 const AddNewDeliveryForm = () => {
@@ -68,7 +68,7 @@ const AddNewDeliveryForm = () => {
                     </Select>
                 </FormControl>
                 <br/>
-                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success" onClick={()=> dispatch(addElement(getElem()))}>Add</Button>
+                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success" onClick={()=> dispatch(addDeliveryAsync(getElem()))}>Add</Button>
             </Paper>
         </Container>
     );
