@@ -111,7 +111,7 @@ public class DeliveryController {
             method = RequestMethod.GET
     )
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<List<Delivery>> getDeliveries(@RequestParam String boxId, @RequestParam String customerId, @RequestParam String delivererId, @RequestParam DeliveryStatus deliveryStatus, @RequestHeader("Cookie") String cookie) {
+    public ResponseEntity<List<Delivery>> getDeliveries(@RequestParam(required = false) String boxId, @RequestParam(required = false) String customerId, @RequestParam(required = false) String delivererId, @RequestParam(required = false) DeliveryStatus deliveryStatus, @RequestHeader("Cookie") String cookie) {
         try {
             List<Delivery> deliveries;
             Query query = new Query();

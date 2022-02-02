@@ -60,7 +60,7 @@ public class BoxController {
             method = RequestMethod.GET
     )
     @PreAuthorize(" hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<Box>> getBoxes(@RequestParam String deliveryId, @RequestParam BoxStatus boxStatus) {
+    public ResponseEntity<List<Box>> getBoxes(@RequestParam(required = false) String deliveryId, @RequestParam(required = false) BoxStatus boxStatus) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
         try {
             List<Box> boxes = new ArrayList<>();
