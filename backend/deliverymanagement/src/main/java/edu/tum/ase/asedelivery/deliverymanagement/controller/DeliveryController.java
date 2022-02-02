@@ -111,25 +111,25 @@ public class DeliveryController {
             method = RequestMethod.GET
     )
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<List<Delivery>> getDeliveries(@RequestBody Delivery payload, @RequestHeader("Cookie") String cookie) {
+    public ResponseEntity<List<Delivery>> getDeliveries(@RequestParam String boxId, @RequestParam String customerId, @RequestParam String delivererId, @RequestParam DeliveryStatus deliveryStatus, @RequestHeader("Cookie") String cookie) {
         try {
             List<Delivery> deliveries;
             Query query = new Query();
 
-            if (!Validation.isNullOrEmpty(payload.getTargetBox())) {
-                query.addCriteria(Criteria.where(Constants.TARGET_BOX).is(payload.getTargetBox()));
+            if (!Validation.isNullOrEmpty(boxId)) {
+                query.addCriteria(Criteria.where(Constants.TARGET_BOX).is(boxId));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getTargetCustomer())) {
-                query.addCriteria(Criteria.where(Constants.TARGET_CUSTOMER).is(payload.getTargetCustomer()));
+            if (!Validation.isNullOrEmpty(customerId)) {
+                query.addCriteria(Criteria.where(Constants.TARGET_CUSTOMER).is(customerId));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getResponsibleDeliverer())) {
-                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(payload.getResponsibleDeliverer()));
+            if (!Validation.isNullOrEmpty(delivererId)) {
+                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(delivererId));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getDeliveryStatus())) {
-                query.addCriteria(Criteria.where(Constants.DELIVERY_STATUS).is(payload.getDeliveryStatus()));
+            if (!Validation.isNullOrEmpty(deliveryStatus)) {
+                query.addCriteria(Criteria.where(Constants.DELIVERY_STATUS).is(deliveryStatus));
             }
 
             deliveries = deliveryService.findAll(query);
