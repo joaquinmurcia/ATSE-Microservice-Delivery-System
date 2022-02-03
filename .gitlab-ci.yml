@@ -91,17 +91,17 @@ build-gateway:
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS clean compile
 
-build-usernmgnmt:
+build-usermngmt:
   stage: build
   image: maven:latest
-  rules:
-    - changes:
-      - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
-    - changes:
-      - backend/usernmgnmt/Dockerfile
-      when: never
+  #rules:
+  #  - changes:
+  #    - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #    - backend/usermngmt/Dockerfile
+  #    when: never
   script:
-    - cd ./backend/usernmgnmt
+    - cd ./backend/usermngmt
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS clean compile
 
@@ -126,6 +126,57 @@ package-boxmanagement:
   #  expire_in: 1 day
   #  paths:
   #    - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+
+package-deliverymanagement:
+  stage: package
+  image: maven:latest
+  #rules:
+  #  - changes:
+  #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #    - backend/usernmgnmt/Dockerfile
+  #    when: never
+  script:
+    - cd ./backend/deliverymanagement
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS package
+  cache:
+    paths:
+      - backend/deliverymanagement/target/deliverymanagement-0.0.1-SNAPSHOT.jar
+
+package-emailnotification:
+  stage: package
+  image: maven:latest
+  #rules:
+  #  - changes:
+  #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #    - backend/usernmgnmt/Dockerfile
+  #    when: never
+  script:
+    - cd ./backend/emailnotification
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS package
+  cache:
+    paths:
+      - backend/emailnotification/target/emailnotification-0.0.1-SNAPSHOT.jar
+
+package-eureka-discovery-service:
+  stage: package
+  image: maven:latest
+  #rules:
+  #  - changes:
+  #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #    - backend/usernmgnmt/Dockerfile
+  #    when: never
+  script:
+    - cd ./backend/eureka-discovery-service
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS package
+  cache:
+    paths:
+      - backend/eureka-discovery-service/target/eureka-discovery-service-0.0.1-SNAPSHOT.jar
   
   #docker-build:
   #  stage: publish
