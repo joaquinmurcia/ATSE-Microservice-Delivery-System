@@ -31,6 +31,9 @@ build-boxmanagement:
     - changes:
         - backend/boxmanagement/Dockerfile
       when: never
+  #cache:
+  #  paths:
+  #    - backend/asedeliverymodels/target/asedeliverymodels-0.0.1-SNAPSHOT.jar
   script:
     - cd ./backend/boxmanagement
     - chmod +x mvnw
@@ -120,14 +123,12 @@ package-boxmanagement:
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
   #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
-  artifacts:
-    expire_in: 3 days
-    untracked: true
+  cache:
     paths:
       - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
       - backend/boxmanagement/target/classes/public.key
   #artifacts:
-  #  expire_in: 3 days
+  #  expire_in: 1 day
   #  paths:
   #    - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
 
@@ -144,9 +145,7 @@ package-deliverymanagement:
     - cd ./backend/deliverymanagement
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
+  cache:
     paths:
       - backend/deliverymanagement/target/deliverymanagement-0.0.1-SNAPSHOT.jar
       - backend/deliverymanagement/target/classes/public.key
@@ -164,9 +163,7 @@ package-emailnotification:
     - cd ./backend/emailnotification
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
+  cache:
     paths:
       - backend/emailnotification/target/emailnotification-0.0.1-SNAPSHOT.jar
       - backend/emailnotification/target/classes/public.key
@@ -184,9 +181,7 @@ package-eureka-discovery-service:
     - cd ./backend/eureka-discovery-service
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
+  cache:
     paths:
       - backend/eureka-discovery-service/target/eureka-discovery-service-0.0.1-SNAPSHOT.jar
 
@@ -203,9 +198,7 @@ package-gateway:
     - cd ./backend/gateway
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
+  cache:
     paths:
       - backend/gateway/target/gateway-0.0.1-SNAPSHOT.jar
 
@@ -222,9 +215,7 @@ package-usermngmt:
     - cd ./backend/usermngmt
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
+  cache:
     paths:
       - backend/usermngmt/target/usermngmt-0.0.1-SNAPSHOT.jar
       - backend/usermngmt/target/classes/ase_project.keystore
@@ -235,8 +226,10 @@ docker-boxmanagement:
   #tags:
   #  - shell
   when: always
-  dependencies:
-    - package-boxmanagement
+  cache:
+    paths:
+      - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
+      - backend/boxmanagement/target/classes/public.key
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/boxmanagement
@@ -249,8 +242,10 @@ docker-deliverymanagement:
   #tags:
   #  - shell
   when: always
-  dependencies:
-    - package-deliverymanagement
+  cache:
+    paths:
+      - backend/deliverymanagement/target/deliverymanagement-0.0.1-SNAPSHOT.jar
+      - backend/deliverymanagement/target/classes/public.key
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/deliverymanagement
@@ -263,8 +258,10 @@ docker-emailnotification:
   #tags:
   #  - shell
   when: always
-  dependencies:
-    - package-emailnotification
+  cache:
+    paths:
+      - backend/emailnotification/target/emailnotification-0.0.1-SNAPSHOT.jar
+      - backend/emailnotification/target/classes/public.key
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/emailnotification
@@ -277,8 +274,9 @@ docker-eureka-discovery-service:
   #tags:
   #  - shell
   when: always
-  dependencies:
-    - package-eureka-discovery-service
+  cache:
+    paths:
+      - backend/eureka-discovery-service/target/eureka-discovery-service-0.0.1-SNAPSHOT.jar
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/eureka-discovery-service
@@ -291,8 +289,9 @@ docker-gateway:
   #tags:
   #  - shell
   when: always
-  dependencies:
-    - package-gateway
+  cache:
+    paths:
+      - backend/gateway/target/gateway-0.0.1-SNAPSHOT.jar
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/gateway
@@ -305,8 +304,10 @@ docker-usermngmt:
   #tags:
   #  - shell
   when: always
-  dependencies:
-    - package-usermngmt
+  cache:
+    paths:
+      - backend/usermngmt/target/usermngmt-0.0.1-SNAPSHOT.jar
+      - backend/usermngmt/target/classes/ase_project.keystore
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/usermngmt
