@@ -110,12 +110,12 @@ build-usermngmt:
 package-boxmanagement:
   stage: package
   image: maven:latest
-  rules:
-    - changes:
-      - backend/boxmanagement/src/**/* #All files in the directory and in subsequent suirectories
-    - changes:
-      - backend/boxmanagement/Dockerfile
-      when: never
+  #rules:
+  #  - changes:
+  #    - backend/boxmanagement/src/**/* #All files in the directory and in subsequent suirectories
+  #  - changes:
+  #    - backend/boxmanagement/Dockerfile
+  #    when: never
   script:
     - cd ./backend/boxmanagement
     - chmod +x mvnw
