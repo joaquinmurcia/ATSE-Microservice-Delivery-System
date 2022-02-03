@@ -1,7 +1,7 @@
 package edu.tum.ase.asedelivery.usermngmt.filter;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUserPrincipal;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
 import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import edu.tum.ase.asedelivery.usermngmt.service.AuthService;

@@ -82,13 +82,6 @@
 			<version>0.11.2</version>
 			<scope>runtime</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.example</groupId>
-			<artifactId>asedeliverymodels</artifactId>
-			<version>1.0-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

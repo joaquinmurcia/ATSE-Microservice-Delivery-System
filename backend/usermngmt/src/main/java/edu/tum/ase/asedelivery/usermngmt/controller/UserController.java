@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUserPrincipal;
-import edu.tum.ase.asedelivery.asedeliverymodels.Constants;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
+import edu.tum.ase.asedelivery.usermngmt.model.Constants;
 import edu.tum.ase.asedelivery.usermngmt.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;

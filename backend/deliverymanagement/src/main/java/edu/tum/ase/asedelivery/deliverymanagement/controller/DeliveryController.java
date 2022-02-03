@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.deliverymanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.*;
+import edu.tum.ase.asedelivery.deliverymanagement.model.*;
 import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.deliverymanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;

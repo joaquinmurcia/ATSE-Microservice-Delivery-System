@@ -1,9 +1,9 @@
 package edu.tum.ase.asedelivery.boxmanagement;
 
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.asedelivery.asedeliverymodels.Address;
-import edu.tum.ase.asedelivery.asedeliverymodels.Box;
-import edu.tum.ase.asedelivery.asedeliverymodels.BoxStatus;
+import edu.tum.ase.asedelivery.boxmanagement.model.Address;
+import edu.tum.ase.asedelivery.boxmanagement.model.Box;
+import edu.tum.ase.asedelivery.boxmanagement.model.BoxStatus;
 import edu.tum.ase.asedelivery.boxmanagement.repository.BoxRepository;
 import edu.tum.ase.asedelivery.boxmanagement.service.BoxService;
 import org.slf4j.Logger;
