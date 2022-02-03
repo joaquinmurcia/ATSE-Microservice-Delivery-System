@@ -91,7 +91,7 @@ build-gateway:
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS clean compile
 
-package-usernmgnmt:
+build-usernmgnmt:
   stage: build
   image: maven:latest
   rules:
@@ -105,27 +105,27 @@ package-usernmgnmt:
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS clean compile
 
-  package:
-    stage: package
-    image: maven:latest
-    #rules:
-    #  - changes:
-    #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
-    #  - changes:
-    #    - backend/usernmgnmt/Dockerfile
-    #    when: never
-    script:
-      - cd ./backend/usernmgnmt
-      - chmod +x mvnw
-      - ./mvnw $MAVEN_CLI_OPTS package
-    #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
-    cache:
-      paths:
-        - backend/usernmgnmt/target/usernmgnmt-0.0.1-SNAPSHOT.jar
-    #artifacts:
-    #  expire_in: 1 day
-    #  paths:
-    #    - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
+package-boxmanagement:
+  stage: package
+  image: maven:latest
+  #rules:
+  #  - changes:
+  #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #    - backend/usernmgnmt/Dockerfile
+  #    when: never
+  script:
+    - cd ./backend/boxmanagement
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS package
+  #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
+  cache:
+    paths:
+      - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
+  #artifacts:
+  #  expire_in: 1 day
+  #  paths:
+  #    - compose-app/backend-service/target/backend-service-0.0.1-SNAPSHOT.jar
   
   #docker-build:
   #  stage: publish
