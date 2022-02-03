@@ -1,3 +1,5 @@
+# First time you need to run the pipeline manually, so that the .jar files are stored in cache
+
 stages:
   - build
   - package
@@ -122,6 +124,7 @@ package-boxmanagement:
   cache:
     paths:
       - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
+      - backend/boxmanagement/target/classes/public.key
   #artifacts:
   #  expire_in: 1 day
   #  paths:
@@ -130,12 +133,12 @@ package-boxmanagement:
 package-deliverymanagement:
   stage: package
   image: maven:latest
-  rules:
-    - changes:
-      - backend/deliverymanagement/src/**/*
-    - changes:
-      - backend/deliverymanagement/Dockerfile
-      when: never
+  #rules:
+  #  - changes:
+  #    - backend/deliverymanagement/src/**/*
+  #  - changes:
+  #    - backend/deliverymanagement/Dockerfile
+  #    when: never
   script:
     - cd ./backend/deliverymanagement
     - chmod +x mvnw
@@ -143,16 +146,17 @@ package-deliverymanagement:
   cache:
     paths:
       - backend/deliverymanagement/target/deliverymanagement-0.0.1-SNAPSHOT.jar
+      - backend/deliverymanagement/target/classes/public.key
 
 package-emailnotification:
   stage: package
   image: maven:latest
-  rules:
-    - changes:
-      - backend/emailnotification/src/**/*
-    - changes:
-      - backend/emailnotification/Dockerfile
-      when: never
+  #rules:
+  #  - changes:
+  #    - backend/emailnotification/src/**/*
+  #  - changes:
+  #    - backend/emailnotification/Dockerfile
+  #    when: never
   script:
     - cd ./backend/emailnotification
     - chmod +x mvnw
@@ -160,6 +164,7 @@ package-emailnotification:
   cache:
     paths:
       - backend/emailnotification/target/emailnotification-0.0.1-SNAPSHOT.jar
+      - backend/emailnotification/target/classes/public.key
 
 package-eureka-discovery-service:
   stage: package
@@ -198,12 +203,12 @@ package-gateway:
 package-usermngmt:
   stage: package
   image: maven:latest
-  rules:
-    - changes:
-      - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
-    - changes:
-      - backend/usernmgnmt/Dockerfile
-      when: never
+  #rules:
+  #  - changes:
+  #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+  #  - changes:
+  #    - backend/usernmgnmt/Dockerfile
+  #    when: never
   script:
     - cd ./backend/usermngmt
     - chmod +x mvnw
@@ -211,6 +216,7 @@ package-usermngmt:
   cache:
     paths:
       - backend/usermngmt/target/usermngmt-0.0.1-SNAPSHOT.jar
+      - backend/usermngmt/target/classes/ase_project.keystore
 
 docker-boxmanagement:
   stage: publish
@@ -221,6 +227,7 @@ docker-boxmanagement:
   cache:
     paths:
       - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
+      - backend/boxmanagement/target/classes/public.key
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/boxmanagement
