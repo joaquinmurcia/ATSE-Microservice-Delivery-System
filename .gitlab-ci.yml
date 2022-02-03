@@ -231,8 +231,8 @@ docker-boxmanagement:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/boxmanagement
-    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/boxmanagement:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/boxmanagement:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/boxmanagement:latest . #TODO: allow other usernames
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/boxmanagement:latest
 
 docker-deliverymanagement:
   stage: publish
@@ -311,6 +311,19 @@ docker-usermngmt:
     - cd $CI_PROJECT_DIR/backend/usermngmt
     - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/usermngmt:latest . #TODO: allow other usernames
     - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/usermngmt:latest
+
+docker-frontend:
+  stage: publish
+  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+  #tags:
+  #  - shell
+  when: always
+  script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - cd $CI_PROJECT_DIR/frontend
+  - docker build -t $CI_REGISTRY/joaquinmurcia/exercise_12/frontend-12:latest .
+  - docker image push $CI_REGISTRY/joaquinmurcia/exercise_12/frontend-12:latest
+
 
 #artifacts:
 #  paths:
