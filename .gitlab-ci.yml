@@ -212,7 +212,7 @@ package-usermngmt:
     paths:
       - backend/usermngmt/target/usermngmt-0.0.1-SNAPSHOT.jar
 
-docker-build-boxmanagement:
+docker-boxmanagement:
   stage: publish
   # the tag 'shell' advices only GitLab runners using this tag to pick up that job
   #tags:
@@ -224,17 +224,8 @@ docker-build-boxmanagement:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/boxmanagement
-    - docker build -t $CI_REGISTRY/group/project/boxmanagement:latest .
-
-docker-push-boxmanagement:
-  stage: publish
-  when: always
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  script:
-    - docker login -u glpat-VzjTqUBLaYp52-GZTnHy $CI_REGISTRY #! You need to create a deploy token with read and write registry #permissions (bug)
-    - docker push $CI_REGISTRY/group/project/boxmanagement:latest
+    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/boxmanagement:latest . #TODO: allow other usernames
+    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/boxmanagement:latest
 
 
 #artifacts:
