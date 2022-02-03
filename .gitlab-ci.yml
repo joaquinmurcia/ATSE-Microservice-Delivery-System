@@ -18,23 +18,6 @@ cache:
   paths:
     - .m2/repository
 
-build-asedeliverymodels:
-  stage: build
-  image: maven:latest
-  rules:
-    - changes:
-        - backend/asedeliverymodels/src/**/* #All files in the directory and in subsequent subdirectories
-    - changes:
-        - backend/asedeliverymodels/Dockerfile
-      when: never
-  cache:
-    paths:
-      - backend/asedeliverymodels/target/asedeliverymodels-0.0.1-SNAPSHOT.jar
-  script:
-    - cd ./backend/asedeliverymodels
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS clean package
-
 build-boxmanagement:
   stage: build
   image: maven:latest
@@ -52,75 +35,75 @@ build-boxmanagement:
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS clean compile
 
-  #build-deliverymanagement:
-  #  stage: build
-  #  image: maven:latest
-  #  rules:
-  #    - changes:
-  #      - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
-  #    - changes:
-  #      - backend/deliverymanagement/Dockerfile
-  #      when: never
-  #  script:
-  #    - cd ./backend/deliverymanagement
-  #    - chmod +x mvnw
-  #    - ./mvnw $MAVEN_CLI_OPTS clean compile
-  #
-  #build-emailnotification:
-  #  stage: build
-  #  image: maven:latest
-  #  rules:
-  #    - changes:
-  #      - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
-  #    - changes:
-  #      - backend/emailnotification/Dockerfile
-  #      when: never
-  #  script:
-  #    - cd ./backend/emailnotification
-  #    - chmod +x mvnw
-  #    - ./mvnw $MAVEN_CLI_OPTS clean compile
-  #
-  #build-eureka-discovery-service:
-  #  stage: build
-  #  image: maven:latest
-  #  rules:
-  #    - changes:
-  #      - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
-  #    - changes:
-  #      - backend/eureka-discovery-service/Dockerfile
-  #      when: never
-  #  script:
-  #    - cd ./backend/eureka-discovery-service
-  #    - chmod +x mvnw
-  #    - ./mvnw $MAVEN_CLI_OPTS clean compile
-  #
-  #build-gateway:
-  #  stage: build
-  #  image: maven:latest
-  #  rules:
-  #    - changes:
-  #      - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
-  #    - changes:
-  #      - backend/gateway/Dockerfile
-  #      when: never
-  #  script:
-  #    - cd ./backend/gateway
-  #    - chmod +x mvnw
-  #    - ./mvnw $MAVEN_CLI_OPTS clean compile
-  #
-  #build-usernmgnmt:
-  #  stage: build
-  #  image: maven:latest
-  #  rules:
-  #    - changes:
-  #      - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
-  #    - changes:
-  #      - backend/usernmgnmt/Dockerfile
-  #      when: never
-  #  script:
-  #    - cd ./backend/usernmgnmt
-  #    - chmod +x mvnw
-  #    - ./mvnw $MAVEN_CLI_OPTS clean compile
+build-deliverymanagement:
+    stage: build
+    image: maven:latest
+    rules:
+      - changes:
+        - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
+      - changes:
+        - backend/deliverymanagement/Dockerfile
+        when: never
+    script:
+      - cd ./backend/deliverymanagement
+      - chmod +x mvnw
+      - ./mvnw $MAVEN_CLI_OPTS clean compile
+  
+build-emailnotification:
+  stage: build
+  image: maven:latest
+  rules:
+    - changes:
+      - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/emailnotification/Dockerfile
+      when: never
+  script:
+    - cd ./backend/emailnotification
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS clean compile
+
+build-eureka-discovery-service:
+  stage: build
+  image: maven:latest
+  rules:
+    - changes:
+      - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/eureka-discovery-service/Dockerfile
+      when: never
+  script:
+    - cd ./backend/eureka-discovery-service
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS clean compile
+
+build-gateway:
+  stage: build
+  image: maven:latest
+  rules:
+    - changes:
+      - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/gateway/Dockerfile
+      when: never
+  script:
+    - cd ./backend/gateway
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS clean compile
+
+build-usernmgnmt:
+  stage: build
+  image: maven:latest
+  rules:
+    - changes:
+      - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+    - changes:
+      - backend/usernmgnmt/Dockerfile
+      when: never
+  script:
+    - cd ./backend/usernmgnmt
+    - chmod +x mvnw
+    - ./mvnw $MAVEN_CLI_OPTS clean compile
 
   #package:
   #  stage: package
