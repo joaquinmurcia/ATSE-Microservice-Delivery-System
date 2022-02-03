@@ -91,7 +91,7 @@ build-gateway:
     - chmod +x mvnw
     - ./mvnw $MAVEN_CLI_OPTS clean compile
 
-build-usernmgnmt:
+package-usernmgnmt:
   stage: build
   image: maven:latest
   rules:
