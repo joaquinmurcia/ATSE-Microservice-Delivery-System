@@ -322,9 +322,9 @@ docker-frontend:
   when: always
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - cd $CI_PROJECT_DIR/frontend
-  - docker build -t $CI_REGISTRY/ase-21-22/team-32/exercise_12/ase-frontend:latest .
-  - docker image push $CI_REGISTRY/ase-21-22/team-32/exercise_12/ase-frontend:latest
+  - cd $CI_PROJECT_DIR/frontend/ase_frontend
+  - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase-frontend:latest .
+  - docker image push $CI_REGISTRY/ase-21-22/team-32/ase-frontend:latest
 
 
 #artifacts:
