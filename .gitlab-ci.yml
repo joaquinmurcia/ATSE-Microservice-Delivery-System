@@ -112,12 +112,12 @@ build-usermngmt:
 package-boxmanagement:
   stage: package
   image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/boxmanagement/src/**/* #All files in the directory and in subsequent suirectories
-  #  - changes:
-  #    - backend/boxmanagement/Dockerfile
-  #    when: never
+  rules:
+    - changes:
+      - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
+    - changes:
+      - backend/boxmanagement/Dockerfile
+      when: never
   script:
     - cd ./backend/boxmanagement
     - chmod +x mvnw
@@ -233,8 +233,8 @@ docker-boxmanagement:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/boxmanagement
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/boxmanagement:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/boxmanagement:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-boxmanagement:latest .
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-boxmanagement:latest
 
 docker-deliverymanagement:
   stage: publish
@@ -249,8 +249,8 @@ docker-deliverymanagement:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/deliverymanagement
-    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/deliverymanagement:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/deliverymanagement:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest .
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest
 
 docker-emailnotification:
   stage: publish
@@ -265,8 +265,8 @@ docker-emailnotification:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/emailnotification
-    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/emailnotification:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/emailnotification:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-emailnotification:latest .
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-emailnotification:latest
 
 docker-eureka-discovery-service:
   stage: publish
@@ -280,8 +280,8 @@ docker-eureka-discovery-service:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/eureka-discovery-service
-    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/eureka-discovery-service:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/eureka-discovery-service:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-discovery:latest .
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-discovery:latest
 
 docker-gateway:
   stage: publish
@@ -295,8 +295,8 @@ docker-gateway:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/gateway
-    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/gateway:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/gateway:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-gateway:latest .
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-gateway:latest
 
 docker-usermngmt:
   stage: publish
@@ -311,8 +311,8 @@ docker-usermngmt:
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - cd $CI_PROJECT_DIR/backend/usermngmt
-    - docker build -t $CI_REGISTRY/joaquinmurcia/ase_project/usermngmt:latest . #TODO: allow other usernames
-    - docker image push $CI_REGISTRY/joaquinmurcia/ase_project/usermngmt:latest
+    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-usermngmt:latest .
+    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-usermngmt:latest
 
 docker-frontend:
   stage: publish
@@ -323,8 +323,8 @@ docker-frontend:
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   - cd $CI_PROJECT_DIR/frontend
-  - docker build -t $CI_REGISTRY/joaquinmurcia/exercise_12/frontend-12:latest .
-  - docker image push $CI_REGISTRY/joaquinmurcia/exercise_12/frontend-12:latest
+  - docker build -t $CI_REGISTRY/ase-21-22/team-32/exercise_12/ase-frontend:latest .
+  - docker image push $CI_REGISTRY/ase-21-22/team-32/exercise_12/ase-frontend:latest
 
 
 #artifacts:
