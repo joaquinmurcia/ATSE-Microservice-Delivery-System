@@ -204,7 +204,7 @@ public class DeliveryController {
             Delivery updatedDelivery = oldDelivery.copyWith(delivery);
 
             //Checks if id was changed
-            if(oldDelivery.getId() != updatedDelivery.getId()){
+            if(!oldDelivery.getId().equals(updatedDelivery.getId())){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
