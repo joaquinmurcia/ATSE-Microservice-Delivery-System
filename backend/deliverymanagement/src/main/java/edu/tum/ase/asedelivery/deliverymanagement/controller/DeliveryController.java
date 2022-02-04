@@ -68,7 +68,7 @@ public class DeliveryController {
                 }
 
                 // Set rfid token of users in delivery
-                delivery.setResponsibleDelivererRfidToken(targetCustomer.getBody().getRfidToken());
+                delivery.setTargetCustomerRFIDToken(targetCustomer.getBody().getRfidToken());
                 delivery.setResponsibleDelivererRfidToken(responsibleDeliverer.getBody().getRfidToken());
             }
 
