@@ -2,7 +2,7 @@ import {makeStyles} from "@material-ui/core";
 import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
-import {getBoxAsync, selectBoxes, startEditElement, deleteElement} from "./boxesSlice";
+import {getBoxesAsync, selectBoxes, startEditElement, deleteElement} from "./boxesSlice";
 
 const useStyles = makeStyles(() => {
     return {
@@ -38,6 +38,24 @@ const useStyles = makeStyles(() => {
         }
     };
 });
+
+const listToString = (stringList) => {
+
+    if(stringList.length==0){
+        return "";
+    } else {
+        return stringList[0].toString();
+        var res = stringList[0].toString();
+        for(var i=1; i< stringList.length;i++ ){
+            res = res + ", " + stringList[i].toString();
+        }
+        return res;
+    }
+}
+
+const addressToString = (addressObject) => {
+    return addressObject.streetName + " " + addressObject.streetNumber + "\n" + addressObject.postcode + " " + addressObject.city + "\n" + addressObject.country;
+}
 
 const BoxesList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
@@ -79,19 +97,19 @@ const BoxesList = () => {
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id} className={cellStyle}>
 
                                     <TableCell>
-                                        {row['id']}
+                                        {row.id}
                                     </TableCell>
                                     <TableCell>
-                                        {row['address']}
+                                        {addressToString(row.address)}
                                     </TableCell>
                                     <TableCell >
-                                        {row['boxStatus']}
+                                        {row.boxStatus}
                                     </TableCell>
                                     <TableCell>
-                                        {row['deliveryIDs']}
+                                        {listToString(row.deliveryIDs)}
                                     </TableCell>
                                     <TableCell>
-                                        {row['raspberryPiID']}
+                                        {row.raspberryPiID}
                                     </TableCell>
                                     <TableCell>
                                         <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>

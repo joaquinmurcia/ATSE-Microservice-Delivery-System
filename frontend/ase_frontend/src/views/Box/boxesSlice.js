@@ -9,7 +9,7 @@ const initialState = {
 }
 
 
-export const getBoxAsync = createAsyncThunk(
+export const getBoxesAsync = createAsyncThunk(
     'GET',
     async (arg, thunkAPI) => {
         const response = await fetch('http://127.0.0.1:9000/boxmanagement/boxes');
@@ -49,7 +49,7 @@ const boxesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getBoxAsync.fulfilled, (state, action) => {
+            .addCase(getBoxesAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
                 state.list = action.payload;
             });
