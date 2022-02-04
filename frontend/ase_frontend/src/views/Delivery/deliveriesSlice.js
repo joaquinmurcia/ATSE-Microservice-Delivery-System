@@ -16,20 +16,23 @@ export const getDeliveriesAsync = createAsyncThunk(
             method: "GET",
             credentials:"include"
         }
-        const response = await fetch('http://127.0.0.1:9000/deliverymanagement/deliveries',requestOptions).then((data)=> data.json());
+        const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
+        const response = await fetch(link,requestOptions).then((data)=> data.json());
+        console.log("deliveries recieved")
         return response;
     }
 );
 
 export const deleteDeliveryAsync = createAsyncThunk(
     'DELETE',
-    async(id) => {
+    async(elem) => {
         const requestOptions = {
             methode: "DELETE",
             credentials: "include"
         }
-        const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + id;
+        const link = '127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         await fetch(link ,requestOptions);
+        console.log("deleted: " + elem.id)
     }
 )
 
@@ -42,7 +45,11 @@ export const editDeliveryAsync = createAsyncThunk(
             body: JSON.stringify(elem),
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
-        await fetch(link ,requestOptions);
+        console.log(link);
+        const response = await fetch(link ,requestOptions).then((data)=> data.json());
+        console.log("test");
+        console.log("changed " + elem.id);
+        return response;
     }
 )
 
@@ -52,11 +59,14 @@ export const addDeliveryAsync = createAsyncThunk(
         const requestOptions = {
             methode: "POST",
             credentials: "include",
-            body: elem,
+            body: JSON.stringify([elem]),
         }
         console.log(elem);
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
-        await fetch(link ,requestOptions);
+        console.log(requestOptions.body);
+        const response = await fetch(link ,requestOptions);
+        console.log("Added new Element");
+        console.log(response);
     }
 )
 
@@ -83,7 +93,6 @@ const deliveriesSlice = createSlice({
             })
             .addCase(deleteDeliveryAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
-                state.list = state.list.filter(elem => elem.id !== action.payload.id);
             })
             .addCase(editDeliveryAsync.fulfilled, (state, action)=> {
                 state.status = 'idle';
