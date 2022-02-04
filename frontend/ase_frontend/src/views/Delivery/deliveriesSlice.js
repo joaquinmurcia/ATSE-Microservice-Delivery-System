@@ -14,7 +14,7 @@ export const getDeliveriesAsync = createAsyncThunk(
     async (arg, thunkAPI) => {
         const requestOptions = {
             method: "GET",
-            credentials:"include"
+            credentials: "include"
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
         const response = await fetch(link,requestOptions).then((data)=> data.json());
@@ -27,10 +27,10 @@ export const deleteDeliveryAsync = createAsyncThunk(
     'DELETE',
     async(elem) => {
         const requestOptions = {
-            methode: "DELETE",
+            method: "DELETE",
             credentials: "include"
         }
-        const link = '127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
+        const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         await fetch(link ,requestOptions);
         console.log("deleted: " + elem.id)
     }
@@ -40,9 +40,9 @@ export const editDeliveryAsync = createAsyncThunk(
     'PUT',
     async(elem) => {
         const requestOptions = {
-            methode: "PUT",
+            method: "PUT",
             credentials: "include",
-            body: JSON.stringify(elem),
+            body: elem
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         console.log(link);
@@ -56,11 +56,10 @@ export const addDeliveryAsync = createAsyncThunk(
     'POST',
     async(elem) => {
         const requestOptions = {
-            methode: "POST",
+            method: "POST",
             credentials: "include",
             body: JSON.stringify([elem]),
         }
-        console.log(elem);
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
         console.log(requestOptions.body);
         const response = await fetch(link ,requestOptions);
@@ -95,14 +94,11 @@ const deliveriesSlice = createSlice({
             })
             .addCase(editDeliveryAsync.fulfilled, (state, action)=> {
                 state.status = 'idle';
-                state.list = state.list.map( elem => elem.id === action.payload.id? action.payload : elem );
                 state.isEdit = false;
                 state.editId = 0;
             })
             .addCase(addDeliveryAsync.fulfilled, (state, action)=> {
                 state.status = 'idle';
-                action.payload.id = state.list.length +1;
-                state.list = state.list.push(action.payload);
             });
     }
 
