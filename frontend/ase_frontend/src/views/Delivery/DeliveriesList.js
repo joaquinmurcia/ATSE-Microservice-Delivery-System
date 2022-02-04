@@ -58,57 +58,57 @@ const DeliveriesList = () => {
 
     return (
         <Container>
-        <Paper  sx={{border: 1, borderRadius: 1}}>
-        <TableContainer>
-            <Table stickyHeader aria-label="sticky table" className={listStyle}>
-                <TableHead>
-                    <TableRow>
-                        {columns.map((column) => (
-                            <TableCell
-                                key={column.id}
-                                align={column.align}
-                                style={{ minWidth: column.minWidth }}
-                            >
-                                {column.label}
-                            </TableCell>
-                        ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {list.map(row => {
-                            return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id} className={cellStyle}>
+            <Paper  sx={{border: 1, borderRadius: 1}}>
+                <TableContainer>
+                    <Table stickyHeader aria-label="sticky table" className={listStyle}>
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {list.map(row => {
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id} className={cellStyle}>
 
-                                    <TableCell>
-                                        {row['id']}
-                                    </TableCell>
-                                    <TableCell>
-                                        {row['targetBox']}
-                                    </TableCell>
-                                    <TableCell >
-                                        {row['targetCustomer']}
-                                    </TableCell>
-                                    <TableCell>
-                                        {row['responsibleDeliverer']}
-                                    </TableCell>
-                                    <TableCell>
-                                        {row['deliveryStatus']}
-                                    </TableCell>
-                                    <TableCell>
-                                        <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
-                                            <ModeEdit/>
-                                        </button>
-                                        <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteDeliveryAsync(row.id))}>
-                                            <Delete/>
-                                        </button>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
-                </TableBody>
-            </Table>
-        </TableContainer>
-        </Paper>
+                                        <TableCell>
+                                            {row['id']}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row['targetBox']}
+                                        </TableCell>
+                                        <TableCell >
+                                            {row['targetCustomer']}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row['responsibleDeliverer']}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row['deliveryStatus']}
+                                        </TableCell>
+                                        <TableCell>
+                                            <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
+                                                <ModeEdit/>
+                                            </button>
+                                            <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteDeliveryAsync(row))}>
+                                                <Delete/>
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         </Container>
     );
 };

@@ -63,6 +63,7 @@ const AddNewDeliveryForm = () => {
                     <Select name="deliveryStatus" labelId="selectStatus" label="" value={elemDeliveryStatus} onChange={handleChangeDeliveryStatus}>
                         <MenuItem value=""><em>None</em></MenuItem>
                         <MenuItem value="open">Open</MenuItem>
+                        <MenuItem value="collected">Collected</MenuItem>
                         <MenuItem value="pickedUp">Picked Up</MenuItem>
                         <MenuItem value="delivered">Delivered</MenuItem>
                     </Select>
