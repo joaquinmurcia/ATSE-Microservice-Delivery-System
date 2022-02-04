@@ -17,7 +17,7 @@ export const getBoxesAsync = createAsyncThunk(
             credentials:"include"
         }
         const link = 'http://127.0.0.1:9000/boxmanagement/boxes';
-        const response = await fetch(link,requestOptions).then((data)=> data.json());;
+        const response = await fetch(link,requestOptions).then((data)=> data.json());
         return response;
     }
 );
@@ -66,10 +66,10 @@ export const selectBoxes = (state) => state.boxes.list;
 
 export const isEditState = (state) => state.boxes.isEdit;
 
-export const getBox = (state,action) => state.boxes.list.filter(elem => elem.id !== action.payload.id)[0];
+export const getBox = (state,action) => {return state.boxes.list.filter(elem => elem.id !== action.payload.id)[0]};
 
-export const getEditBox = (state) => state.boxes.list.filter(elem => elem.id === state.boxes.editId)[0];
+export const getEditBox = (state) => {return state.boxes.list.filter(elem => elem.id === state.boxes.editId)[0]};
 
-export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = boxesSlice.actions
+export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = boxesSlice.actions;
 
 export default boxesSlice.reducer

@@ -47,7 +47,6 @@ export const editDeliveryAsync = createAsyncThunk(
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         console.log(link);
         const response = await fetch(link ,requestOptions).then((data)=> data.json());
-        console.log("test");
         console.log("changed " + elem.id);
         return response;
     }
@@ -113,10 +112,10 @@ export const selectDeliveries = (state) => state.deliveries.list;
 
 export const isEditState = (state) => state.deliveries.isEdit;
 
-export const getDelivery = (state,action) => state.deliveries.list.filter(elem => elem.id !== action.payload.id)[0];
+export const getDelivery = (state,action) => {return state.deliveries.list.filter(elem => elem.id !== action.payload.id)[0]};
 
-export const getEditDelivery = (state) => state.deliveries.list.filter(elem => elem.id === state.deliveries.editId)[0];
+export const getEditDelivery = (state) => {return state.deliveries.list.filter(elem => elem.id === state.deliveries.editId)[0]};
 
-export const {startEditElement, cancelEdit} = deliveriesSlice.actions
+export const {startEditElement, cancelEdit} = deliveriesSlice.actions;
 
 export default deliveriesSlice.reducer
