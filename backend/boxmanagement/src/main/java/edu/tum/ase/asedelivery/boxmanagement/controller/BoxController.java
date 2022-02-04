@@ -114,7 +114,7 @@ public class BoxController {
             Box oldBox = boxOptional.get();
             Box updatedBox = oldBox.copyWith(box);
 
-            if(oldBox.getId().equals(updatedBox.getId()) || oldBox.getAddress() != updatedBox.getAddress()){
+            if(!oldBox.getId().equals(updatedBox.getId())){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
