@@ -10,10 +10,10 @@ const EditBoxForm = () => {
     const dispatch = useDispatch();
     const elementToChange = useSelector(getEditBox);
 
-    const[elemAddress,setAddress] = useState(elementToChange.elemAddress);
-    const[elemBoxStatus,setBoxStatus] = useState(elementToChange.elemBoxStatus);
-    const[elemDeliveryIDs,setDeliveryIDs] = useState(elementToChange.elemDeliveryIDs);
-    const[elemRaspberryPiID,setRaspberryPiID] = useState(elementToChange.elemRaspberryPiID);
+    const[elemAddress,setAddress] = useState(elementToChange.address);
+    const[elemDeliveryIDs,setDeliveryIDs] = useState(elementToChange.deliveryIDs);
+    const[elemRaspberryPiID,setRaspberryPiID] = useState(elementToChange.raspberryPiID);
+    const[elemBoxStatus,setBoxStatus] = useState(elementToChange.boxStatus);
 
 
     const handleChangeAddress = (e) => {
@@ -35,9 +35,9 @@ const EditBoxForm = () => {
     function getElem() {
         return {
             elemAddress:  elemAddress,
-            elemBoxStatus: elemBoxStatus,
             elemDeliveryIDs: elemDeliveryIDs,
-            elemRaspberryPiID: elemRaspberryPiID
+            elemRaspberryPiID: elemRaspberryPiID,
+            elemBoxStatus: elemBoxStatus,
         }
     }
 
