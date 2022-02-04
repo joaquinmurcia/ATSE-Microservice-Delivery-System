@@ -78,7 +78,7 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
-                restTemplate.postForObject("http://localhost:9005/email/deliveryCreated", customer.getBody().getEmail(), String.class);
+                restTemplate.exchange("http://localhost:9005/email/deliveriesPickedUp", HttpMethod.POST, new HttpEntity<>(customer.getBody().getEmail(), headers), String.class);
             }
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
