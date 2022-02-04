@@ -59,24 +59,23 @@ public class BoxController {
             value = "",
             method = RequestMethod.GET
     )
-    @PreAuthorize(" hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<List<Box>> getBoxes(@RequestBody Optional<Box> payload) {
+    @PreAuthorize(" hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_CUSTOMER')")
+    public ResponseEntity<List<Box>> getBoxes(@RequestParam(required = false) String deliveryId, @RequestParam(required = false) BoxStatus boxStatus) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
         try {
             List<Box> boxes = new ArrayList<>();
             Query query = new Query();
 
             // Create query
-            if (payload.isPresent()) {
-                if (!Validation.isNullOrEmpty(payload.get().getBoxStatus())) {
-                    query.addCriteria(Criteria.where(Constants.BOX_STATUS).is(payload.get().getBoxStatus()));
-                }
-                if (!Validation.isNullOrEmpty(payload.get().getDeliveryIDs())) {
-                    query.addCriteria(Criteria.where(Constants.DELIVERY_ID).is(payload.get().getDeliveryIDs()));
-                }
 
-                boxes = boxService.findAll(query);
+            if (!Validation.isNullOrEmpty(boxStatus)) {
+                query.addCriteria(Criteria.where(Constants.BOX_STATUS).is(boxStatus));
             }
+            if (!Validation.isNullOrEmpty(deliveryId)) {
+                query.addCriteria(Criteria.where(Constants.DELIVERY_ID).is(deliveryId));
+            }
+
+            boxes = boxService.findAll(query);
 
             if (boxes.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -115,7 +114,7 @@ public class BoxController {
             Box oldBox = boxOptional.get();
             Box updatedBox = oldBox.copyWith(box);
 
-            if(oldBox.getId().equals(updatedBox.getId()) || oldBox.getAddress() != updatedBox.getAddress()){
+            if(!oldBox.getId().equals(updatedBox.getId())){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 

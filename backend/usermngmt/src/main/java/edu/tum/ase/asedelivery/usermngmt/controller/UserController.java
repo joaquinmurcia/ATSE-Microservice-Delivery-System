@@ -60,20 +60,20 @@ public class UserController {
             method = RequestMethod.GET
     )
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<List<AseUser>> getUsers(@RequestBody Optional<AseUser> payload) {
+    public ResponseEntity<List<AseUser>> getUsers() {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
         try {
             List<AseUser> users;
             Query query = new Query();
 
-            if (payload.isPresent()) {
+            /*if (payload.isPresent()) {
                 if (!Validation.isNullOrEmpty(payload.get().getName())) {
                     query.addCriteria(Criteria.where(Constants.NAME).is(payload.get().getName()));
                 }
                 if (!Validation.isNullOrEmpty(payload.get().getRfidToken())) {
                     query.addCriteria(Criteria.where(Constants.RFID_TOKEN).is(payload.get().getRfidToken()));
                 }
-            }
+            }*/
 
             // User and deliverer can only access their own user information
             String authority = authContext.getAuthorities().toString();
@@ -141,7 +141,7 @@ public class UserController {
                 _user.setName(user.getName());
             }
             if (!user.getPassword().isEmpty()){
-                _user.setPassword(user.getPassword());
+                _user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
             if (!user.getRfidToken().isEmpty()){
                 _user.setRfidToken(user.getRfidToken());

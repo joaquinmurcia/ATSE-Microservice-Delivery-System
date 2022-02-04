@@ -78,7 +78,7 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
-                restTemplate.postForObject("http://localhost:9005/email/deliveryCreated", customer.getBody().getEmail(), String.class);
+                restTemplate.exchange("http://localhost:9005/email/deliveriesPickedUp", HttpMethod.POST, new HttpEntity<>(customer.getBody().getEmail(), headers), String.class);
             }
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
@@ -111,25 +111,25 @@ public class DeliveryController {
             method = RequestMethod.GET
     )
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<List<Delivery>> getDeliveries(@RequestBody Delivery payload, @RequestHeader("Cookie") String cookie) {
+    public ResponseEntity<List<Delivery>> getDeliveries(@RequestParam(required = false) String boxId, @RequestParam(required = false) String customerId, @RequestParam(required = false) String delivererId, @RequestParam(required = false) DeliveryStatus deliveryStatus, @RequestHeader("Cookie") String cookie) {
         try {
             List<Delivery> deliveries;
             Query query = new Query();
 
-            if (!Validation.isNullOrEmpty(payload.getTargetBox())) {
-                query.addCriteria(Criteria.where(Constants.TARGET_BOX).is(payload.getTargetBox()));
+            if (!Validation.isNullOrEmpty(boxId)) {
+                query.addCriteria(Criteria.where(Constants.TARGET_BOX).is(boxId));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getTargetCustomer())) {
-                query.addCriteria(Criteria.where(Constants.TARGET_CUSTOMER).is(payload.getTargetCustomer()));
+            if (!Validation.isNullOrEmpty(customerId)) {
+                query.addCriteria(Criteria.where(Constants.TARGET_CUSTOMER).is(customerId));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getResponsibleDeliverer())) {
-                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(payload.getResponsibleDeliverer()));
+            if (!Validation.isNullOrEmpty(delivererId)) {
+                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(delivererId));
             }
 
-            if (!Validation.isNullOrEmpty(payload.getDeliveryStatus())) {
-                query.addCriteria(Criteria.where(Constants.DELIVERY_STATUS).is(payload.getDeliveryStatus()));
+            if (!Validation.isNullOrEmpty(deliveryStatus)) {
+                query.addCriteria(Criteria.where(Constants.DELIVERY_STATUS).is(deliveryStatus));
             }
 
             deliveries = deliveryService.findAll(query);
@@ -204,7 +204,7 @@ public class DeliveryController {
             Delivery updatedDelivery = oldDelivery.copyWith(delivery);
 
             //Checks if id was changed
-            if(oldDelivery.getId() != updatedDelivery.getId()){
+            if(!oldDelivery.getId().equals(updatedDelivery.getId())){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
