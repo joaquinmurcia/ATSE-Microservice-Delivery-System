@@ -16,7 +16,8 @@ export const getUsersAsync = createAsyncThunk(
             method: "GET",
             credentials:"include"
         }
-        const response = await fetch('http://127.0.0.1:9000/usermanagement/users', requestOptions).then((data)=> data.json());
+        const link = 'http://127.0.0.1:9000/usermanagement/users';
+        const response = await fetch(link, requestOptions).then((data)=> data.json());
         console.log(response);
         return response;
     }
@@ -66,10 +67,10 @@ export const selectUsers = (state) => state.users.list;
 
 export const isEditState = (state) => state.users.isEdit;
 
-export const getUser = (state,action) => state.users.list.filter(elem => elem.id !== action.payload.id)[0];
+export const getUser = (state,action) => { return state.users.list.filter(elem => elem.id !== action.payload.id)[0]};
 
-export const getEditUser = (state) => state.users.list.filter(elem => elem.id === state.users.editId)[0];
+export const getEditUser = (state) => { return state.users.list.filter(elem => elem.id === state.users.editId)[0]};
 
-export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = usersSlice.actions
+export const {addElement, startEditElement, editElement, cancelEdit, deleteElement} = usersSlice.actions;
 
-export default usersSlice.reducer
+export default usersSlice.reducer;
