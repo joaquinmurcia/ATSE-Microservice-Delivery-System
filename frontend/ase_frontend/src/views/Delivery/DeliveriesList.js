@@ -1,3 +1,4 @@
+import {useEffect} from 'react';
 import {makeStyles} from "@material-ui/core";
 import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
@@ -43,7 +44,10 @@ const DeliveriesList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
 
     const dispatch = useDispatch();
-    dispatch(getDeliveriesAsync());
+
+    useEffect(() => dispatch(getDeliveriesAsync()), [dispatch]);
+    //dispatch(getDeliveriesAsync());
+
     const list = useSelector(selectDeliveries);
 
 

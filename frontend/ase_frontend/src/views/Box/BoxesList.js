@@ -3,6 +3,7 @@ import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {getBoxesAsync, selectBoxes, startEditElement, deleteElement} from "./boxesSlice";
+import {useEffect} from "react";
 
 const useStyles = makeStyles(() => {
     return {
@@ -41,10 +42,9 @@ const useStyles = makeStyles(() => {
 
 const listToString = (stringList) => {
 
-    if(stringList.length==0){
-        return "";
+    if(stringList === undefined || stringList.length===0){
+        return "/";
     } else {
-        return stringList[0].toString();
         var res = stringList[0].toString();
         for(var i=1; i< stringList.length;i++ ){
             res = res + ", " + stringList[i].toString();
@@ -54,14 +54,17 @@ const listToString = (stringList) => {
 }
 
 const addressToString = (addressObject) => {
-    return addressObject.streetName + " " + addressObject.streetNumber + "\n" + addressObject.postcode + " " + addressObject.city + "\n" + addressObject.country;
+    if(addressObject !== undefined)
+        return addressObject.streetName.toString() + " " + addressObject.streetNumber.toString() + "\n" + addressObject.postcode.toString() + " " + addressObject.city.toString() + "\n" + addressObject.country.toString();
+    else return "";
 }
 
 const BoxesList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
 
     const dispatch = useDispatch();
-    dispatch(getBoxAsync());
+    //dispatch(getBoxesAsync());
+    useEffect(() => dispatch(getBoxesAsync()), [dispatch]);
     const list = useSelector(selectBoxes);
 
     const columns = [

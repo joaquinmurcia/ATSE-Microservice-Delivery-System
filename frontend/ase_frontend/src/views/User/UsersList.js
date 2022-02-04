@@ -3,6 +3,7 @@ import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {getUsersAsync, selectUsers, startEditElement, deleteElement} from "./usersSlice";
+import {useEffect} from "react";
 
 const useStyles = makeStyles(() => {
     return {
@@ -43,7 +44,8 @@ const UsersList = () => {
     const {listStyle, cellStyle,  deleteButtonStyle, editButtonStyle} = useStyles();
 
     const dispatch = useDispatch();
-    dispatch(getUsersAsync());
+    //dispatch(getUsersAsync());
+    useEffect(() => dispatch(getUsersAsync()), [dispatch]);
     const list = useSelector(selectUsers);
 
 
