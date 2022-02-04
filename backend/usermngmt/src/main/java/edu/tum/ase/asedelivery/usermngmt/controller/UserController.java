@@ -142,7 +142,7 @@ public class UserController {
                 _user.setName(user.getName());
             }
             if (!user.getPassword().isEmpty()){
-                _user.setPassword(user.getPassword());
+                _user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
             if (!user.getRfidToken().isEmpty()){
                 _user.setRfidToken(user.getRfidToken());
