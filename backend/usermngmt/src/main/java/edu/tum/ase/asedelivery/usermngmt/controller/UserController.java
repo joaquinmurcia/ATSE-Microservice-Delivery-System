@@ -147,6 +147,9 @@ public class UserController {
             if (!user.getRfidToken().isEmpty()){
                 _user.setRfidToken(user.getRfidToken());
             }
+            if (!user.getEmail().isEmpty()){
+                _user.setEmail(user.getEmail());
+            }
 
             if (!user.getRole().toString().isEmpty() && Stream.of("[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
                 _user.setRole(user.getRole());
