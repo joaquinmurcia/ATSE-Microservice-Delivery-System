@@ -79,19 +79,19 @@ const UsersList = () => {
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id} className={cellStyle}>
 
                                         <TableCell>
-                                            {row['id']}
+                                            {row.id}
                                         </TableCell>
                                         <TableCell>
-                                            {row['targetBox']}
+                                            {row.name}
                                         </TableCell>
                                         <TableCell >
-                                            {row['targetCustomer']}
+                                            {row.password}
+                                        </TableCell>
+                                        <TableCell >
+                                            {row.email}
                                         </TableCell>
                                         <TableCell>
-                                            {row['responsibleDriver']}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row['deliveryStatus']}
+                                            {row.role}
                                         </TableCell>
                                         <TableCell>
                                             <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>

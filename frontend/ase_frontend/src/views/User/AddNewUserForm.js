@@ -11,6 +11,7 @@ const AddNewUserForm = () => {
 
     const[elemName,setName] = useState("");
     const[elemPassword,setPassword] = useState("");
+    const[elemEmail,setEmail] = useState("");
     const[elemRole,setRole] = useState("");
 
     const handleChangeName = (e) => {
@@ -21,6 +22,10 @@ const AddNewUserForm = () => {
         setPassword(e.target.value);
     }
 
+    const handleChangeEmail= (e) => {
+        setEmail(e.target.value);
+    }
+
     const handleChangeRole = (e) => {
         setRole(e.target.value);
     }
@@ -29,12 +34,14 @@ const AddNewUserForm = () => {
         const newElement = {
             name:  elemName,
             password: elemPassword,
+            email: elemEmail,
             role: elemRole
         }
 
         setName("");
         setPassword("");
         setRole("")
+        setEmail("");
 
         return newElement
     }
@@ -48,6 +55,8 @@ const AddNewUserForm = () => {
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="name" label="Name" value={elemName} onChange={handleChangeName}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={elemPassword} onChange={handleChangePassword}/>
+                <br/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="email" label="Email" value={elemEmail} onChange={handleChangeEmail}/>
                 <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectRole">Role</InputLabel>

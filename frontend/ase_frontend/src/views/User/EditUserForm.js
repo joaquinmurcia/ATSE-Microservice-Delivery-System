@@ -11,7 +11,8 @@ const EditUserFrom = () => {
     const elementToChange = useSelector(getEditUser);
 
     const[elemName,setName] = useState(elementToChange.name);
-    const[elemPassword,setPassword] = useState(elementToChange.password);
+    const[elemPassword,setPassword] = useState("");
+    const[elemEmail,setEmail] = useState(elementToChange.email);
     const[elemRole,setRole] = useState(elementToChange.role);
 
     const handleChangeName = (e) => {
@@ -20,6 +21,9 @@ const EditUserFrom = () => {
 
     const handleChangePassword = (e) => {
         setPassword(e.target.value);
+    }
+    const handleChangeEmail= (e) => {
+        setEmail(e.target.value);
     }
 
     const handleChangeRole = (e) => {
@@ -30,6 +34,7 @@ const EditUserFrom = () => {
         return {
             name:  elemName,
             password: elemPassword,
+            email: elemEmail,
             role: elemRole
         }
     }
@@ -43,6 +48,8 @@ const EditUserFrom = () => {
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="name" label="Name" value={elemName} onChange={handleChangeName}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={elemPassword} onChange={handleChangePassword}/>
+                <br/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="email" label="Email" value={elemEmail} onChange={handleChangeEmail}/>
                 <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectRole">Status</InputLabel>
