@@ -82,21 +82,20 @@ const DeliveriesList = () => {
                             {list.map(row => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id} className={cellStyle}>
-
                                         <TableCell>
-                                            {row['id']}
+                                            {row.id}
                                         </TableCell>
                                         <TableCell>
-                                            {row['targetBox']}
+                                            {row.targetBox}
                                         </TableCell>
                                         <TableCell >
-                                            {row['targetCustomer']}
+                                            {row.targetCustomer}
                                         </TableCell>
                                         <TableCell>
-                                            {row['responsibleDeliverer']}
+                                            {row.responsibleDeliverer}
                                         </TableCell>
                                         <TableCell>
-                                            {row['deliveryStatus']}
+                                            {row.deliveryStatus}
                                         </TableCell>
                                         <TableCell>
                                             <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>

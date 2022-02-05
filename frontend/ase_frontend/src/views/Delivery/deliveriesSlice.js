@@ -18,7 +18,7 @@ export const getDeliveriesAsync = createAsyncThunk(
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
         const response = await fetch(link,requestOptions).then((data)=> data.json());
-        console.log("deliveries recieved")
+        console.log("Deliveries recieved")
         return response;
     }
 );
@@ -34,44 +34,45 @@ export const deleteDeliveryAsync = createAsyncThunk(
         await fetch(link ,requestOptions);
         console.log("deleted: " + elem.id)
     }
-)
+);
 
 export const editDeliveryAsync = createAsyncThunk(
     'PUT',
     async(elem) => {
-        const elem_json = JSON.stringify(elem)
-        console.log(elem_json)
+        const elem_json = JSON.stringify(elem);
+        console.log(elem_json);
         const requestOptions = {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
-              },
+                },
             credentials: "include",
             body: elem_json
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
-        console.log(link);
         const response = await fetch(link ,requestOptions).then((data)=> data.json());
         console.log("changed " + elem.id);
         return response;
     }
-)
+);
 
 export const addDeliveryAsync = createAsyncThunk(
     'POST',
     async(elem) => {
+        const elem_json = JSON.stringify([elem]);
         const requestOptions = {
             method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
             credentials: "include",
-            body: JSON.stringify([elem]),
+            body: elem_json,
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
-        console.log(requestOptions.body);
-        const response = await fetch(link ,requestOptions);
+        await fetch(link ,requestOptions);
         console.log("Added new Element");
-        console.log(response);
     }
-)
+);
 
 const deliveriesSlice = createSlice({
     name: 'deliveries',
