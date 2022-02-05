@@ -39,10 +39,15 @@ export const deleteDeliveryAsync = createAsyncThunk(
 export const editDeliveryAsync = createAsyncThunk(
     'PUT',
     async(elem) => {
+        const elem_json = JSON.stringify(elem)
+        console.log(elem_json)
         const requestOptions = {
             method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+              },
             credentials: "include",
-            body: elem
+            body: elem_json
         }
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         console.log(link);
