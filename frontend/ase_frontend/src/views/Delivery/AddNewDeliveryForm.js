@@ -36,14 +36,14 @@ const AddNewDeliveryForm = () => {
             targetCustomer: elemTargetCustomer,
             responsibleDeliverer: elemResponsibleDeliverer,
             deliveryStatus: elemDeliveryStatus
-        }
+        };
 
         setTargetBox("");
         setTargetCustomer("");
         setResponsibleDeliverer("");
         setDeliveryStatus("")
 
-        return newElement
+        return newElement;
     }
 
     return (

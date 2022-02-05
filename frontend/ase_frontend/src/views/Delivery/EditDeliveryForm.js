@@ -38,7 +38,7 @@ const EditDeliveryFrom = () => {
             targetCustomer: elemTargetCustomer,
             responsibleDeliverer: elemResponsibleDeliverer,
             deliveryStatus: elemDeliveryStatus
-        }
+        };
     }
 
     return (
@@ -71,4 +71,4 @@ const EditDeliveryFrom = () => {
     );
 }
 
-export default EditDeliveryFrom
+export default EditDeliveryFrom;
