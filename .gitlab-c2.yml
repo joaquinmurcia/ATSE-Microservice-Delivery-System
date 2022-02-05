@@ -1,6 +1,7 @@
 # First time you need to run the pipeline manually, so that the .jar files are stored in cache
 # Enable Container Registry in GitLab
 # Have some access token to execute the Docker login command
+# TODO: delete
 
 stages:
   - build
