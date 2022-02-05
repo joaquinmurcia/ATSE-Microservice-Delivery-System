@@ -2,7 +2,7 @@ import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material"
 import {useDispatch} from "react-redux";
 import React, {useState} from "react";
-import {addElement} from "./usersSlice";
+import {addUserAsync} from "./usersSlice";
 
 
 const AddNewUserForm = () => {
@@ -11,6 +11,7 @@ const AddNewUserForm = () => {
 
     const[elemName,setName] = useState("");
     const[elemPassword,setPassword] = useState("");
+    const[elemRFIDToken,setRFIDToken] = useState("");
     const[elemEmail,setEmail] = useState("");
     const[elemRole,setRole] = useState("");
 
@@ -20,6 +21,10 @@ const AddNewUserForm = () => {
 
     const handleChangePassword = (e) => {
         setPassword(e.target.value);
+    }
+
+    const handleChangeRFIDToken = (e) => {
+        setRFIDToken(e.target.value);
     }
 
     const handleChangeEmail= (e) => {
@@ -34,16 +39,18 @@ const AddNewUserForm = () => {
         const newElement = {
             name:  elemName,
             password: elemPassword,
+            rfidToken: elemRFIDToken,
             email: elemEmail,
             role: elemRole
-        }
+        };
 
         setName("");
         setPassword("");
-        setRole("")
+        setRFIDToken("");
+        setRole("");
         setEmail("");
 
-        return newElement
+        return newElement;
     }
 
     return (
@@ -55,6 +62,8 @@ const AddNewUserForm = () => {
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="name" label="Name" value={elemName} onChange={handleChangeName}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={elemPassword} onChange={handleChangePassword}/>
+                <br/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="rfidToken" label="RFID Token" value={elemRFIDToken} onChange={handleChangeRFIDToken}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="email" label="Email" value={elemEmail} onChange={handleChangeEmail}/>
                 <br/>
@@ -68,7 +77,7 @@ const AddNewUserForm = () => {
                     </Select>
                 </FormControl>
                 <br/>
-                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success" onClick={()=> dispatch(addElement(getElem()))}>Add</Button>
+                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success" onClick={()=> dispatch(addUserAsync(getElem()))}>Add</Button>
             </Paper>
         </Container>
     );

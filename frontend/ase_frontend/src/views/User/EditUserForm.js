@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {cancelEdit, editElement, getEditUser} from "./usersSlice";
+import {cancelEdit, editUserAsync, getEditUser} from "./usersSlice";
 
 
 const EditUserFrom = () => {
@@ -12,6 +12,7 @@ const EditUserFrom = () => {
 
     const[elemName,setName] = useState(elementToChange.name);
     const[elemPassword,setPassword] = useState("");
+    const[elemRFIDToken,setRFIDToken] = useState(elementToChange.rfidToken);
     const[elemEmail,setEmail] = useState(elementToChange.email);
     const[elemRole,setRole] = useState(elementToChange.role);
 
@@ -22,7 +23,12 @@ const EditUserFrom = () => {
     const handleChangePassword = (e) => {
         setPassword(e.target.value);
     }
-    const handleChangeEmail= (e) => {
+
+    const handleChangeRFIDToken = (e) => {
+        setRFIDToken(e.target.value);
+    }
+
+    const handleChangeEmail = (e) => {
         setEmail(e.target.value);
     }
 
@@ -32,11 +38,13 @@ const EditUserFrom = () => {
 
     function getElem() {
         return {
+            id: elementToChange.id,
             name:  elemName,
             password: elemPassword,
+            rfidToken: elemRFIDToken,
             email: elemEmail,
             role: elemRole
-        }
+        };
     }
 
     return (
@@ -47,25 +55,27 @@ const EditUserFrom = () => {
                 </Typography>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="name" label="Name" value={elemName} onChange={handleChangeName}/>
                 <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={elemPassword} onChange={handleChangePassword}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="New Password" value={elemPassword} onChange={handleChangePassword}/>
+                <br/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="rfidToken" label="RFID Token" value={elemRFIDToken} onChange={handleChangeRFIDToken}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="email" label="Email" value={elemEmail} onChange={handleChangeEmail}/>
                 <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
-                    <InputLabel id="selectRole">Status</InputLabel>
+                    <InputLabel id="selectRole">Role</InputLabel>
                     <Select name="role" labelId="selectRole" label="" value={elemRole} onChange={handleChangeRole}>
                         <MenuItem value=""><em>None</em></MenuItem>
-                        <MenuItem value="customer">Customer</MenuItem>
-                        <MenuItem value="deliverer">Deliverer</MenuItem>
-                        <MenuItem value="dispatcher">Dispatcher</MenuItem>
+                        <MenuItem value="ROLE_CUSTOMER">Customer</MenuItem>
+                        <MenuItem value="ROLE_DELIVERER">Deliverer</MenuItem>
+                        <MenuItem value="ROLE_DISPATCHER">Dispatcher</MenuItem>
                     </Select>
                 </FormControl>
                 <br/>
-                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editElement(getElem()))}>Change</Button>
+                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editUserAsync(getElem()))}>Change</Button>
                 <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="error" onClick={()=> dispatch(cancelEdit())}>Cancel</Button>
             </Paper>
         </Container>
     );
 }
 
-export default EditUserFrom
+export default EditUserFrom;

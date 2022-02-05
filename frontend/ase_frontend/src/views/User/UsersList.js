@@ -2,7 +2,7 @@ import {makeStyles} from "@material-ui/core";
 import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
-import {getUsersAsync, selectUsers, startEditElement, deleteElement} from "./usersSlice";
+import {getUsersAsync, selectUsers, startEditElement, deleteUserAsync} from "./usersSlice";
 import {useEffect} from "react";
 
 const useStyles = makeStyles(() => {
@@ -52,7 +52,7 @@ const UsersList = () => {
     const columns = [
         { id: 'id', label: 'Id', minWidth: 30},
         { id: 'name', label: 'Name', minWidth: 80 },
-        { id: 'password', label: 'Password', minWidth: 80},
+        { id: 'email', label: 'Email', minWidth: 80},
         { id: 'role', label: 'Role', minWidth: 80 },
         { id: 'buttons', label: 'Actions', minWidth: 90 },
     ];
@@ -87,9 +87,6 @@ const UsersList = () => {
                                             {row.name}
                                         </TableCell>
                                         <TableCell >
-                                            {row.password}
-                                        </TableCell>
-                                        <TableCell >
                                             {row.email}
                                         </TableCell>
                                         <TableCell>
@@ -99,7 +96,7 @@ const UsersList = () => {
                                             <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
                                                 <ModeEdit/>
                                             </button>
-                                            <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteElement(row))}>
+                                            <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteUserAsync(row))}>
                                                 <Delete/>
                                             </button>
                                         </TableCell>
