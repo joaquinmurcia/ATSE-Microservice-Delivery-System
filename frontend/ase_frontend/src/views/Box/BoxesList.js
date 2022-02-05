@@ -2,8 +2,9 @@ import {makeStyles} from "@material-ui/core";
 import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
-import {getBoxesAsync, selectBoxes, startEditElement, deleteElement} from "./boxesSlice";
+import {getBoxesAsync, selectBoxes, startEditElement} from "./boxesSlice";
 import {useEffect} from "react";
+import {deleteBoxAsync} from "./boxesSlice";
 
 const useStyles = makeStyles(() => {
     return {
@@ -118,7 +119,7 @@ const BoxesList = () => {
                                         <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
                                             <ModeEdit/>
                                         </button>
-                                        <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteElement(row))}>
+                                        <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteBoxAsync(row))}>
                                             <Delete/>
                                         </button>
                                     </TableCell>
