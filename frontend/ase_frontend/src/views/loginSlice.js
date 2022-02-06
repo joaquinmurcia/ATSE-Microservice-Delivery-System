@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = {
     status: 'idle',
@@ -50,7 +50,7 @@ const loginSlice = createSlice({
         builder
             .addCase(loginAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
-                state.role = parseJwt(getCookie("jwt"));
+                state.role = parseJwt(getCookie("jwt")).roles;
                 state.isLoggedIn = true;
             });
     }

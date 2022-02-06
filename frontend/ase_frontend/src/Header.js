@@ -7,6 +7,8 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {isLoggedIn} from "./views/loginSlice";
 
 const headersData = [
 
@@ -26,9 +28,14 @@ const headersData = [
         href: "/user-management",
     },
     {
-        id: "logInOut-management",
+        id: "login",
         label: "Log In",
         href: "/login",
+    },
+    {
+        id: "logout",
+        label: "Log out",
+        href: "/logout",
     },
 ];
 
@@ -59,6 +66,8 @@ const useStyles = makeStyles(() => ({
 export default function Header() {
     const { header, logo, menuButton, toolbar } = useStyles();
 
+    const isLogin = useSelector(isLoggedIn);
+
     const displayDesktop = () => {
         return (
             <Toolbar className={toolbar}>
@@ -75,7 +84,14 @@ export default function Header() {
     );
 
     const getMenuButtons = () => {
-        return headersData.map(({ id, label,  href }) => {
+        return headersData.filter((elem)=>{
+
+            if(isLogin){
+                return elem.id !== "login";
+            } else {
+                return elem.id === "login";
+            }
+        }).map(({ id, label,  href }) => {
             return (
                 <Button
                     {...{
