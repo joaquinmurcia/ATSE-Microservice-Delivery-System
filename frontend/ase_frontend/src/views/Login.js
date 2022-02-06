@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container} from "@mui/material";
+import {loginAsync} from "./loginSlice";
+import {useDispatch} from "react-redux";
 
 
 function Login(){
+
+    const dispatch = useDispatch();
 
     const[userName,setUserName] = useState("Dispatcher");
     const[password,setPassword] = useState("pwd3");
@@ -14,48 +18,6 @@ function Login(){
 
     const handlePassword = (e) => {
         setPassword(e.target.value);
-    }
-
-      
-
-    function loginRequest() {
-
-        const temp = window.btoa(userName + ":" + password);
-
-        const requestOptions = {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-              Authorization: "Basic " + temp
-            }
-        }
-
-        console.log("eyyy")
-        console.log(temp);
-        const response = fetch('http://127.0.0.1:9000/usermanagement/auth', requestOptions).then(handleResponse);
-
-        return response
-        
-
-    }
-
-    function handleResponse(response) {
-        console.log(response);
-        return response.text().then(text => {
-            const data = text; //&&JSON.parse(text);
-            if (!response.ok) {
-                if (response.status === 401) {
-                    // auto logout if 401 response returned from api
-                    //logout();
-                    //                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  location.reload(true);
-                }
-                console.log("ayo");
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }
-            console.log(data);
-            return data;
-        });
     }
     
     return (
@@ -68,7 +30,7 @@ function Login(){
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={password} onChange={handlePassword}/>
                 <br/>
-                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" onClick={()=> loginRequest()}>Login</Button>
+                <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" onClick={()=> dispatch(loginAsync({userName,password}))}>Login</Button>
             </Paper>
         </Container>);
 }
