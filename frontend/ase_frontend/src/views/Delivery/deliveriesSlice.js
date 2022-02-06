@@ -7,7 +7,7 @@ const initialState = {
     isEdit: false,
     editId: 0,
 
-}
+};
 
 export const getDeliveriesAsync = createAsyncThunk(
     'GET',
@@ -15,7 +15,7 @@ export const getDeliveriesAsync = createAsyncThunk(
         const requestOptions = {
             method: "GET",
             credentials: "include"
-        }
+        };
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
         const response = await fetch(link,requestOptions).then((data)=> data.json());
         console.log("Deliveries recieved")
@@ -29,10 +29,10 @@ export const deleteDeliveryAsync = createAsyncThunk(
         const requestOptions = {
             method: "DELETE",
             credentials: "include"
-        }
+        };
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         await fetch(link ,requestOptions);
-        console.log("deleted: " + elem.id)
+        console.log("deleted: " + elem.id);
     }
 );
 
@@ -48,7 +48,7 @@ export const editDeliveryAsync = createAsyncThunk(
                 },
             credentials: "include",
             body: elem_json
-        }
+        };
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
         const response = await fetch(link ,requestOptions).then((data)=> data.json());
         console.log("changed " + elem.id);
@@ -67,7 +67,7 @@ export const addDeliveryAsync = createAsyncThunk(
             },
             credentials: "include",
             body: elem_json,
-        }
+        };
         const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
         await fetch(link ,requestOptions);
         console.log("Added new Element");
@@ -86,7 +86,7 @@ const deliveriesSlice = createSlice({
         cancelEdit(state){
             state.isEdit = false;
             state.editId = 0;
-            console.log("Cancel")
+            console.log("Cancel");
         }
     },
     extraReducers: (builder) => {
@@ -108,7 +108,7 @@ const deliveriesSlice = createSlice({
             });
     }
 
-})
+});
 
 export const selectDeliveries = (state) => state.deliveries.list;
 
@@ -120,4 +120,4 @@ export const getEditDelivery = (state) => {return state.deliveries.list.filter(e
 
 export const {startEditElement, cancelEdit} = deliveriesSlice.actions;
 
-export default deliveriesSlice.reducer
+export default deliveriesSlice.reducer;
