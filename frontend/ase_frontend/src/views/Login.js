@@ -41,12 +41,6 @@ function Login(){
 
     function handleResponse(response) {
         console.log(response);
-        const requestOptions = {
-            method: "GET",
-            credentials:"include"
-        }
-        const res = fetch('http://127.0.0.1:9000/deliverymanagement/deliveries/deliveryTestID',requestOptions);
-        console.log(res);
         return response.text().then(text => {
             const data = text; //&&JSON.parse(text);
             if (!response.ok) {
