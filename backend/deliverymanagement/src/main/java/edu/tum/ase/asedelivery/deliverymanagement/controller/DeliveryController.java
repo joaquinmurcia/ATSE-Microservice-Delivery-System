@@ -227,10 +227,18 @@ public class DeliveryController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Cookie", cookie);
 
-            // Checks if a box exists
-            ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", updatedDelivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
-            if (Objects.requireNonNull(box.getBody()).getBoxStatus() == BoxStatus.occupied){
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            if(oldDelivery.getTargetBox().equals(updatedDelivery.getTargetBox())) {
+                // Checks if a box exists and update it with the new delivery
+                ResponseEntity<Box> newBox = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s/addDelivery/%s", updatedDelivery.getTargetBox(), updatedDelivery.getId()), HttpMethod.PUT, new HttpEntity<>(updatedDelivery, headers), Box.class);
+                if (!Objects.requireNonNull(newBox.getBody()).getId().isEmpty()){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                ResponseEntity<Box> oldBox = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", oldDelivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
+                Box updatedOldBox = oldBox.getBody();
+                updatedOldBox.getDeliveryIDs().remove(oldDelivery.getId());
+                //remove delivery of old box
+                restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", oldDelivery.getTargetBox()), HttpMethod.PUT, new HttpEntity<>(updatedOldBox, headers), Box.class);
             }
 
             // Checks if customer exists
