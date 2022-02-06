@@ -17,7 +17,6 @@ const AddNewBoxForm = () => {
     const[elemCountry,setCountry] = useState("");
 
     const[elemBoxStatus,setBoxStatus] = useState("");
-    const[elemDeliveryIDs,setDeliveryIDs] = useState("");
     const[elemRaspberryPiID,setRaspberryPiID] = useState("");
 
     //adress
@@ -45,10 +44,6 @@ const AddNewBoxForm = () => {
         setBoxStatus(e.target.value);
     }
 
-    const handleChangeDeliveryIDs = (e) => {
-        setDeliveryIDs(e.target.value);
-    }
-
     const handleChangeRaspberryPiID = (e) => {
         setRaspberryPiID(e.target.value);
     }
@@ -63,7 +58,7 @@ const AddNewBoxForm = () => {
                 country: elemCountry
             },
             boxStatus: elemBoxStatus,
-            deliveryIDs: elemDeliveryIDs,
+            deliveryIDs: [],
             raspberryPiID: elemRaspberryPiID
         };
 
@@ -74,7 +69,6 @@ const AddNewBoxForm = () => {
         setCountry("");
 
         setBoxStatus("");
-        setDeliveryIDs("");
         setRaspberryPiID("");
 
         return newElement;
@@ -96,8 +90,6 @@ const AddNewBoxForm = () => {
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="city" label="City" value={elemCity} onChange={handleChangeCity}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="country" label="Country" value={elemCountry} onChange={handleChangeCountry}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="deliveryIds" label="Delivery IDs" value={elemDeliveryIDs} onChange={handleChangeDeliveryIDs}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="raspberryPiID" label="RaspberryPi ID" value={elemRaspberryPiID} onChange={handleChangeRaspberryPiID}/>
                 <br/>
