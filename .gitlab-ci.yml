@@ -359,7 +359,7 @@ deploy:
   script:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com:~/
     # TODO: - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose up ase-discovery"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose up discovery"
 
 
 #artifacts:
