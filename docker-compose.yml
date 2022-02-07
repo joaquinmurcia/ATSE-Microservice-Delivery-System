@@ -55,7 +55,7 @@ services:
     environment:
       - EUREKA_SERVER=discovery
       - MONGO_DB_HOSTNAME=mongo
-      - PUBLIC_KEY_PATH=./public.key # TODO: This is surely not the right way to do it. See your notes 19.01
+      - PUBLIC_KEY_PATH=./public.key
     depends_on:
       - discovery
       - gateway
@@ -143,7 +143,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./ase-mongo4-noauth:/data/db # Up to the : you can change it, what comes afterwards is kinda standard //TODO: fix auth bug
+      - ./ase-mongo4-noauth:/data/db # Up to the : you can change it, what comes afterwards is kinda standard
     #command: [--auth]
     restart: always
     networks:
