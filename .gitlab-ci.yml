@@ -375,7 +375,7 @@ deploy:
   stage: deploy
   when: always
   script:
-    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-18-198-6-63.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml root@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_1_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_2_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_3_IP.eu-central-1.compute.amazonaws.com:~/
