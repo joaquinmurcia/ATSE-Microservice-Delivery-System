@@ -4,7 +4,7 @@ services:
   discovery:
     image: ${GITLAB_REGISTRY_PATH:-}ase-discovery:latest
     container_name: ase-discovery
-    build: ./backend/eureka-discovery-service
+    # build: ./backend/eureka-discovery-service
     ports:
       - "9001:9001"
     working_dir: /opt/app
@@ -13,7 +13,7 @@ services:
 
   gateway:
     image: ${GITLAB_REGISTRY_PATH:-}ase-gateway:latest
-    build: ./backend/gateway
+    # build: ./backend/gateway
     ports:
       - "9000:9000"
     working_dir: /opt/app
@@ -27,7 +27,7 @@ services:
   usermngmt:
     image: ${GITLAB_REGISTRY_PATH:-}ase-usermngmt:latest
     container_name: ase-usermngmt
-    build: ./backend/usermngmt
+    # build: ./backend/usermngmt
     # restart: always # This will be ignored if we deploy in docker swarm
     ports:
       - "9004:9004"
@@ -47,7 +47,7 @@ services:
 
   boxmanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-boxmanagement:latest
-    build: ./backend/boxmanagement
+    # build: ./backend/boxmanagement
     # restart: always # This will be ignored if we deploy in docker swarm
     ports:
       - "9002:9002"
@@ -67,7 +67,7 @@ services:
   deliverymanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-deliverymanagement:latest
     container_name: ase-deliverymanagement
-    build: ./backend/deliverymanagement
+    # build: ./backend/deliverymanagement
     # restart: always # This will be ignored if we deploy in docker swarm
     ports:
       - "9003:9003"
@@ -88,7 +88,7 @@ services:
   emailnotification:
     image: ${GITLAB_REGISTRY_PATH:-}ase-emailnotification:latest
     container_name: ase-emailnotification
-    build: ./backend/emailnotification
+    # build: ./backend/emailnotification
     # restart: always # This will be ignored if we deploy in docker swarm
     ports:
       - "9005:9005"
