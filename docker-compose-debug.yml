@@ -8,6 +8,8 @@ services:
     ports:
       - "9001:9001"
     working_dir: /opt/app
+    networks:
+      - ase-network
 
   gateway:
     image: ${GITLAB_REGISTRY_PATH:-}ase-gateway:latest
@@ -19,6 +21,8 @@ services:
       - EUREKA_SERVER=discovery
     depends_on:
       - discovery
+    networks:
+      - ase-network
 
   usermngmt:
     image: ${GITLAB_REGISTRY_PATH:-}ase-usermngmt:latest
@@ -38,6 +42,8 @@ services:
       - discovery
       - gateway
       - mongo
+    networks:
+      - ase-network
 
   boxmanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-boxmanagement:latest
@@ -54,6 +60,9 @@ services:
       - discovery
       - gateway
       - mongo
+    networks:
+      ase-network:
+        ipv4_address: 172.59.0.13 # ONLY NEEDED FOR DEBUG
 
   deliverymanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-deliverymanagement:latest
@@ -73,6 +82,8 @@ services:
       - discovery
       - gateway
       - mongo
+    networks:
+      - ase-network
 
   emailnotification:
     image: ${GITLAB_REGISTRY_PATH:-}ase-emailnotification:latest
@@ -93,6 +104,8 @@ services:
       - discovery
       - gateway
       - mongo
+    networks:
+      - ase-network
 
 
     #deploy:  # This will be considered only in docker swarm.
@@ -115,6 +128,8 @@ services:
       - deliverymanagement
     ports:
       - "3000:3000"
+    networks:
+        - ase-network
     environment:
       - BACKEND_HOSTNAME=springboot
 
@@ -131,4 +146,28 @@ services:
       - ./ase-mongo4-noauth:/data/db # Up to the : you can change it, what comes afterwards is kinda standard
     #command: [--auth]
     restart: always
+    networks:
+      ase-network:
+        ipv4_address: 172.59.0.14 # ONLY NEEDED FOR DEBUG
 
+  #mongo-express:
+  #  image: mongo-express
+  #  restart: always
+  #  ports:
+  #    - 8081:8081
+  #  environment:
+  #    ME_CONFIG_MONGODB_ADMINUSERNAME: aseAdmin
+  #    ME_CONFIG_MONGODB_ADMINPASSWORD: ase
+  #    ME_CONFIG_MONGODB_SERVER: mongo
+  #  networks:
+  #    - ase-network
+
+
+# ONLY NEEDED FOR DEBUG
+networks:
+  ase-network:
+    external: true
+    # ADD -subnet to the config
+    #ipam:
+    #  config:
+    #    - subnet: 172.59.0.0/16
