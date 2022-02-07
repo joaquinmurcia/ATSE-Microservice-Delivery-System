@@ -69,11 +69,9 @@ public class AuthService {
             // Authenticate the user using the Spring Authentication Manager
             // Authentication asdf = authManager.authenticate(authenticationToken);
         }
-        System.out.println("idk what happen");
         return "";
     }
 
     public void setAuthentication(User userDetails, HttpServletRequest request) {
-        System.out.println("setAuthentication I guess");
     }
 }

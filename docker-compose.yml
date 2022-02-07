@@ -122,9 +122,7 @@ services:
     image: mongo
     container_name: mongo
     #environment:
-      #- MONGO_INITDB_ROOT_USERNAME=aseAdmin
-      #- MONGO_INITDB_ROOT_PASSWORD=ase
-      #- MONGO_INITDB_DATABASE=userManagement
+    #  - MONGO_INITDB_DATABASE=userManagement
     ports:
       - "27017:27017"
     volumes:

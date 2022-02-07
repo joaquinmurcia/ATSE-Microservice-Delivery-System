@@ -47,7 +47,6 @@ public class UserMngmtApplication implements CommandLineRunner {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public static void main(String[] args) {
-		System.out.println("4aaaaa");
 		SpringApplication.run(UserMngmtApplication.class, args);
 	}
 

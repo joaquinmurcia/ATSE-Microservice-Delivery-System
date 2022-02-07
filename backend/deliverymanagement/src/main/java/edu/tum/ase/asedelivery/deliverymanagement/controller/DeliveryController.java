@@ -157,7 +157,6 @@ public class DeliveryController {
 
             return new ResponseEntity<>(deliveries, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("wtf");
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
