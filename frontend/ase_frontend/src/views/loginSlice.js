@@ -4,6 +4,7 @@ const initialState = {
     status: 'idle',
     role: '',
     isLoggedIn: false,
+    sub: ''
 }
 
 export const loginAsync = createAsyncThunk(
@@ -52,6 +53,7 @@ const loginSlice = createSlice({
                 state.status = 'idle';
                 state.role = parseJwt(getCookie("jwt")).roles;
                 state.isLoggedIn = true;
+                state.sub = parseJwt(getCookie("jwt")).sub;
             });
     }
 
@@ -63,7 +65,6 @@ function parseJwt (token) {
     var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
-
     return JSON.parse(jsonPayload);
 }
 
@@ -76,5 +77,7 @@ function getCookie(name) {
 export const isLoggedIn = (state) => state.login.isLoggedIn;
 
 export const selectRole = (state) => state.login.role;
+
+export const selectSub = (state) => state.login.sub;
 
 export default loginSlice.reducer;
