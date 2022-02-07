@@ -6,6 +6,7 @@ stages:
   - build
   - package
   - publish
+  - deploy
 
 variables:
   # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
@@ -324,6 +325,39 @@ docker-frontend:
   - cd $CI_PROJECT_DIR/frontend/ase_frontend
   - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest .
   - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest
+
+deploy:
+  stage: deploy
+  when: always
+  before_script:
+    ##
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+  script:
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-3-122-94-249.eu-central-1.compute.amazonaws.com:~/
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-122-94-249.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker-compose restart || docker-compose up"
 
 
 #artifacts:
