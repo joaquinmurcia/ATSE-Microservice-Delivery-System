@@ -3,7 +3,8 @@ import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {getUsersAsync, selectUsers, startEditElement, deleteUserAsync} from "./usersSlice";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
+import Button from "@mui/material/Button";
 
 const useStyles = makeStyles(() => {
     return {
@@ -48,6 +49,9 @@ const UsersList = () => {
     useEffect(() => dispatch(getUsersAsync()), [dispatch]);
     const list = useSelector(selectUsers);
 
+    const reloadData = () => {
+        dispatch(getUsersAsync());
+    };
 
     const columns = [
         { id: 'id', label: 'Id', minWidth: 30},
@@ -106,6 +110,7 @@ const UsersList = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Button sx={{minWidth: 100, minHeight: 30, margin: 1}} variant="contained" size="small" color="success" onClick={()=> reloadData()}>Reload Data</Button>
             </Paper>
         </Container>
     );

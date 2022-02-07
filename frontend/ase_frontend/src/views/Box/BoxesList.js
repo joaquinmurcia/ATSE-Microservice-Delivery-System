@@ -3,8 +3,9 @@ import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {getBoxesAsync, selectBoxes, startEditElement} from "./boxesSlice";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {deleteBoxAsync} from "./boxesSlice";
+import Button from "@mui/material/Button";
 
 const useStyles = makeStyles(() => {
     return {
@@ -68,6 +69,10 @@ const BoxesList = () => {
     useEffect(() => dispatch(getBoxesAsync()), [dispatch]);
     const list = useSelector(selectBoxes);
 
+    const reloadData = () => {
+        dispatch(getBoxesAsync());
+    };
+
     const columns = [
         { id: 'id', label: 'Id', minWidth: 30},
         { id: 'address', label: 'Adress', minWidth: 80 },
@@ -129,6 +134,7 @@ const BoxesList = () => {
                 </TableBody>
             </Table>
         </TableContainer>
+        <Button sx={{minWidth: 100, minHeight: 30, margin: 1}} variant="contained" size="small" color="success" onClick={()=> reloadData()}>Reload Data</Button>
         </Paper>
         </Container>
     );

@@ -13,7 +13,14 @@ import {
 } from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
-import {deleteDeliveryAsync, getDeliveriesAsync, selectDeliveries, startEditElement} from "./deliveriesSlice";
+import {
+    deleteDeliveryAsync,
+    getDeliveriesAsync,
+    selectDeliveries,
+    startEditElement
+} from "./deliveriesSlice";
+import Button from "@mui/material/Button";
+import {store} from "../../app/store"
 
 const useStyles = makeStyles(() => {
     return {
@@ -57,13 +64,21 @@ const DeliveriesList = () => {
 
     const[searchId, setSearchId] = useState("");
 
+    const state = store.getState();
+
     useEffect(() => dispatch(getDeliveriesAsync()), [dispatch]);
     //dispatch(getDeliveriesAsync());
+
     const list = useSelector(selectDeliveries);
+
+    const reloadData = () => {
+        dispatch(getDeliveriesAsync());
+    };
 
     const handleChangeSearchId = (e) => {
         setSearchId(e.target.value);
         console.log(e.target.value);
+        console.log(state);
     }
 
     const columns = [
@@ -135,6 +150,7 @@ const DeliveriesList = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Button sx={{minWidth: 100, minHeight: 30, margin: 1}} variant="contained" size="small" color="success" onClick={()=> reloadData()}>Reload Data</Button>
             </Paper>
         </Container>
     );
