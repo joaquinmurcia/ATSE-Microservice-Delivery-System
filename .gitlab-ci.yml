@@ -8,20 +8,21 @@ stages:
   - publish
   - deploy
 
-#variables:
-#  # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
-#  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
-#  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.#transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-#  # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
-#  # when running from the command line.
-#  # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
-#  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-#
-## Cache downloaded dependencies and plugins between builds.
-## To keep cache across branches add 'key: "$CI_JOB_NAME"'
-#cache:
-#  paths:
-#    - .m2/repository
+variables:
+  # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
+  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
+  # when running from the command line.
+  # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+  INSTANCE_IP: 18-198-6-63
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+cache:
+  paths:
+    - .m2/repository
 #
 #build-boxmanagement:
 #  stage: build
@@ -356,9 +357,9 @@ deploy:
     - chmod 700 ~/.ssh
 
   script:
-    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-18-156-78-238.eu-central-1.compute.amazonaws.com:~/
-    # TODO: - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-78-238.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-78-238.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose up ase-discovery"
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com:~/
+    # TODO: - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$INSTANCE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose up ase-discovery"
 
 
 #artifacts:
