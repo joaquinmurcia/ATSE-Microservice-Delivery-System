@@ -3,15 +3,16 @@ spring:
         name: usermanagement
     data:
         mongodb:
-            # Configure database location
-            host: localhost
-            port: 27017
-            database: userManagement
-
-            # Configure credential
-            username: aseAdmin
-            password: ase
-            authentication-database: admin
+            uri: mongodb://aseAdmin:ase@${MONGO_DB_HOSTNAME:localhost}:27017/userManagement?authSource=admin #!172.59.0.14
+            ## Configure database location
+            #host: localhost
+            #port: 27017
+            #database: userManagement
+#
+            ## Configure credential
+            #username: aseAdmin
+            #password: ase
+            #authentication-database: admin
 
             # Configure Database Operation,
             # allow creating index automatically from the code
@@ -35,11 +36,11 @@ eureka:
         registerWithEureka: true
         fetchRegistry: false
         serviceUrl:
-            defaultZone: http://localhost:9001/eureka
+            defaultZone: http://${EUREKA_SERVER:localhost}:9001/eureka
 
-logging:
-    level:
-        edu:
-            tum:
-                ase: DEBUG
-        root: DEBUG
+#logging:
+#    level:
+#        edu:
+#            tum:
+#                ase: DEBUG
+#        root: DEBUG

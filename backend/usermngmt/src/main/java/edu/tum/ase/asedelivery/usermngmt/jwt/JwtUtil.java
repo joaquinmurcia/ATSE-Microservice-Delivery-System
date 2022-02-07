@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.usermngmt.jwt;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;

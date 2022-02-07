@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.deliverymanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.*;
+import edu.tum.ase.asedelivery.deliverymanagement.model.*;
 import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.deliverymanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +157,6 @@ public class DeliveryController {
 
             return new ResponseEntity<>(deliveries, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("wtf");
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

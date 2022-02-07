@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.usermngmt.service;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
 import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
-import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
+import edu.tum.ase.asedelivery.usermngmt.model.UserRole;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -69,11 +69,9 @@ public class AuthService {
             // Authenticate the user using the Spring Authentication Manager
             // Authentication asdf = authManager.authenticate(authenticationToken);
         }
-        System.out.println("idk what happen");
         return "";
     }
 
     public void setAuthentication(User userDetails, HttpServletRequest request) {
-        System.out.println("setAuthentication I guess");
     }
 }

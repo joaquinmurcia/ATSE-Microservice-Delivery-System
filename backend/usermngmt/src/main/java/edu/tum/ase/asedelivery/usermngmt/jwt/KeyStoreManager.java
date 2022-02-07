@@ -35,7 +35,7 @@ public class KeyStoreManager {
 
         try {
             // Get the path to the keystore file in the resources folder
-            File keystoreFile = ResourceUtils.getFile("classpath:ase_project.keystore");
+            File keystoreFile = ResourceUtils.getFile(System.getenv().getOrDefault("KEYSTORE_PATH", "classpath:ase_project.keystore"));
 
             fis = new FileInputStream(keystoreFile);
             keyStore.load(fis, password);
