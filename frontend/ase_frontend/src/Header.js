@@ -9,6 +9,7 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {useSelector} from "react-redux";
 import {isLoggedIn} from "./views/loginSlice";
+import {parseJwt, getCookie} from './views/tokenReader';
 
 const headersData = [
 
@@ -85,9 +86,15 @@ export default function Header() {
 
     const getMenuButtons = () => {
         return headersData.filter((elem)=>{
-
+            const role = parseJwt(getCookie("jwt")).roles;
             if(isLogin){
-                return elem.id !== "login";
+                var res = elem.id !== "login"
+                if(role === 'ROLE_CUSTOMER') {
+                    res = res && elem.id !== "user-management";
+                } else if( role === 'ROLE_DELIVERER'){
+                    res = res && elem.id !== "user-management";
+                }
+                return res;
             } else {
                 return elem.id === "login";
             }

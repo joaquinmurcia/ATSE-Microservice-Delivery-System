@@ -21,6 +21,7 @@ import {
 } from "./deliveriesSlice";
 import Button from "@mui/material/Button";
 import {store} from "../../app/store"
+import {getCookie, parseJwt} from "../tokenReader";
 
 const useStyles = makeStyles(() => {
     return {
@@ -98,7 +99,11 @@ const DeliveriesList = () => {
                     <Table stickyHeader aria-label="sticky table" className={listStyle}>
                         <TableHead>
                             <TableRow>
-                                {columns.map((column) => (
+                                {columns.filter((col)=>{
+                                    const role = parseJwt(getCookie("jwt")).roles;
+                                    return !(role==="ROLE_CUSTOMER" && col.id === "buttons")
+
+                                }).map((column) => (
                                     <TableCell
                                         key={column.id}
                                         align={column.align}
@@ -136,14 +141,20 @@ const DeliveriesList = () => {
                                         <TableCell>
                                             {row.deliveryStatus}
                                         </TableCell>
-                                        <TableCell>
-                                            <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
-                                                <ModeEdit/>
-                                            </button>
-                                            <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteDeliveryAsync(row))}>
-                                                <Delete/>
-                                            </button>
-                                        </TableCell>
+                                        { parseJwt(getCookie("jwt")).roles !== "ROLE_CUSTOMER" &&
+                                            <TableCell>
+                                                <button type="button" className={editButtonStyle}
+                                                        onClick={() => dispatch(startEditElement(row))}>
+                                                    <ModeEdit/>
+                                                </button>
+                                                { parseJwt(getCookie("jwt")).roles !== "ROLE_DELIVERER" &&
+                                                    <button type="button" className={deleteButtonStyle}
+                                                            onClick={() => dispatch(deleteDeliveryAsync(row))}>
+                                                        <Delete/>
+                                                    </button>
+                                                }
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 );
                             })}

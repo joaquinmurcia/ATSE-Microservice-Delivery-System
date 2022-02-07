@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import {parseJwt, getCookie} from '../tokenReader';
 
 const initialState = {
     status: 'idle',
@@ -14,7 +15,14 @@ export const getUsersAsync = createAsyncThunk(
             method: "GET",
             credentials:"include"
         }
-        const link = 'http://127.0.0.1:9000/usermanagement/users';
+        var link = 'http://127.0.0.1:9000/usermanagement/users';
+        const role = parseJwt(getCookie("jwt")).roles;
+        const sub = parseJwt(getCookie("jwt")).sub;
+        if(role === 'ROLE_CUSTOMER'){
+            link = link + '?customerId=' + sub;
+        } else if ( role === 'ROLE_DELIVERER'){
+            link = link + '?delivererId=' + sub;
+        }
         const response = await fetch(link, requestOptions).then((data)=> data.json());
         console.log(response);
         return response;

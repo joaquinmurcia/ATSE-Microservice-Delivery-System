@@ -3,12 +3,15 @@ import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {cancelEdit, editDeliveryAsync, getEditDelivery} from "./deliveriesSlice";
+import {getCookie, parseJwt} from "../tokenReader";
 
 
 const EditDeliveryFrom = () => {
 
     const dispatch = useDispatch();
     const elementToChange = useSelector(getEditDelivery);
+
+    const role = parseJwt(getCookie("jwt")).roles;
 
     const[elemTargetBox,setTargetBox] = useState(elementToChange.targetBox);
     const[elemTargetCustomer,setTargetCustomer] = useState(elementToChange.targetCustomer);
@@ -47,20 +50,23 @@ const EditDeliveryFrom = () => {
                 <Typography component="h1" variant="h6" align="center" marginBottom={5}>
                     Change Delivery No: {elementToChange.id}
                 </Typography>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetBox" label="Target Box" value={elemTargetBox} onChange={handleChangeTargetBox}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetCustomer" label="Target Customer" value={elemTargetCustomer} onChange={handleChangeTargetCustomer}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDeliverer" label="Responsible Deliverer" value={elemResponsibleDeliverer} onChange={handleChangeResponsibleDeliverer}/>
-                <br/>
+                {role === "ROLE_DISPATCHER" &&
+                <div>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetBox" label="Target Box" value={elemTargetBox} onChange={handleChangeTargetBox}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="targetCustomer" label="Target Customer" value={elemTargetCustomer} onChange={handleChangeTargetCustomer}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDeliverer" label="Responsible Deliverer" value={elemResponsibleDeliverer} onChange={handleChangeResponsibleDeliverer}/>
+                    <br/>
+                </div>}
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectStatus">Status</InputLabel>
                     <Select name="deliveryStatus" labelId="selectStatus" label="" value={elemDeliveryStatus} onChange={handleChangeDeliveryStatus}>
                         <MenuItem value=""><em>None</em></MenuItem>
                         <MenuItem value="open">Open</MenuItem>
                         <MenuItem value="collected">Collected</MenuItem>
-                        <MenuItem value="pickedUp">Picked Up</MenuItem>
                         <MenuItem value="delivered">Delivered</MenuItem>
+                        <MenuItem value="pickedUp">Picked Up</MenuItem>
                     </Select>
                 </FormControl>
                 <br/>

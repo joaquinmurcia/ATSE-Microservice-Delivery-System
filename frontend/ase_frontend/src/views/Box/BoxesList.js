@@ -6,6 +6,7 @@ import {getBoxesAsync, selectBoxes, startEditElement} from "./boxesSlice";
 import React, {useEffect} from "react";
 import {deleteBoxAsync} from "./boxesSlice";
 import Button from "@mui/material/Button";
+import {parseJwt, getCookie} from '../tokenReader';
 
 const useStyles = makeStyles(() => {
     return {
@@ -69,6 +70,8 @@ const BoxesList = () => {
     useEffect(() => dispatch(getBoxesAsync()), [dispatch]);
     const list = useSelector(selectBoxes);
 
+    const role = parseJwt(getCookie("jwt")).roles;
+
     const reloadData = () => {
         dispatch(getBoxesAsync());
     };
@@ -89,7 +92,10 @@ const BoxesList = () => {
             <Table stickyHeader aria-label="sticky table" className={listStyle}>
                 <TableHead>
                     <TableRow>
-                        {columns.map((column) => (
+                        {columns.filter((col)=>{
+                            const role = parseJwt(getCookie("jwt")).roles;
+                            return !(role!=="ROLE_DISPATCHER" && col.id === "buttons");
+                        }).map((column) => (
                             <TableCell
                                 key={column.id}
                                 align={column.align}
@@ -120,14 +126,19 @@ const BoxesList = () => {
                                     <TableCell>
                                         {row.raspberryPiID}
                                     </TableCell>
-                                    <TableCell>
-                                        <button type="button" className={editButtonStyle} onClick={() => dispatch(startEditElement(row))}>
-                                            <ModeEdit/>
-                                        </button>
-                                        <button type="button" className={deleteButtonStyle}  onClick={() => dispatch(deleteBoxAsync(row))}>
-                                            <Delete/>
-                                        </button>
-                                    </TableCell>
+                                    { (role === "ROLE_DISPATCHER") &&
+                                        <TableCell>
+                                            <button type="button" className={editButtonStyle}
+                                                    onClick={() => dispatch(startEditElement(row))}>
+                                                <ModeEdit/>
+                                            </button>
+                                            <button type="button" className={deleteButtonStyle}
+                                                    onClick={() => dispatch(deleteBoxAsync(row))}>
+                                                <Delete/>
+                                            </button>
+
+                                        </TableCell>
+                                    }
                                 </TableRow>
                             );
                         })}

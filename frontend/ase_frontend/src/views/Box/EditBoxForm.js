@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {cancelEdit, editBoxAsync,getEditBox} from "./boxesSlice";
+import {getCookie, parseJwt} from "../tokenReader";
 
 
 const EditBoxForm = () => {
@@ -67,22 +68,23 @@ const EditBoxForm = () => {
     return (
         <Container>
             <Paper  sx={{border: 1, borderRadius: 1}}>
-                <Typography component="h1" variant="h6" align="center" marginBottom={5}>
-                    Change Delivery No {elementToChange.id}
-                </Typography>
-                <Typography component="h4" variant="h6">Adress</Typography>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="streetName" label="StreetName" value={elemStreetName} onChange={handleChangeStreetName}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="streetNumber" label="StreetNumber" value={elemStreetNumber} onChange={handleChangeStreetNumber}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="postcode" label="Postcode" value={elemPostcode} onChange={handleChangePostcode}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="city" label="City" value={elemCity} onChange={handleChangeCity}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="country" label="Country" value={elemCountry} onChange={handleChangeCountry}/>
-                <br/>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="raspberryPiID" label="RaspberryPi ID" value={elemRaspberryPiID} onChange={handleChangeRaspberryPiID}/>
-                <br/>
+
+                    <Typography component="h1" variant="h6" align="center" marginBottom={5}>
+                        Change Delivery No {elementToChange.id}
+                    </Typography>
+                    <Typography component="h4" variant="h6">Adress</Typography>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="streetName" label="StreetName" value={elemStreetName} onChange={handleChangeStreetName}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="streetNumber" label="StreetNumber" value={elemStreetNumber} onChange={handleChangeStreetNumber}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="postcode" label="Postcode" value={elemPostcode} onChange={handleChangePostcode}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="city" label="City" value={elemCity} onChange={handleChangeCity}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="country" label="Country" value={elemCountry} onChange={handleChangeCountry}/>
+                    <br/>
+                    <TextField sx={{minWidth: 120, margin: 1}} size="small" name="raspberryPiID" label="RaspberryPi ID" value={elemRaspberryPiID} onChange={handleChangeRaspberryPiID}/>
+                    <br/>
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectStatus">Status</InputLabel>
                     <Select name="boxStatus" labelId="selectStatus" label="" value={elemBoxStatus} onChange={handleChangeBoxStatus}>
