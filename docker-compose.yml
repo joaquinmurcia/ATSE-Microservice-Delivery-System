@@ -2,7 +2,7 @@ version: '3'
 
 services:
   discovery:
-    image: ase-discovery
+    image: ${GITLAB_REGISTRY_PATH:-}ase-discovery:latest
     container_name: ase-discovery
     build: ./backend/eureka-discovery-service
     ports:
@@ -12,7 +12,7 @@ services:
       - ase-network
 
   gateway:
-    image: ase-gateway
+    image: ${GITLAB_REGISTRY_PATH:-}ase-gateway:latest
     build: ./backend/gateway
     ports:
       - "9000:9000"
@@ -25,7 +25,7 @@ services:
       - ase-network
 
   usermngmt:
-    image: ase-usermngmt
+    image: ${GITLAB_REGISTRY_PATH:-}ase-usermngmt:latest
     container_name: ase-usermngmt
     build: ./backend/usermngmt
     # restart: always # This will be ignored if we deploy in docker swarm
@@ -46,7 +46,7 @@ services:
       - ase-network
 
   boxmanagement:
-    image: ase-boxmanagement
+    image: ${GITLAB_REGISTRY_PATH:-}ase-boxmanagement:latest
     build: ./backend/boxmanagement
     # restart: always # This will be ignored if we deploy in docker swarm
     ports:
@@ -65,7 +65,7 @@ services:
         ipv4_address: 172.59.0.13 # ONLY NEEDED FOR DEBUG
 
   deliverymanagement:
-    image: ase-deliverymanagement
+    image: ${GITLAB_REGISTRY_PATH:-}ase-deliverymanagement:latest
     container_name: ase-deliverymanagement
     build: ./backend/deliverymanagement
     # restart: always # This will be ignored if we deploy in docker swarm
@@ -86,7 +86,7 @@ services:
       - ase-network
 
   emailnotification:
-    image: ase-emailnotification
+    image: ${GITLAB_REGISTRY_PATH:-}ase-emailnotification:latest
     container_name: ase-emailnotification
     build: ./backend/emailnotification
     # restart: always # This will be ignored if we deploy in docker swarm
@@ -118,7 +118,7 @@ services:
     #    delay: 10s
     #    max_attempts: 5
   frontend:
-    image: ase-frontend
+    image: ${GITLAB_REGISTRY_PATH:-}ase-frontend:latest
     depends_on:
       - discovery
       - gateway
