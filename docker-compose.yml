@@ -8,6 +8,15 @@ services:
     ports:
       - "9001:9001"
     working_dir: /opt/app
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
   gateway:
     image: ${GITLAB_REGISTRY_PATH:-}ase-gateway:latest
@@ -19,6 +28,15 @@ services:
       - EUREKA_SERVER=discovery
     depends_on:
       - discovery
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
   usermngmt:
     image: ${GITLAB_REGISTRY_PATH:-}ase-usermngmt:latest
@@ -38,6 +56,15 @@ services:
       - discovery
       - gateway
       - mongo
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
   boxmanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-boxmanagement:latest
@@ -54,6 +81,15 @@ services:
       - discovery
       - gateway
       - mongo
+    deploy:  # This will be considered only in docker swarm.
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
   deliverymanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-deliverymanagement:latest
@@ -73,6 +109,15 @@ services:
       - discovery
       - gateway
       - mongo
+    deploy:  # This will be considered only in docker swarm.
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
   emailnotification:
     image: ${GITLAB_REGISTRY_PATH:-}ase-emailnotification:latest
@@ -93,17 +138,18 @@ services:
       - discovery
       - gateway
       - mongo
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
 
-    #deploy:  # This will be considered only in docker swarm.
-    #  replicas: 2
-    #  update_config:
-    #    parallelism: 1
-    #    delay: 20s
-    #  restart_policy:
-    #    condition: on-failure
-    #    delay: 10s
-    #    max_attempts: 5
+    
   frontend:
     image: ${GITLAB_REGISTRY_PATH:-}ase-frontend:latest
     depends_on:
@@ -112,11 +158,20 @@ services:
       - mongo
       - usermngmt
       - boxmanagement
-      - deliverymanagement
+      #- deliverymanagement
     ports:
       - "3000:3000"
     environment:
       - BACKEND_HOSTNAME=springboot
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
 
   mongo:
     image: mongo
