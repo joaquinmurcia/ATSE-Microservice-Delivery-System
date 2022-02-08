@@ -17,7 +17,7 @@ variables:
   # when running from the command line.
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-  MANAGER_NODE_IP: 18-198-6-63
+  MANAGER_NODE_IP: 18-198-6-63 # Set Elastic IPs in AWS so that it doesn't change between reboots
   WORKER_NODE_1_IP: 3-127-188-141
   WORKER_NODE_2_IP: 3-66-208-5
   WORKER_NODE_3_IP: 3-126-80-189
