@@ -429,6 +429,7 @@ deploy:
     #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_7_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
     #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_8_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
     #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker stack deploy --compose-file docker-compose.yml stack1"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_8_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/"
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker stack deploy --compose-file docker-compose.yml stack1"
 
 #artifacts:
