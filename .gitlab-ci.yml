@@ -361,7 +361,6 @@ deploy-setup:
     ##
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - chmod 600 ~/.ssh/id_rsa
   script:
     # Create workers
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_1_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
