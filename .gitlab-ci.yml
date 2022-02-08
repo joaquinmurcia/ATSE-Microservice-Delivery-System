@@ -18,11 +18,13 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
   MANAGER_NODE_IP: 18-198-6-63 # Set Elastic IPs in AWS so that it doesn't change between reboots
-  WORKER_NODE_1_IP: 3-127-188-141
-  WORKER_NODE_2_IP: 3-66-208-5
-  WORKER_NODE_3_IP: 3-126-80-189
+  MANAGER_NODE_1_IP: 3-127-188-141
+  MANAGER_NODE_2_IP: 3-66-208-5
+  MANAGER_NODE_3_IP: 3-126-80-189
   WORKER_NODE_4_IP: 3-68-143-244
-  SWARM_JOIN_WORKER: docker swarm join --token SWMTKN-1-2t8as871wyfochzz6m7jzo9gr94fjov72k3tn1bgruly528yix-dztyqfnp97e9uu60e0yy38o6s 18.198.6.63:2377
+  SWARM_JOIN_WORKER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-5v4g1gz4a5143fbxzuvvufk5u 172.31.24.49:2377
+  SWARM_JOIN_MANAGER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-dtj3tzbekksyx2mz60m32hsw9 172.31.24.49:2377
+
 
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
@@ -362,13 +364,17 @@ deploy-setup:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    # Create workers
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_1_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_2_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_3_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
+    # Create managers and workers
+    # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
+    # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_2_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_MANAGER"
+    # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_3_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_MANAGER"
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_4_IP.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-121-74-248.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-158-96-207.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-67-93-11.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-174-18.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
     # Deploy services (scalability part)
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker service create --replicas 1 "
+    # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker service create --replicas 1 "
 
 
 deploy:
@@ -400,17 +406,26 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    #- scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
-    #- scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_1_IP.eu-central-1.compute.amazonaws.com:~/
-    #- scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_2_IP.eu-central-1.compute.amazonaws.com:~/
-    #- scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_3_IP.eu-central-1.compute.amazonaws.com:~/
-    #- scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_4_IP.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_2_IP.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_3_IP.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$WORKER_NODE_4_IP.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-3-121-74-248.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-35-158-96-207.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-3-67-93-11.eu-central-1.compute.amazonaws.com:~/
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-18-156-174-18.eu-central-1.compute.amazonaws.com:~/
+
     # TODO: - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-78-238.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_2_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_3_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_2_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_3_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_4_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker stack deploy --compose-file docker-compose.yml stack1"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-121-74-248.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-158-96-207.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-67-93-11.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-174-18.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker stack deploy --compose-file docker-compose.yml stack1"
 
 
 #artifacts:
