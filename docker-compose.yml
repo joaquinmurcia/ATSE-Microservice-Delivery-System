@@ -64,44 +64,44 @@ services:
         delay: 10s
         max_attempts: 3
 
-  deliverymanagement:
-    image: ${GITLAB_REGISTRY_PATH:-}ase-deliverymanagement:latest
-    container_name: ase-deliverymanagement
-    # build: ./backend/deliverymanagement
-    # restart: always # This will be ignored if we deploy in docker swarm
-    ports:
-      - "9003:9003"
-    working_dir: /opt/app
-    environment:
-      - EUREKA_SERVER=discovery
-      - MONGO_DB_HOSTNAME=mongo
-      #- MONGO_DB_USERNAME=aseAdmin
-      #- MONGO_DB_PASSWORD=ase
-      - PUBLIC_KEY_PATH=./public.key
-    depends_on:
-      - discovery
-      - gateway
-      - mongo
-
-  emailnotification:
-    image: ${GITLAB_REGISTRY_PATH:-}ase-emailnotification:latest
-    container_name: ase-emailnotification
-    # build: ./backend/emailnotification
-    # restart: always # This will be ignored if we deploy in docker swarm
-    ports:
-      - "9005:9005"
-      - "587:587"
-    working_dir: /opt/app
-    environment:
-      - EUREKA_SERVER=discovery
-      - MONGO_DB_HOSTNAME=mongo
-      #- MONGO_DB_USERNAME=aseAdmin
-      #- MONGO_DB_PASSWORD=ase
-      - PUBLIC_KEY_PATH=./public.key
-    depends_on:
-      - discovery
-      - gateway
-      - mongo
+  #deliverymanagement:
+  #  image: ${GITLAB_REGISTRY_PATH:-}ase-deliverymanagement:latest
+  #  container_name: ase-deliverymanagement
+  #  # build: ./backend/deliverymanagement
+  #  # restart: always # This will be ignored if we deploy in docker swarm
+  #  ports:
+  #    - "9003:9003"
+  #  working_dir: /opt/app
+  #  environment:
+  #    - EUREKA_SERVER=discovery
+  #    - MONGO_DB_HOSTNAME=mongo
+  #    #- MONGO_DB_USERNAME=aseAdmin
+  #    #- MONGO_DB_PASSWORD=ase
+  #    - PUBLIC_KEY_PATH=./public.key
+  #  depends_on:
+  #    - discovery
+  #    - gateway
+  #    - mongo
+#
+  #emailnotification:
+  #  image: ${GITLAB_REGISTRY_PATH:-}ase-emailnotification:latest
+  #  container_name: ase-emailnotification
+  #  # build: ./backend/emailnotification
+  #  # restart: always # This will be ignored if we deploy in docker swarm
+  #  ports:
+  #    - "9005:9005"
+  #    - "587:587"
+  #  working_dir: /opt/app
+  #  environment:
+  #    - EUREKA_SERVER=discovery
+  #    - MONGO_DB_HOSTNAME=mongo
+  #    #- MONGO_DB_USERNAME=aseAdmin
+  #    #- MONGO_DB_PASSWORD=ase
+  #    - PUBLIC_KEY_PATH=./public.key
+  #  depends_on:
+  #    - discovery
+  #    - gateway
+  #    - mongo
 
 
     
