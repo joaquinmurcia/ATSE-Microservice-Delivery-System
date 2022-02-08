@@ -406,7 +406,6 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_2_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml ubuntu@ec2-$MANAGER_NODE_3_IP.eu-central-1.compute.amazonaws.com:~/
