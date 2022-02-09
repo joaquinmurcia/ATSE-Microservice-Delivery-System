@@ -11,7 +11,7 @@ public class Constants {
     // Box constants
     public static final String TARGET_BOX = "targetBox";
     public static final String TARGET_CUSTOMER = "targetCustomer";
-    public static final String RESPONSIBLE_DRIVER = "responsibleDriver";
+    public static final String RESPONSIBLE_DELIVERER = "responsibleDeliverer";
     public static final String DELIVERY_STATUS = "deliveryStatus";
 
     // Delivery constants
