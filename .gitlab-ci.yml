@@ -18,14 +18,14 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
   MANAGER_NODE_IP: 18-198-6-63 # Set Elastic IPs in AWS so that it doesn't change between reboots
-  MANAGER_NODE_1_IP: 18-197-102-57
-  MANAGER_NODE_2_IP: 18-194-44-57
-  MANAGER_NODE_3_IP: 3-70-132-90
-  WORKER_NODE_4_IP: 3-71-165-251
-  WORKER_NODE_5_IP: 3-66-88-192
-  WORKER_NODE_6_IP: 18-184-40-31
-  WORKER_NODE_7_IP: 3-71-107-16
-  WORKER_NODE_8_IP: 3-71-22-252
+  MANAGER_NODE_1_IP: 18-192-123-179
+  MANAGER_NODE_2_IP: 3-65-206-48
+  MANAGER_NODE_3_IP: 3-71-102-67
+  WORKER_NODE_4_IP: 3-68-167-114
+  WORKER_NODE_5_IP: 18-198-189-175
+  WORKER_NODE_6_IP: 3-71-50-136
+  WORKER_NODE_7_IP: 3-64-179-39
+  WORKER_NODE_8_IP: 18-196-237-248
   SWARM_JOIN_WORKER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-5v4g1gz4a5143fbxzuvvufk5u 172.31.24.49:2377
   SWARM_JOIN_MANAGER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-dtj3tzbekksyx2mz60m32hsw9 172.31.24.49:2377
 
@@ -36,308 +36,308 @@ cache:
   paths:
     - .m2/repository
 #
-build-boxmanagement:
-  stage: build
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #      - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #      - backend/boxmanagement/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/boxmanagement
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS clean compile
-
-build-deliverymanagement:
-    stage: build
-    image: maven:latest
-    #rules:
-    #  - changes:
-    #    - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
-    #  - changes:
-    #    - backend/deliverymanagement/Dockerfile
-    #    when: never
-    script:
-      - cd ./backend/deliverymanagement
-      - chmod +x mvnw
-      - ./mvnw $MAVEN_CLI_OPTS clean compile
-  
-build-emailnotification:
-  stage: build
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #    - backend/emailnotification/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/emailnotification
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS clean compile
-
-build-eureka-discovery-service:
-  stage: build
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #    - backend/eureka-discovery-service/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/eureka-discovery-service
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS clean compile
-
-build-gateway:
-  stage: build
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #    - backend/gateway/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/gateway
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS clean compile
-
-build-usermngmt:
-  stage: build
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #    - backend/usermngmt/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/usermngmt
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS clean compile
-
-package-boxmanagement:
-  stage: package
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
-  #  - changes:
-  #    - backend/boxmanagement/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/boxmanagement
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
-  artifacts:
-    expire_in: 3 days
-    untracked: true
-    paths:
-      - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
-      - backend/boxmanagement/target/classes/public.key
-  #artifacts:
-  #  expire_in: 3 days
-  #  paths:
-  #    - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
-
-package-deliverymanagement:
-  stage: package
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/deliverymanagement/src/**/*
-  #  - changes:
-  #    - backend/deliverymanagement/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/deliverymanagement
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
-    paths:
-      - backend/deliverymanagement/target/deliverymanagement-0.0.1-SNAPSHOT.jar
-      - backend/deliverymanagement/target/classes/public.key
-
-package-emailnotification:
-  stage: package
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/emailnotification/src/**/*
-  #  - changes:
-  #    - backend/emailnotification/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/emailnotification
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
-    paths:
-      - backend/emailnotification/target/emailnotification-0.0.1-SNAPSHOT.jar
-      - backend/emailnotification/target/classes/public.key
-
-package-eureka-discovery-service:
-  stage: package
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/eureka-discovery-service/src/**/*
-  #  - changes:
-  #    - backend/eureka-discovery-service/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/eureka-discovery-service
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
-    paths:
-      - backend/eureka-discovery-service/target/eureka-discovery-service-0.0.1-SNAPSHOT.jar
-
-package-gateway:
-  stage: package
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #    - backend/gateway/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/gateway
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
-    paths:
-      - backend/gateway/target/gateway-0.0.1-SNAPSHOT.jar
-
-package-usermngmt:
-  stage: package
-  image: maven:latest
-  #rules:
-  #  - changes:
-  #    - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
-  #  - changes:
-  #    - backend/usernmgnmt/Dockerfile
-  #    when: never
-  script:
-    - cd ./backend/usermngmt
-    - chmod +x mvnw
-    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
-  artifacts:
-    expire_in: 3 days
-    untracked: true
-    paths:
-      - backend/usermngmt/target/usermngmt-0.0.1-SNAPSHOT.jar
-      - backend/usermngmt/target/classes/ase_project.keystore
-
-docker-boxmanagement:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  dependencies:
-    - package-boxmanagement
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/backend/boxmanagement
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-boxmanagement:latest .
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-boxmanagement:latest
-
-docker-deliverymanagement:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  dependencies:
-    - package-deliverymanagement
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/backend/deliverymanagement
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest .
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest
-
-docker-emailnotification:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  dependencies:
-    - package-emailnotification
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/backend/emailnotification
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-emailnotification:latest .
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-emailnotification:latest
-
-docker-eureka-discovery-service:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  dependencies:
-    - package-eureka-discovery-service
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/backend/eureka-discovery-service
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-discovery:latest .
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-discovery:latest
-
-docker-gateway:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  dependencies:
-    - package-gateway
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/backend/gateway
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-gateway:latest .
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-gateway:latest
-
-docker-usermngmt:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  dependencies:
-    - package-usermngmt
-  script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/backend/usermngmt
-    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-usermngmt:latest .
-    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-usermngmt:latest
-
-docker-frontend:
-  stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
-  when: always
-  script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - cd $CI_PROJECT_DIR/frontend/ase_frontend
-  - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest .
-  - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest
+#build-boxmanagement:
+#  stage: build
+#  image: maven:latest
+#  rules:
+#    - changes:
+#        - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#        - backend/boxmanagement/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/boxmanagement
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS clean compile
+#
+#build-deliverymanagement:
+#    stage: build
+#    image: maven:latest
+#    rules:
+#      - changes:
+#        - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
+#      - changes:
+#        - backend/deliverymanagement/Dockerfile
+#        when: never
+#    script:
+#      - cd ./backend/deliverymanagement
+#      - chmod +x mvnw
+#      - ./mvnw $MAVEN_CLI_OPTS clean compile
+#  
+#build-emailnotification:
+#  stage: build
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#      - backend/emailnotification/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/emailnotification
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS clean compile
+#
+#build-eureka-discovery-service:
+#  stage: build
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#      - backend/eureka-discovery-service/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/eureka-discovery-service
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS clean compile
+#
+#build-gateway:
+#  stage: build
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#      - backend/gateway/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/gateway
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS clean compile
+#
+#build-usermngmt:
+#  stage: build
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#      - backend/usermngmt/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/usermngmt
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS clean compile
+#
+#package-boxmanagement:
+#  stage: package
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
+#    - changes:
+#      - backend/boxmanagement/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/boxmanagement
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
+#  #cache vs artifact: cache can be used in different pipelines, but expires faster and has a complicated background
+#  artifacts:
+#    expire_in: 3 days
+#    untracked: true
+#    paths:
+#      - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
+#      - backend/boxmanagement/target/classes/public.key
+#  #artifacts:
+#  #  expire_in: 3 days
+#  #  paths:
+#  #    - backend/boxmanagement/target/boxmanagement-0.0.1-SNAPSHOT.jar
+#
+#package-deliverymanagement:
+#  stage: package
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/deliverymanagement/src/**/*
+#    - changes:
+#      - backend/deliverymanagement/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/deliverymanagement
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
+#  artifacts:
+#    expire_in: 3 days
+#    untracked: true
+#    paths:
+#      - backend/deliverymanagement/target/deliverymanagement-0.0.1-SNAPSHOT.jar
+#      - backend/deliverymanagement/target/classes/public.key
+#
+#package-emailnotification:
+#  stage: package
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/emailnotification/src/**/*
+#    - changes:
+#      - backend/emailnotification/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/emailnotification
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
+#  artifacts:
+#    expire_in: 3 days
+#    untracked: true
+#    paths:
+#      - backend/emailnotification/target/emailnotification-0.0.1-SNAPSHOT.jar
+#      - backend/emailnotification/target/classes/public.key
+#
+#package-eureka-discovery-service:
+#  stage: package
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/eureka-discovery-service/src/**/*
+#    - changes:
+#      - backend/eureka-discovery-service/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/eureka-discovery-service
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
+#  artifacts:
+#    expire_in: 3 days
+#    untracked: true
+#    paths:
+#      - backend/eureka-discovery-service/target/eureka-discovery-service-0.0.1-SNAPSHOT.jar
+#
+#package-gateway:
+#  stage: package
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#      - backend/gateway/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/gateway
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
+#  artifacts:
+#    expire_in: 3 days
+#    untracked: true
+#    paths:
+#      - backend/gateway/target/gateway-0.0.1-SNAPSHOT.jar
+#
+#package-usermngmt:
+#  stage: package
+#  image: maven:latest
+#  rules:
+#    - changes:
+#      - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
+#    - changes:
+#      - backend/usernmgnmt/Dockerfile
+#      when: never
+#  script:
+#    - cd ./backend/usermngmt
+#    - chmod +x mvnw
+#    - ./mvnw $MAVEN_CLI_OPTS package -DskipTests
+#  artifacts:
+#    expire_in: 3 days
+#    untracked: true
+#    paths:
+#      - backend/usermngmt/target/usermngmt-0.0.1-SNAPSHOT.jar
+#      - backend/usermngmt/target/classes/ase_project.keystore
+#
+#docker-boxmanagement:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  dependencies:
+#    - package-boxmanagement
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/backend/boxmanagement
+#    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-boxmanagement:latest .
+#    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-boxmanagement:latest
+#
+#docker-deliverymanagement:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  dependencies:
+#    - package-deliverymanagement
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/backend/deliverymanagement
+#    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest .
+#    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest
+#
+#docker-emailnotification:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  dependencies:
+#    - package-emailnotification
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/backend/emailnotification
+#    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-emailnotification:latest .
+#    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-emailnotification:latest
+#
+#docker-eureka-discovery-service:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  dependencies:
+#    - package-eureka-discovery-service
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/backend/eureka-discovery-service
+#    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-discovery:latest .
+#    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-discovery:latest
+#
+#docker-gateway:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  dependencies:
+#    - package-gateway
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/backend/gateway
+#    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-gateway:latest .
+#    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-gateway:latest
+#
+#docker-usermngmt:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  dependencies:
+#    - package-usermngmt
+#  script:
+#    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#    - cd $CI_PROJECT_DIR/backend/usermngmt
+#    - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-usermngmt:latest .
+#    - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-usermngmt:latest
+#
+#docker-frontend:
+#  stage: publish
+#  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+#  #tags:
+#  #  - shell
+#  when: always
+#  script:
+#  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+#  - cd $CI_PROJECT_DIR/frontend/ase_frontend
+#  - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest .
+#  - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest
 
 deploy-setup:
   stage: deploy
