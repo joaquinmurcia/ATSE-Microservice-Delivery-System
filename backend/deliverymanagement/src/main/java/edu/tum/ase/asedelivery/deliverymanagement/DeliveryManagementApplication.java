@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.deliverymanagement;
 
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.asedelivery.asedeliverymodels.Delivery;
-import edu.tum.ase.asedelivery.asedeliverymodels.DeliveryStatus;
+import edu.tum.ase.asedelivery.deliverymanagement.model.Delivery;
+import edu.tum.ase.asedelivery.deliverymanagement.model.DeliveryStatus;
 import edu.tum.ase.asedelivery.deliverymanagement.repository.DeliveryRepository;
 import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
 import org.slf4j.Logger;

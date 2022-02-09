@@ -1,7 +1,7 @@
 package edu.tum.ase.asedelivery.usermngmt.service;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUserPrincipal;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

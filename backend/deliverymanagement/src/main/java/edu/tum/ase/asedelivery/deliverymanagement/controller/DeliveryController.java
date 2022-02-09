@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.deliverymanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.*;
+import edu.tum.ase.asedelivery.deliverymanagement.model.*;
 import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.deliverymanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +157,6 @@ public class DeliveryController {
 
             return new ResponseEntity<>(deliveries, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("wtf");
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -227,12 +226,14 @@ public class DeliveryController {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Cookie", cookie);
 
-            if(oldDelivery.getTargetBox().equals(updatedDelivery.getTargetBox())) {
+            if(!oldDelivery.getTargetBox().equals(updatedDelivery.getTargetBox())) {
                 // Checks if a box exists and update it with the new delivery
-                ResponseEntity<Box> newBox = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s/addDelivery/%s", updatedDelivery.getTargetBox(), updatedDelivery.getId()), HttpMethod.PUT, new HttpEntity<>(updatedDelivery, headers), Box.class);
-                if (!Objects.requireNonNull(newBox.getBody()).getId().isEmpty()){
+                ResponseEntity<Box> newBox = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", updatedDelivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
+                if (Objects.requireNonNull(newBox.getBody()).getId().isEmpty()){
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
+                //add Delivery to new box
+                ResponseEntity<Box> httpResponse = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s/addDelivery/%s", updatedDelivery.getTargetBox(), updatedDelivery.getId()), HttpMethod.PUT, new HttpEntity<>(newBox.getBody(), headers), Box.class);
 
                 ResponseEntity<Box> oldBox = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", oldDelivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
                 Box updatedOldBox = oldBox.getBody();
