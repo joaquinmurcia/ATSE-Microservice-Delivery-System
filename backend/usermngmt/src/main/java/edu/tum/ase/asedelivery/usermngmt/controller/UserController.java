@@ -1,5 +1,6 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
+import edu.tum.ase.asedelivery.usermngmt.jwt.JwtUtil;
 import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
 import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
 import edu.tum.ase.asedelivery.usermngmt.model.Constants;
@@ -27,6 +28,10 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -60,11 +65,21 @@ public class UserController {
             method = RequestMethod.GET
     )
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<List<AseUser>> getUsers() {
+    public ResponseEntity<List<AseUser>> getUsers( @RequestHeader("Cookie") String cookie) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
         try {
             List<AseUser> users;
             Query query = new Query();
+
+            int jwt_start = cookie.indexOf("jwt=");
+            int jwt_end = cookie.indexOf(";",jwt_start);
+            if (jwt_end == -1){
+                jwt_end = cookie.length();
+            }
+            String jwt_string = cookie.substring(jwt_start + 4,jwt_end);
+
+            String role = jwtUtil.getRole(jwt_string);
+            String username = jwtUtil.extractUsername(jwt_string);
 
             /*if (payload.isPresent()) {
                 if (!Validation.isNullOrEmpty(payload.get().getName())) {
@@ -76,13 +91,9 @@ public class UserController {
             }*/
 
             // User and deliverer can only access their own user information
-            String authority = authContext.getAuthorities().toString();
-            if (Stream.of("[ROLE_DELIVERER]","[ROLE_CUSTOMER]").anyMatch(authority::equalsIgnoreCase)) {
+            if ("ROLE_DELIVERER".equals(role) || "ROLE_CUSTOMER".equals(role)) {
 
-                Object test = authContext.getPrincipal();
-
-                AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
-                query.addCriteria(Criteria.where(Constants.NAME).is(aseUserPrincipal.getUser().getUsername()));
+                query.addCriteria(Criteria.where(Constants.NAME).is(username));
             }
 
             users = userService.findAll(query);
@@ -102,14 +113,22 @@ public class UserController {
             method = RequestMethod.GET
     )
     @PreAuthorize("hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<AseUser> getUser(@PathVariable("id") String id) {
+    public ResponseEntity<AseUser> getUser(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
 
+        int jwt_start = cookie.indexOf("jwt=");
+        int jwt_end = cookie.indexOf(";",jwt_start);
+        if (jwt_end == -1){
+            jwt_end = cookie.length();
+        }
+        String jwt_string = cookie.substring(jwt_start + 4,jwt_end);
+
+        String role = jwtUtil.getRole(jwt_string);
+        String username = jwtUtil.extractUsername(jwt_string);
+
         // User and deliverer can only access their own user information
-        String authority = authContext.getAuthorities().toString();
-        if (Stream.of("[ROLE_DELIVERER]","[ROLE_CUSTOMER]").anyMatch(authority::equalsIgnoreCase)) {
-            AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
-            id = aseUserPrincipal.getId();
+        if ("ROLE_DELIVERER".equals(role) || "ROLE_CUSTOMER".equals(role)) {
+            id = username;
         }
 
         Optional<AseUser> userOptional = userService.findById(id);
@@ -126,14 +145,23 @@ public class UserController {
             method = RequestMethod.PUT
     )
     @PreAuthorize("hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<AseUser> updateUser(@PathVariable("id") String id, @RequestBody AseUser user) {
+    public ResponseEntity<AseUser> updateUser(@PathVariable("id") String id, @RequestBody AseUser user,  @RequestHeader("Cookie") String cookie) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
 
+        int jwt_start = cookie.indexOf("jwt=");
+        int jwt_end = cookie.indexOf(";",jwt_start);
+        if (jwt_end == -1){
+            jwt_end = cookie.length();
+        }
+        String jwt_string = cookie.substring(jwt_start + 4,jwt_end);
+
+        String role = jwtUtil.getRole(jwt_string);
+        String username = jwtUtil.extractUsername(jwt_string);
+
+
         // User and deliverer can only access their own user information
-        String authority = authContext.getAuthorities().toString();
-        if (Stream.of("[ROLE_DELIVERER]","[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
-            AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
-            id = aseUserPrincipal.getId();
+        if ("ROLE_DELIVERER".equals(role) || "ROLE_CUSTOMER".equals(role)) {
+            id = username;
         }
 
         Optional<AseUser> userOptional = userService.findById(id);
@@ -153,7 +181,7 @@ public class UserController {
                 _user.setEmail(user.getEmail());
             }
 
-            if (!(user.getRole() == null) && Stream.of("[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
+            if (!(user.getRole() == null) && "ROLE_DISPATCHER".equals(role)) {
                 _user.setRole(user.getRole());
             }
 
