@@ -403,7 +403,30 @@ deploy-ecr:
     - docker --version
   script:
     # - docker build -t $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID .
-    - docker push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-deliverymanagement:latest
+    
+# publish:
+#   image: 
+#     name: amazon/aws-cli
+#     entrypoint: [""]
+#   services:
+#     - docker:dind
+#   before_script:
+#     - amazon-linux-extras install docker
+#     - aws --version
+#     - docker --version
+#   script:
+#     - docker build -t $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID . 
+#     - aws ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+#     - docker push $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID
+publish-ecr-1:
+  image: 
+    name: amazon/aws-cli
+    entrypoint: [""]
+  before_script:
+    - aws --version
+  script:
+    - aws ecr get-login-password | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+
 
 deploy:
   stage: deploy
