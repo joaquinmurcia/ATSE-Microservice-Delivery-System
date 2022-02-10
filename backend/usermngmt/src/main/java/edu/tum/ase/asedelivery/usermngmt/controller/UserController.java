@@ -78,6 +78,9 @@ public class UserController {
             // User and deliverer can only access their own user information
             String authority = authContext.getAuthorities().toString();
             if (Stream.of("[ROLE_DELIVERER]","[ROLE_CUSTOMER]").anyMatch(authority::equalsIgnoreCase)) {
+
+                Object test = authContext.getPrincipal();
+
                 AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
                 query.addCriteria(Criteria.where(Constants.NAME).is(aseUserPrincipal.getUser().getUsername()));
             }
@@ -128,7 +131,7 @@ public class UserController {
 
         // User and deliverer can only access their own user information
         String authority = authContext.getAuthorities().toString();
-        if (Stream.of("[ROLE_DELIVERER]","[ROLE_CUSTOMER]").anyMatch(authority::equalsIgnoreCase)) {
+        if (Stream.of("[ROLE_DELIVERER]","[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
             AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
             id = aseUserPrincipal.getId();
         }

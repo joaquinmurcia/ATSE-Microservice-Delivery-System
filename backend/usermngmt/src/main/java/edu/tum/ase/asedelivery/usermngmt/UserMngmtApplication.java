@@ -62,7 +62,7 @@ public class UserMngmtApplication implements CommandLineRunner {
 		AseUser[] users = {
 				new AseUser("User1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
 				new AseUser("TestCustomer1", "test@test.com","TestCustomer", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUser("TestDeliverer1", null, "User2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
+				new AseUser("TestDeliverer1", "test1@test.com", "User2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
 				new AseUser("User3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1", UserRole.ROLE_DISPATCHER), };
 		List<AseUser> usersList = Arrays.asList(users);
 		userRepository.saveAll(usersList);
