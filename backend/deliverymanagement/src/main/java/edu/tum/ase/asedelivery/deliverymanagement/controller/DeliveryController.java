@@ -125,7 +125,7 @@ public class DeliveryController {
             }
 
             if (!Validation.isNullOrEmpty(delivererId)) {
-                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(delivererId));
+                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DELIVERER).is(delivererId));
             }
 
             if (!Validation.isNullOrEmpty(deliveryStatus)) {
@@ -285,7 +285,7 @@ public class DeliveryController {
             List<Delivery> collectedDeliveries = new ArrayList<Delivery>();
 
             for (Delivery delivery : deliveries){
-                Optional <Delivery> _delivery = deliveryService.findById(delivery.getId());
+                Optional<Delivery> _delivery = deliveryService.findById(delivery.getId());
 
                 if (_delivery.isPresent()) {
                     // Create headers

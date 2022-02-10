@@ -78,6 +78,9 @@ public class UserController {
             // User and deliverer can only access their own user information
             String authority = authContext.getAuthorities().toString();
             if (Stream.of("[ROLE_DELIVERER]","[ROLE_CUSTOMER]").anyMatch(authority::equalsIgnoreCase)) {
+
+                Object test = authContext.getPrincipal();
+
                 AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
                 query.addCriteria(Criteria.where(Constants.NAME).is(aseUserPrincipal.getUser().getUsername()));
             }
@@ -128,7 +131,7 @@ public class UserController {
 
         // User and deliverer can only access their own user information
         String authority = authContext.getAuthorities().toString();
-        if (Stream.of("[ROLE_DELIVERER]","[ROLE_CUSTOMER]").anyMatch(authority::equalsIgnoreCase)) {
+        if (Stream.of("[ROLE_DELIVERER]","[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
             AseUserPrincipal aseUserPrincipal = (AseUserPrincipal) authContext.getPrincipal();
             id = aseUserPrincipal.getId();
         }
@@ -137,20 +140,20 @@ public class UserController {
 
         if (userOptional.isPresent()) {
             AseUser _user = userOptional.get();
-            if (!user.getName().isEmpty()){
+            if (!(user.getName() == null)){
                 _user.setName(user.getName());
             }
-            if (!user.getPassword().isEmpty()){
+            if (!(user.getPassword()== null)){
                 _user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
-            if (!user.getRfidToken().isEmpty()){
+            if (!(user.getRfidToken()== null)){
                 _user.setRfidToken(user.getRfidToken());
             }
-            if (!user.getEmail().isEmpty()){
+            if (!(user.getEmail() == null)){
                 _user.setEmail(user.getEmail());
             }
 
-            if (!user.getRole().toString().isEmpty() && Stream.of("[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
+            if (!(user.getRole() == null) && Stream.of("[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
                 _user.setRole(user.getRole());
             }
 

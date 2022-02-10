@@ -26,8 +26,8 @@ public class UserService {
     }
 
     // Store data
-    public AseUser save(AseUser delivery) {
-        return userRepository.save(delivery);
+    public AseUser save(AseUser user) {
+        return userRepository.save(user);
     }
 
     public List<AseUser> saveAll(List<AseUser> deliveries) {
