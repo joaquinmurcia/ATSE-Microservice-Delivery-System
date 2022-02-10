@@ -17,6 +17,7 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -33,7 +34,8 @@ public class JwtUtil {
 
     private PublicKey loadPubKey() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         // Read Public Key.
-        File filePublicKey = ResourceUtils.getFile("classpath:public.key");
+        File filePublicKey = ResourceUtils.getFile(System.getenv().getOrDefault("PUBLIC_KEY_PATH", "classpath:public.key"));
+        //filePublicKey = ResourceUtils.getFile("./boxmanagement/target/classes/public.key");
         FileInputStream fis = new FileInputStream(filePublicKey);
 
         byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];

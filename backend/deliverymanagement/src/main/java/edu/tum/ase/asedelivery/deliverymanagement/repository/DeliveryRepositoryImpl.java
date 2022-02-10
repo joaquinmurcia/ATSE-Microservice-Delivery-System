@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.deliverymanagement.repository;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.Delivery;
+import edu.tum.ase.asedelivery.deliverymanagement.model.Delivery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;

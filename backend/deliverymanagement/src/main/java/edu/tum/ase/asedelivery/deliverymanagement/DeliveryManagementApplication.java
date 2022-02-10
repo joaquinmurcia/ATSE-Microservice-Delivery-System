@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.deliverymanagement;
 
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.asedelivery.asedeliverymodels.Delivery;
-import edu.tum.ase.asedelivery.asedeliverymodels.DeliveryStatus;
+import edu.tum.ase.asedelivery.deliverymanagement.model.Delivery;
+import edu.tum.ase.asedelivery.deliverymanagement.model.DeliveryStatus;
 import edu.tum.ase.asedelivery.deliverymanagement.repository.DeliveryRepository;
 import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
 import org.slf4j.Logger;
@@ -30,6 +30,9 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 	@Autowired
 	DeliveryService deliveryService;
 
+	@Autowired
+	private DeliveryRepository deliveryRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(DeliveryManagementApplication.class, args);
 	}
@@ -37,6 +40,9 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		log.info("MongoClient = " + mongoClient.getClusterDescription());
+		if (deliveryRepository.findAll().size() != 0) {
+			deliveryRepository.deleteAll();
+		}
 
 		// Create list of dummy deliveries
 		/*List<Delivery> deliveries = new ArrayList<Delivery>();

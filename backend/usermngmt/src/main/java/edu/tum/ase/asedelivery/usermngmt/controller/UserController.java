@@ -1,8 +1,8 @@
 package edu.tum.ase.asedelivery.usermngmt.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUserPrincipal;
-import edu.tum.ase.asedelivery.asedeliverymodels.Constants;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUserPrincipal;
+import edu.tum.ase.asedelivery.usermngmt.model.Constants;
 import edu.tum.ase.asedelivery.usermngmt.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -137,20 +137,20 @@ public class UserController {
 
         if (userOptional.isPresent()) {
             AseUser _user = userOptional.get();
-            if (!user.getName().isEmpty()){
+            if (!(user.getName() == null)){
                 _user.setName(user.getName());
             }
-            if (!user.getPassword().isEmpty()){
+            if (!(user.getPassword()== null)){
                 _user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
-            if (!user.getRfidToken().isEmpty()){
+            if (!(user.getRfidToken()== null)){
                 _user.setRfidToken(user.getRfidToken());
             }
-            if (!user.getEmail().isEmpty()){
+            if (!(user.getEmail() == null)){
                 _user.setEmail(user.getEmail());
             }
 
-            if (!user.getRole().toString().isEmpty() && Stream.of("[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
+            if (!(user.getRole() == null) && Stream.of("[ROLE_DISPATCHER]").anyMatch(authority::equalsIgnoreCase)) {
                 _user.setRole(user.getRole());
             }
 
