@@ -82,6 +82,15 @@ public class JwtUtil {
 
 
     }
+
+    public String getRole(final String token){
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        String roles = claims.get("roles").toString();
+        return roles;
+    }
     public UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
         String tmpname = extractUsername(token);
 
