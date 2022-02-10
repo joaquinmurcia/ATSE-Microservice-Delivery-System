@@ -66,6 +66,15 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
+    public String getRole(final String token){
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        String roles = claims.get("roles").toString();
+        return roles;
+    }
+
     // Check if the JWT is signed by us, and is not expired
     public boolean verifyJwtSignature(String token) {
         PublicKey publicKey = keyStoreManager.getPublicKey();
