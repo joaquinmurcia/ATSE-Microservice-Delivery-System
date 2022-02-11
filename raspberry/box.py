@@ -304,10 +304,7 @@ def get_jwt(username, password):
 
 
 def get_my_deliveries():
-    data = {}
-    data["targetBox"] = me.box_id
-
-    r = httpRequest_customHeader("GET ", delivery_url + "/deliveries/", params, headers=getBaseHeaders(jwt), content=data)
+    r = httpRequest_customHeader("GET ", delivery_url + "/deliveries?boxId=" + str(me.box_id), params, headers=getBaseHeaders(jwt))
     return r.content
 
 
