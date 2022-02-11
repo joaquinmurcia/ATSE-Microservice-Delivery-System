@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 @Component
 public class AuthRequestFilter extends OncePerRequestFilter {
 
@@ -96,7 +95,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // load a user from the database that has the same username as in the JWT token.
             User userDetails = null;
             AseUser user = userRepository.findByName(username);
@@ -108,18 +107,27 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
             userDetails = new AseUserPrincipal(user).getUser();
             authService.setAuthentication(userDetails, request);
-            Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println(String.format("Authenticate Token Set:\n"
-                            + "Username: %s\n"
-                            + "Password: %s\n"
-                            + "Authority: %s\n",
-                    authContext.getPrincipal(),
-                    authContext.getCredentials(),
-                    authContext.getAuthorities().toString()));
-        }
+            UsernamePasswordAuthenticationToken authentication = null;
+            try {
+                authentication = jwtUtil.getAuthentication(jwt, SecurityContextHolder.getContext().getAuthentication());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Failed to generate authentication object :(");
+            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+//        }
+        Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(String.format("Authenticate Token Set:\n"
+                        + "Username: %s\n"
+                        + "Password: %s\n"
+                        + "Authority: %s\n",
+                authContext.getPrincipal(),
+                authContext.getCredentials(),
+                authContext.getAuthorities().toString()));
+
         filterChain.doFilter(request, response);
     }
-
 //
 //        @Override
 //        protected boolean shouldNotFilter(HttpServletRequest request)

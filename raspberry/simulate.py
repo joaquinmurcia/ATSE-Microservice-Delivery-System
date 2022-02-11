@@ -49,7 +49,7 @@ def deliver_a():
     box.me.request_open("520413243569", pi_stuff)
 
 def deliver_b():
-    box.me.request_open("rtoken1", pi_stuff)
+    box.me.request_open("RFIDToken4", pi_stuff)
     
 def pickup():
     box.me.request_open("108560888149", pi_stuff)
