@@ -56,9 +56,13 @@ export const editDeliveryAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json
         };
-        const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
+        var link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
+        const role = parseJwt(getCookie("jwt")).roles;
+        if(role === "ROLE_DELIVERER"){
+            link = link + '/deposit';
+        }
         const response = await fetch(link ,requestOptions).then((data)=> data.json());
-        console.log("changed " + elem.id);
+
         return response;
     }
 );

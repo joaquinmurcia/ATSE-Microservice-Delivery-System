@@ -58,7 +58,7 @@ const EditDeliveryFrom = () => {
                     <br/>
                     <TextField sx={{minWidth: 120, margin: 1}} size="small" name="responsibleDeliverer" label="Responsible Deliverer" value={elemResponsibleDeliverer} onChange={handleChangeResponsibleDeliverer}/>
                     <br/>
-                </div>}
+
                 <FormControl sx={{minWidth: 120, margin: 1}} size="small">
                     <InputLabel id="selectStatus">Status</InputLabel>
                     <Select name="deliveryStatus" labelId="selectStatus" label="" value={elemDeliveryStatus} onChange={handleChangeDeliveryStatus}>
@@ -72,6 +72,12 @@ const EditDeliveryFrom = () => {
                 <br/>
                 <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editDeliveryAsync(getElem()))}>Change</Button>
                 <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="error" onClick={()=> dispatch(cancelEdit())}>Cancel</Button>
+                </div>}
+                {role === "ROLE_DELIVERER" &&
+                    <div>
+                        <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editDeliveryAsync(getElem()))}>Deposit</Button>
+                    </div>
+                }
             </Paper>
         </Container>
     );
