@@ -37,7 +37,7 @@ public class BoxController {
     public ResponseEntity<List<Box>> createBoxes(@RequestBody List<Box> boxes) {
         try {
             for (Box box : boxes) {
-                if (box.getBoxStatus() != BoxStatus.available || box.getRaspberryPiID() == null || box.getDeliveryIDs() != null) {
+                if (box.getBoxStatus() != BoxStatus.available || box.getRaspberryPiID() == null) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 

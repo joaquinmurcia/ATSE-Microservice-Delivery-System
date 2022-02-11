@@ -101,11 +101,11 @@ class Box:
         return False
 
     def __delivered(self, token):
-        # for delivery in self.deliveries:
-        #     if delivery["deliveryStatus"] != "pickedUp":
-        #         if delivery["responsibleDelivererRfidToken"] == token:
-        #             delivery["deliveryStatus"] = "delivered"
-        #             set_delivery_delivered(delivery["id"])
+        for delivery in self.deliveries:
+            if delivery["deliveryStatus"] != "pickedUp":
+                if delivery["responsibleDelivererRfidToken"] == token:
+                    delivery["deliveryStatus"] = "delivered"
+                    #set_delivery_delivered(delivery["id"])
 
         if(not self.__is_deliverer_active(token)):
             self.__deliverer_tokens.remove(token)
@@ -117,7 +117,9 @@ class Box:
         for active_delivery in self.deliveries:
             if active_delivery["deliveryStatus"] == "delivered":
                 ret = True
-        print("No deliveries ready for pickup!")
+
+        if ret == False:
+            print("No deliveries ready for pickup!")
         return ret
 
     def __get_active_deliveries(self):
@@ -302,10 +304,7 @@ def get_jwt(username, password):
 
 
 def get_my_deliveries():
-    data = {}
-    data["targetBox"] = me.box_id
-
-    r = httpRequest_customHeader("GET ", delivery_url + "/deliveries/", params, headers=getBaseHeaders(jwt), content=data)
+    r = httpRequest_customHeader("GET ", delivery_url + "/deliveries?boxId=" + str(me.box_id), params, headers=getBaseHeaders(jwt))
     return r.content
 
 
