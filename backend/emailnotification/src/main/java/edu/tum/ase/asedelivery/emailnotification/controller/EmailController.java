@@ -19,7 +19,7 @@ public class EmailController {
             value = "/deliveryCreated",
             method = RequestMethod.POST
     )
-    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<String> sendCreatedDeliveryEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -34,7 +34,7 @@ public class EmailController {
             value = "/deliveryDeposited",
             method = RequestMethod.POST
     )
-    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<String> sendDeliveryPlacedInBoxEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -49,7 +49,7 @@ public class EmailController {
             value = "/deliveriesPickedUp",
             method = RequestMethod.POST
     )
-    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<String> sendDeliveriesPickedUpEmail(@RequestBody String customerMail){
         if(!isEmailAdressValid(customerMail)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 

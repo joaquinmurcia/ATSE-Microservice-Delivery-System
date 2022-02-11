@@ -49,6 +49,17 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
+                List<Delivery> existingDeliveries = deliveryService.findAll(new Query());
+                for (Delivery existingDel : existingDeliveries){
+                    // Do not check pickedUp deliveries
+                    if(existingDel.getDeliveryStatus().equals("pickedUp"))
+                        continue;
+                    // If deliveries have different customers but same box -> invalid
+                    if(!existingDel.getTargetCustomer().equals(delivery.getTargetCustomer()))
+                        if(existingDel.getTargetBox().equals(delivery.getTargetBox()))
+                            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
                 // Checks if customer exists
                 ResponseEntity<AseUser> targetCustomer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getTargetCustomer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
                 if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
@@ -69,7 +80,7 @@ public class DeliveryController {
 
                 // Checks if a box exists
                 ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", delivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
-                if (Objects.requireNonNull(box.getBody()).getBoxStatus() == BoxStatus.occupied){
+                if (Objects.requireNonNull(box.getBody()).getId().isEmpty()){
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
@@ -92,7 +103,7 @@ public class DeliveryController {
             for (Delivery delivery: deliveries) {
                 // Get Box of delivery
                 ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", delivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
-                if (Objects.requireNonNull(box.getBody()).getBoxStatus() == BoxStatus.occupied){
+                if (Objects.requireNonNull(box.getBody()).getId().isEmpty()){
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
