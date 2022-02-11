@@ -3,7 +3,7 @@ spring:
     name: deliverymanagement
   data:
     mongodb:
-      uri: mongodb://aseAdmin:ase@${MONGO_DB_HOSTNAME:localhost}:27017/deliveryManagement?authSource=admin #!172.59.0.14
+      uri: mongodb://${MONGO_DB_HOSTNAME:aseAdmin:ase@localhost}:27017/${MONGO_DB_DATABASE:userManagement?authSource=admin} #!172.59.0.14
       # Configure database location
       #host: localhost
       #port: 27017
