@@ -23,9 +23,13 @@ export const getUsersAsync = createAsyncThunk(
         } else if ( role === 'ROLE_DELIVERER'){
             link = link + '?delivererId=' + sub;
         }
-        const response = await fetch(link, requestOptions).then((data)=> data.json());
-        console.log(response);
-        return response;
+        const response = await fetch(link,requestOptions);
+        if(response.status === 200){
+            const res2 = await fetch(link,requestOptions).then((data)=> data.json());
+            return res2;
+        } else {
+            return [];
+        }
     }
 );
 
