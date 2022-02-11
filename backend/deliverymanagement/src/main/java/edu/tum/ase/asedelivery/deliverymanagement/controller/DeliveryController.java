@@ -95,7 +95,7 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
-                restTemplate.exchange("http://localhost:9005/email/deliveriesPickedUp", HttpMethod.POST, new HttpEntity<>(customer.getBody().getEmail(), headers), String.class);
+                restTemplate.exchange("http://localhost:9005/email/deliveryCreated", HttpMethod.POST, new HttpEntity<>(customer.getBody().getEmail(), headers), String.class);
             }
 
             List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
@@ -377,13 +377,13 @@ public class DeliveryController {
             headers.set("Cookie", cookie);
 
             // Get targetCustomer to use the customers Email
-            ResponseEntity<AseUser> targetCustomer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", _delivery.getTargetCustomer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
-            if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
+            restTemplate.exchange(String.format("http://localhost:9004/users/%s/sendDepositMailtoCustomer", _delivery.getTargetCustomer()), HttpMethod.PUT, new HttpEntity<>(headers), AseUser.class);
+            /*if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
                 return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
             }
 
+            restTemplate.exchange("http://localhost:9005/email/deliveryDeposited", HttpMethod.POST, new HttpEntity<>(targetCustomer.getBody().getEmail(), headers), String.class);*/
             _delivery.setDeliveryStatus(DeliveryStatus.delivered);
-            restTemplate.exchange("http://localhost:9005/email/deliveryDeposited", HttpMethod.POST, new HttpEntity<>(targetCustomer.getBody().getEmail(), headers), String.class);
 
             return new ResponseEntity<>(deliveryService.save(_delivery), HttpStatus.OK);
         } else {
