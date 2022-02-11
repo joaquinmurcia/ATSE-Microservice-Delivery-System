@@ -22,7 +22,8 @@ export const loginAsync = createAsyncThunk(
 
         console.log("Start Login")
         console.log(temp);
-        const response = fetch('http://127.0.0.1:9000/usermanagement/auth', requestOptions).then(handleResponse);
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const response = fetch('http://' + host_ip + ':9000/usermanagement/auth', requestOptions).then(handleResponse);
 
         return response;
     }

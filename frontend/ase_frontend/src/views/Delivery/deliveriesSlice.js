@@ -16,7 +16,8 @@ export const getDeliveriesAsync = createAsyncThunk(
             method: "GET",
             credentials: "include"
         };
-        var link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
+        const host_ip = process.env.HOST || '127.0.0.1';
+        var link = 'http://' + host_ip + ':9000/deliverymanagement/deliveries';
         const role = parseJwt(getCookie("jwt")).roles;
         const sub = parseJwt(getCookie("jwt")).sub;
         if(role === 'ROLE_CUSTOMER'){
@@ -41,7 +42,8 @@ export const deleteDeliveryAsync = createAsyncThunk(
             method: "DELETE",
             credentials: "include"
         };
-        const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/deliverymanagement/deliveries/' + elem.id;
         await fetch(link ,requestOptions);
         console.log("deleted: " + elem.id);
     }
@@ -60,7 +62,8 @@ export const editDeliveryAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json
         };
-        var link = 'http://127.0.0.1:9000/deliverymanagement/deliveries/' + elem.id;
+        const host_ip = process.env.HOST || '127.0.0.1';
+        var link = 'http://' + host_ip + ':9000/deliverymanagement/deliveries/' + elem.id;
         const role = parseJwt(getCookie("jwt")).roles;
         if(role === "ROLE_DELIVERER"){
             link = link + '/deposit';
@@ -83,7 +86,8 @@ export const addDeliveryAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json,
         };
-        const link = 'http://127.0.0.1:9000/deliverymanagement/deliveries';
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/deliverymanagement/deliveries';
         await fetch(link ,requestOptions);
         console.log("Added new Element");
     }
