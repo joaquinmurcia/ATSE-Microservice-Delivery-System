@@ -42,6 +42,8 @@ cache:
 build-boxmanagement:
   stage: build
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
         - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
@@ -70,6 +72,8 @@ build-deliverymanagement:
 build-emailnotification:
   stage: build
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
@@ -84,6 +88,8 @@ build-emailnotification:
 build-eureka-discovery-service:
   stage: build
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
@@ -98,6 +104,8 @@ build-eureka-discovery-service:
 build-gateway:
   stage: build
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
@@ -112,6 +120,8 @@ build-gateway:
 build-usermngmt:
   stage: build
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
@@ -126,6 +136,8 @@ build-usermngmt:
 package-boxmanagement:
   stage: package
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
@@ -151,6 +163,8 @@ package-boxmanagement:
 package-deliverymanagement:
   stage: package
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/deliverymanagement/src/**/*
@@ -171,6 +185,8 @@ package-deliverymanagement:
 package-emailnotification:
   stage: package
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/emailnotification/src/**/*
@@ -191,6 +207,8 @@ package-emailnotification:
 package-eureka-discovery-service:
   stage: package
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/eureka-discovery-service/src/**/*
@@ -210,6 +228,8 @@ package-eureka-discovery-service:
 package-gateway:
   stage: package
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
@@ -229,6 +249,8 @@ package-gateway:
 package-usermngmt:
   stage: package
   image: maven:latest
+  only:
+    - main
   rules:
     - changes:
       - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
@@ -248,6 +270,8 @@ package-usermngmt:
 
 docker-boxmanagement:
   stage: publish
+  only:
+    - main
   # the tag 'shell' advices only GitLab runners using this tag to pick up that job
   #tags:
   #  - shell
@@ -262,6 +286,8 @@ docker-boxmanagement:
 
 docker-deliverymanagement:
   stage: publish
+  only:
+    - main
   when: always
   dependencies:
     - package-deliverymanagement
@@ -273,9 +299,8 @@ docker-deliverymanagement:
 
 docker-emailnotification:
   stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
+  only:
+    - main
   when: always
   dependencies:
     - package-emailnotification
@@ -287,6 +312,8 @@ docker-emailnotification:
 
 docker-eureka-discovery-service:
   stage: publish
+  only:
+    - main
   when: always
   dependencies:
     - package-eureka-discovery-service
@@ -298,6 +325,8 @@ docker-eureka-discovery-service:
 
 docker-gateway:
   stage: publish
+  only:
+    - main
   when: always
   dependencies:
     - package-gateway
@@ -309,6 +338,8 @@ docker-gateway:
 
 docker-usermngmt:
   stage: publish
+  only:
+    - main
   when: always
   dependencies:
     - package-usermngmt
@@ -320,6 +351,8 @@ docker-usermngmt:
 
 docker-frontend:
   stage: publish
+  only:
+    - main
   when: always
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -353,6 +386,8 @@ deploy-swarm:
 deploy-premium:
   stage: deploy
   when: always
+  only:
+    - main
   before_script:
     ##
     ## Install ssh-agent if not already installed, it is required by Docker.
