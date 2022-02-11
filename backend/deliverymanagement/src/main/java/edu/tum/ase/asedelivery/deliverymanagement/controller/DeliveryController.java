@@ -284,9 +284,36 @@ public class DeliveryController {
             method = RequestMethod.DELETE
     )
     @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<HttpStatus> deleteDelivery(@PathVariable("id") String id) {
+    public ResponseEntity<HttpStatus> deleteDelivery(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
         try {
-            deliveryService.deleteById(id);
+
+            Optional<Delivery> deliveryOptional = deliveryService.findById(id);
+
+            if (deliveryOptional.isPresent()) {
+                String boxId = deliveryOptional.get().getTargetBox();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Cookie", cookie);
+
+                ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", boxId), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
+                if (Objects.requireNonNull(box.getBody()).getId().isEmpty()){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                List<String> deliveries = box.getBody().getDeliveryIDs();
+                deliveries.remove(id);
+                box.getBody().setDeliveryIDs(deliveries);
+
+                if (deliveries.size()==0) {
+                    box.getBody().setBoxStatus(BoxStatus.available);
+                }
+                ResponseEntity<Box> httpResponse = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", boxId), HttpMethod.PUT, new HttpEntity<>(box.getBody(), headers), Box.class);
+                if (!(httpResponse.getStatusCode() == HttpStatus.OK)){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                deliveryService.deleteById(id);
+            }
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {

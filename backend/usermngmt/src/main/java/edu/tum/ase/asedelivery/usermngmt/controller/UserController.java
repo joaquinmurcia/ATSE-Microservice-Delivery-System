@@ -201,6 +201,8 @@ public class UserController {
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") String id) {
         try {
             userService.deleteById(id);
+
+
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
