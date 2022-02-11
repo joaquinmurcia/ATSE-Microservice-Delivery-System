@@ -52,13 +52,19 @@ public class DeliveryController {
                 // Checks if customer exists
                 ResponseEntity<AseUser> targetCustomer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getTargetCustomer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
                 if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
-                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+                if (targetCustomer.getBody().getRole() != UserRole.ROLE_CUSTOMER) {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
                 // Checks if deliverer exists
                 ResponseEntity<AseUser> responsibleDeliverer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getResponsibleDeliverer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
                 if (!Objects.requireNonNull(responsibleDeliverer.getBody()).isEnabled()){
-                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+                if (responsibleDeliverer.getBody().getRole() != UserRole.ROLE_DELIVERER) {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
                 // Checks if a box exists
@@ -207,20 +213,20 @@ public class DeliveryController {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
-            //These if statements ensure that the delivery status can only be changed in the right order
-            //1. open -> 2. collected -> 3. delivered -> 4. pickedup -> 1. open -> ...
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.open && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.collected && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.open)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.delivered && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.open || updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
+//            //These if statements ensure that the delivery status can only be changed in the right order
+//            //1. open -> 2. collected -> 3. delivered -> 4. pickedup -> 1. open -> ...
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.open && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.collected && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.open)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.delivered && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.open || updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
 
             // Create headers
             HttpHeaders headers = new HttpHeaders();
