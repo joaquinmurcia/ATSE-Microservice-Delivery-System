@@ -8,8 +8,7 @@ import edu.tum.ase.asedelivery.usermngmt.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import edu.tum.ase.asedelivery.usermngmt.service.UserService;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -31,6 +32,8 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    RestTemplate restTemplate = new RestTemplate();
 
 
     @Autowired
@@ -191,6 +194,22 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @RequestMapping(
+            value = "/{id}/sendDepositMailtoCustomer",
+            method = RequestMethod.PUT
+    )
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_DELIVERER')")
+    public ResponseEntity<AseUser> sendDepositMailtoCustomer(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
+        Optional<AseUser> targetCustomer = userService.findById(id);
+
+        // Create headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", cookie);
+
+        restTemplate.exchange("http://localhost:9005/email/deliveryDeposited", HttpMethod.POST, new HttpEntity<>(targetCustomer.get().getEmail(), headers), String.class);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(
