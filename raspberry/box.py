@@ -69,7 +69,7 @@ class Box:
 
         if new_deliverer_token not in self.__deliverer_tokens:
             self.__deliverer_tokens.append(new_deliverer_token)
-            
+
         self.__customer_token = new_customer_token
         self.deliveries.append(delivery)
         return
@@ -97,7 +97,7 @@ class Box:
 
     def __is_deliverer_active(self, deliverer_token):
         for active_delivery in self.deliveries:
-            if active_delivery["deliveryStatus"] == "open":
+            if active_delivery["deliveryStatus"] == "open" or active_delivery["deliveryStatus"] == "collected":
                 if active_delivery["responsibleDelivererRfidToken"] == deliverer_token:
                     return True
         return False

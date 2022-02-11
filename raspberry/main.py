@@ -25,7 +25,7 @@ class perpetualTimer:
         self.thread.cancel()
 
 
-valid_ids = pi_stuff.load_ids(os.path.dirname(__file__) + "/user_ids.json")
+# valid_ids = pi_stuff.load_ids(os.path.dirname(__file__) + "/user_ids.json")
 reader, led = pi_stuff.init_hardware()
 
 
