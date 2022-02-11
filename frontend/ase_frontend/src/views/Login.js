@@ -9,8 +9,8 @@ function Login(){
 
     const dispatch = useDispatch();
 
-    const[userName,setUserName] = useState("Dispatcher");
-    const[password,setPassword] = useState("pwd3");
+    const[userName,setUserName] = useState("");
+    const[password,setPassword] = useState("");
 
     const handleUserName = (e) => {
         setUserName(e.target.value);

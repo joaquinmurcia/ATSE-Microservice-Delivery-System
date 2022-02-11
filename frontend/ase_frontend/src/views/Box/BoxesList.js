@@ -1,9 +1,19 @@
 import {makeStyles} from "@material-ui/core";
-import {Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
+import {
+    Container,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField
+} from '@mui/material';
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {getBoxesAsync, selectBoxes, startEditElement} from "./boxesSlice";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {deleteBoxAsync} from "./boxesSlice";
 import Button from "@mui/material/Button";
 import {parseJwt, getCookie} from '../tokenReader';
@@ -46,7 +56,7 @@ const useStyles = makeStyles(() => {
 const listToString = (stringList) => {
 
     if(stringList === undefined || stringList.length===0){
-        return "/";
+        return "—";
     } else {
         var res = stringList[0].toString();
         for(var i=1; i< stringList.length;i++ ){
@@ -70,11 +80,17 @@ const BoxesList = () => {
     useEffect(() => dispatch(getBoxesAsync()), [dispatch]);
     const list = useSelector(selectBoxes);
 
+    const[searchId, setSearchId] = useState("");
+
     const role = parseJwt(getCookie("jwt")).roles;
 
     const reloadData = () => {
         dispatch(getBoxesAsync());
     };
+
+    const handleChangeSearchId = (e) => {
+        setSearchId(e.target.value);
+    }
 
     const columns = [
         { id: 'id', label: 'Id', minWidth: 30},
@@ -88,7 +104,8 @@ const BoxesList = () => {
     return (
         <Container>
         <Paper  sx={{border: 1, borderRadius: 1}}>
-        <TableContainer>
+            <TextField sx={{minWidth: 120, margin: 1}} size="small" name="search" label="Search Tracking Number" value={searchId} onChange={handleChangeSearchId}/>
+            <TableContainer>
             <Table stickyHeader aria-label="sticky table" className={listStyle}>
                 <TableHead>
                     <TableRow>
@@ -107,7 +124,23 @@ const BoxesList = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {list.map(row => {
+                    {list.filter((elem) => {
+                        if(searchId !== "") {
+                            const deliveries = elem.deliveryIDs;
+                            var res1 = false;
+                            for (let delId of deliveries) {
+                                const id = delId.toString();
+                                var res2 = true;
+                                for (var i = 0; i < searchId.length; i++) {
+                                    res2 = res2 && id.charAt(i) === searchId.charAt(i);
+                                }
+                                res1 = res1 || res2;
+                            }
+                            return res1;
+                        } else {
+                            return true;
+                        }
+                    }).map(row => {
                             return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id} className={cellStyle}>
 
