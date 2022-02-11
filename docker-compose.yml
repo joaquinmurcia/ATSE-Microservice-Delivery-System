@@ -50,6 +50,7 @@ services:
     environment:
       - EUREKA_SERVER=discovery
       - MONGO_DB_HOSTNAME=mongo
+      - MONGO_DB_DATABASE=userManagement
       # - MONGO_DB_USERNAME=aseAdmin disabled mongo auth
       # - MONGO_DB_PASSWORD=ase disabled mongo auth
       - KEYSTORE_PATH=./ase_project.keystore
@@ -76,6 +77,7 @@ services:
     environment:
       - EUREKA_SERVER=discovery
       - MONGO_DB_HOSTNAME=mongo
+      - MONGO_DB_DATABASE=boxManagement
       - PUBLIC_KEY_PATH=./public.key
     depends_on:
       - discovery
@@ -102,6 +104,7 @@ services:
     environment:
       - EUREKA_SERVER=discovery
       - MONGO_DB_HOSTNAME=mongo
+      - MONGO_DB_DATABASE=deliveryManagement
       #- MONGO_DB_USERNAME=aseAdmin
       #- MONGO_DB_PASSWORD=ase
       - PUBLIC_KEY_PATH=./public.key
