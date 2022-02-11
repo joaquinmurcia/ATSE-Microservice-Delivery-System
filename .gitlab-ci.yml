@@ -19,7 +19,7 @@ variables:
 
   # Deploy variables depending on the number of instances
   # Premium tier
-  MANAGER_NODE_IP: 3-125-160-233 # Set Elastic IPs in AWS so that it doesn't change between reboots
+  MANAGER_NODE_IP: 18-192-115-238 # Set Elastic IPs in AWS so that it doesn't change between reboots
 
   # Free tier
   MANAGER_NODE_1_IP: 18-192-123-179
