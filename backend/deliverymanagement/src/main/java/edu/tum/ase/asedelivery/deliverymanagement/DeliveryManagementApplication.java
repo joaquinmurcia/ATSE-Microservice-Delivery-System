@@ -51,7 +51,8 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 */
 
 		List<Delivery> deliveries = new ArrayList<Delivery>();
-		deliveries.add(new Delivery("deliveryTestID", "TestBox1", "TestCustomer1", "RFIDToken1","TestDeliverer1", "RFIDToken1", DeliveryStatus.delivered));
+		deliveries.add(new Delivery("deliveryTestID", "RBPIID1", "TestCustomer1", "RFIDToken1","TestDeliverer1", "RFIDToken2", DeliveryStatus.open));
+		deliveries.add(new Delivery("deliveryTestID2", "RBPIID1", "TestCustomer1", "RFIDToken1","TestDeliverer2", "RFIDToken3", DeliveryStatus.open));
 
 		List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
 	}

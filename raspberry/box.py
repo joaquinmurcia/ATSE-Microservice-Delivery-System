@@ -13,7 +13,7 @@ port = 9000
 
 auth_url = " http://" + hostname + ":" + str(port) + "/usermanagement"
 delivery_url = " http://" + hostname + ":" + str(port) + "/deliverymanagement"
-# box_url = " http://" + hostname + ":" + str(port) + "/boxmanagement"
+box_url = " http://" + hostname + ":" + str(port) + "/boxmanagement"
 
 
 jwt = ""
@@ -101,16 +101,24 @@ class Box:
         return False
 
     def __delivered(self, token):
-        for delivery in self.deliveries:
-            if delivery["deliveryStatus"] != "pickedUp":
-                if delivery["responsibleDelivererRfidToken"] == token:
-                    delivery["deliveryStatus"] = "delivered"
-                    set_delivery_delivered(delivery["id"])
+        # for delivery in self.deliveries:
+        #     if delivery["deliveryStatus"] != "pickedUp":
+        #         if delivery["responsibleDelivererRfidToken"] == token:
+        #             delivery["deliveryStatus"] = "delivered"
+        #             set_delivery_delivered(delivery["id"])
 
         if(not self.__is_deliverer_active(token)):
             self.__deliverer_tokens.remove(token)
 
         return
+
+    def __ready_for_pickup(self):
+        ret = False
+        for active_delivery in self.deliveries:
+            if active_delivery["deliveryStatus"] == "delivered":
+                ret = True
+        print("No deliveries ready for pickup!")
+        return ret
 
     def __get_active_deliveries(self):
         ret = []
@@ -121,9 +129,13 @@ class Box:
 
 
     def __picked_up(self):
+        r = pick_up_all()
+        if r.status_code != 200:
+            return
+
         for delivery in self.deliveries:
             if delivery["deliveryStatus"] == "delivered":
-                set_delivery_picked_up(delivery["id"])
+                #set_delivery_picked_up(delivery["id"])
                 delivery["deliveryStatus"] = "pickedUp"
 
         if self.__get_active_deliveries() == []:
@@ -163,9 +175,10 @@ class Box:
             ret = True
 
         if self.__customer_token == token:
-            self.__open(pi_stuff)
-            self.__picked_up()
-            ret = True
+            if self.__ready_for_pickup():
+                self.__open(pi_stuff)
+                self.__picked_up()
+                ret = True
 
         return ret
 
@@ -311,32 +324,45 @@ def get_deliveries():
     return r.content
 
 
-def set_delivery_delivered(delivery):
-    data = {}
-    data["deliveryStatus"] = "delivered"
+# def set_delivery_delivered(delivery):
+#     # DONE BY THE DELIVERER THROUGH THE FRONTEND
+#     pass
+#     # data = {}
+#     # data["deliveryStatus"] = "delivered"
+#     # # TODO: /{id}/deposit
+#     # r = httpRequest_customHeader("PUT ", delivery_url + "/" + str(delivery) + "/deposit", params, content=data, headers=getBaseHeaders(jwt))
 
-    r = httpRequest_customHeader("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data, headers=getBaseHeaders(jwt))
-    if r.status_code != 200:
-        raise Exception("Failed to set delivery id " + delivery["id"] + " to delivered (status code: " + str(r.status_code) + ")")
+#     # # r = httpRequest_customHeader("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data, headers=getBaseHeaders(jwt))
+#     # if r.status_code != 200:
+#     #     raise Exception("Failed to set delivery id " + delivery["id"] + " to delivered (status code: " + str(r.status_code) + ")")
 
-    return r
+#     # return r
 
-
-def set_delivery_picked_up(delivery):
+def pick_up_all():
     data = {}
     data["deliveryStatus"] = "pickedUp"
-
-    r = httpRequest_customHeader("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data, headers=getBaseHeaders(jwt))
+    r = httpRequest_customHeader("PUT ", box_url  + "/boxes/" +  str(me.box_id) + "/pickupDeliveries" , params, content=data, headers=getBaseHeaders(jwt))
     if r.status_code != 200:
-        raise Exception("Failed to set delivery id " + delivery["id"] + " to picked-up (status code: " + str(r.status_code) + ")")
+        raise Exception("Failed tell server that all deliveries were picked up (status code: " + str(r.status_code) + ")")
 
     return r
+
+
+# def set_delivery_picked_up(delivery):
+#     data = {}
+#     data["deliveryStatus"] = "pickedUp"
+
+#     r = httpRequest_customHeader("PUT ", delivery_url + "/deliveries/" + str(delivery), params, content=data, headers=getBaseHeaders(jwt))
+#     if r.status_code != 200:
+#         raise Exception("Failed to set delivery id " + delivery["id"] + " to picked-up (status code: " + str(r.status_code) + ")")
+
+#     return r
 
 
 # Cookies will automatically be stored by python
 ret_cookies = getXSRFToken()
 
-ret_cookies = get_jwt("User1", "pwd1")
+ret_cookies = get_jwt("Dispatcher", "pwd3")
 
 for c in ret_cookies:
     if c.name == "jwt":
