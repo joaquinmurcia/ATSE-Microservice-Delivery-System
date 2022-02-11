@@ -73,11 +73,6 @@ const EditDeliveryFrom = () => {
                 <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editDeliveryAsync(getElem()))}>Change</Button>
                 <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="error" onClick={()=> dispatch(cancelEdit())}>Cancel</Button>
                 </div>}
-                {role === "ROLE_DELIVERER" &&
-                    <div>
-                        <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editDeliveryAsync(getElem()))}>Deposit</Button>
-                    </div>
-                }
             </Paper>
         </Container>
     );
