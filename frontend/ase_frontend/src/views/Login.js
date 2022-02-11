@@ -26,7 +26,7 @@ function Login(){
                 <Typography component="h1" variant="h6" align="center" marginBottom={5}>
                     Login
                 </Typography>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="userName" label="UserName" value={userName} onChange={handleUserName}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="userName" label="Username" value={userName} onChange={handleUserName}/>
                 <br/>
                 <TextField sx={{minWidth: 120, margin: 1}} size="small" name="password" label="Password" value={password} onChange={handlePassword}/>
                 <br/>
