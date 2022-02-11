@@ -37,10 +37,10 @@ public class BoxController {
     public ResponseEntity<List<Box>> createBoxes(@RequestBody List<Box> boxes) {
         try {
             for (Box box : boxes) {
+                box.setId(box.getRaspberryPiID());
                 if (box.getBoxStatus() != BoxStatus.available || box.getRaspberryPiID() == null) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
-
                 Address boxAddress = box.getAddress();
                 if(!this.isAddressValid(boxAddress)){
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
