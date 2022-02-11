@@ -60,12 +60,12 @@ public class UserMngmtApplication implements CommandLineRunner {
 		}
 		// Create test users with hashed Bcrypt password and role
 		AseUser[] users = {
-				new AseUser("TestCustomer1", "costumer1@ase.de","TestCustomer1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUser("TestCustomer2", "costumer2@ase.de","TestCustomer2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUser("TestCustomer3", "costumer3@ase.de","TestCustomer3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1", UserRole.ROLE_CUSTOMER),
-				new AseUser("TestDeliverer1", "deliverer1@ase.de", "TestDeliverer1", bCryptPasswordEncoder.encode("pwd1"), "RFIDToken1", UserRole.ROLE_DELIVERER),
-				new AseUser("TestDeliverer2", "deliverer2@ase.de", "TestDeliverer2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken1", UserRole.ROLE_DELIVERER),
-				new AseUser("Dispatcher", "dispatcher@ase.de", "Dispatcher", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken1", UserRole.ROLE_DISPATCHER),
+				new AseUser("TestCustomer1", "costumer1@ase.de","TestCustomer1", bCryptPasswordEncoder.encode("pwd1"), "108560888149", UserRole.ROLE_CUSTOMER),
+				new AseUser("TestCustomer2", "costumer2@ase.de","TestCustomer2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken2", UserRole.ROLE_CUSTOMER),
+				new AseUser("TestCustomer3", "costumer3@ase.de","TestCustomer3", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken3", UserRole.ROLE_CUSTOMER),
+				new AseUser("TestDeliverer1", "deliverer1@ase.de", "TestDeliverer1", bCryptPasswordEncoder.encode("pwd1"), "520413243569", UserRole.ROLE_DELIVERER),
+				new AseUser("TestDeliverer2", "deliverer2@ase.de", "TestDeliverer2", bCryptPasswordEncoder.encode("pwd2"), "RFIDToken4", UserRole.ROLE_DELIVERER),
+				new AseUser("Dispatcher", "dispatcher@ase.de", "Dispatcher", bCryptPasswordEncoder.encode("pwd3"), "RFIDToken5", UserRole.ROLE_DISPATCHER),
 		};
 		List<AseUser> usersList = Arrays.asList(users);
 		userRepository.saveAll(usersList);
