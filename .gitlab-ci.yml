@@ -411,7 +411,7 @@ deploy-premium:
   script:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
     # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker stack deploy --compose-file docker-compose.yml stack1"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=${MANAGER_NODE_IP_DOT}; docker-compose pull; docker-compose restart || docker-compose up"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=127.0.0.1; docker-compose pull; docker-compose restart || docker-compose up"
 
 # For deploying a scaled version of the microservices
 # Depending on how many instances you have, you must change the number of scp commands you execute. You need one for each instance
@@ -434,4 +434,4 @@ deploy-scale:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$WORKER_NODE_7_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$WORKER_NODE_8_IP.eu-central-1.compute.amazonaws.com:~/
 
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=${MANAGER_NODE_IP_DOT}; docker stack deploy --compose-file docker-compose.yml stack1"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=127.0.0.1; docker stack deploy --compose-file docker-compose.yml stack1"
