@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.usermngmt.jwt;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.internal.Function;
@@ -65,6 +65,16 @@ public class JwtUtil {
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+
+    public String getRole(final String token){
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        String roles = claims.get("roles").toString();
+        return roles;
+    }
+
 
     // Check if the JWT is signed by us, and is not expired
     public boolean verifyJwtSignature(String token) {

@@ -3,14 +3,15 @@ package edu.tum.ase.asedelivery.usermngmt;
 import java.util.Arrays;
 import java.util.List;
 import com.mongodb.client.MongoClient;
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
-import edu.tum.ase.asedelivery.asedeliverymodels.UserRole;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;
@@ -18,6 +19,15 @@ import edu.tum.ase.asedelivery.usermngmt.service.UserService;
 
 // TODO: Look for all println and delete
 
+//!If problems, maybe this works
+/*@SpringBootApplication(exclude = {
+        MongoAutoConfiguration.class,
+        MongoDataAutoConfiguration.class
+})
+@SpringBootApplication(exclude = {
+		MongoDataAutoConfiguration.class
+})*/
+//!
 @SpringBootApplication
 @EnableMongoRepositories(basePackageClasses = { UserRepository.class })
 public class UserMngmtApplication implements CommandLineRunner {

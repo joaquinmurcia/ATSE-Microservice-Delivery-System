@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.deliverymanagement.controller;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.*;
+import edu.tum.ase.asedelivery.deliverymanagement.model.*;
 import edu.tum.ase.asedelivery.deliverymanagement.service.DeliveryService;
 import edu.tum.ase.asedelivery.deliverymanagement.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +125,7 @@ public class DeliveryController {
             }
 
             if (!Validation.isNullOrEmpty(delivererId)) {
-                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DRIVER).is(delivererId));
+                query.addCriteria(Criteria.where(Constants.RESPONSIBLE_DELIVERER).is(delivererId));
             }
 
             if (!Validation.isNullOrEmpty(deliveryStatus)) {
@@ -157,7 +157,6 @@ public class DeliveryController {
 
             return new ResponseEntity<>(deliveries, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("wtf");
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -286,7 +285,7 @@ public class DeliveryController {
             List<Delivery> collectedDeliveries = new ArrayList<Delivery>();
 
             for (Delivery delivery : deliveries){
-                Optional <Delivery> _delivery = deliveryService.findById(delivery.getId());
+                Optional<Delivery> _delivery = deliveryService.findById(delivery.getId());
 
                 if (_delivery.isPresent()) {
                     // Create headers

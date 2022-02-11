@@ -2,7 +2,7 @@ package edu.tum.ase.asedelivery.usermngmt.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import edu.tum.ase.asedelivery.usermngmt.repository.UserRepository;

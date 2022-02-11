@@ -1,6 +1,6 @@
 package edu.tum.ase.asedelivery.usermngmt.repository;
 
-import edu.tum.ase.asedelivery.asedeliverymodels.AseUser;
+import edu.tum.ase.asedelivery.usermngmt.model.AseUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
