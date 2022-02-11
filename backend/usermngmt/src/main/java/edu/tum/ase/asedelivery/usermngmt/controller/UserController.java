@@ -47,6 +47,8 @@ public class UserController {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
             for (AseUser user : users) {
+                user.setEnabled(true);
+                user.setId(user.getName());
                 if (!user.isValid()) {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
