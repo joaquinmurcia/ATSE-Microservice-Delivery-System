@@ -264,12 +264,14 @@ public class DeliveryController {
             if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
+            updatedDelivery.setTargetCustomerRFIDToken(targetCustomer.getBody().getRfidToken());
 
             // Checks if deliverer exists
             ResponseEntity<AseUser> responsibleDeliverer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", updatedDelivery.getResponsibleDeliverer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
             if (!Objects.requireNonNull(responsibleDeliverer.getBody()).isEnabled()){
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
+            updatedDelivery.setResponsibleDelivererRfidToken(responsibleDeliverer.getBody().getRfidToken());
 
             return new ResponseEntity<>(deliveryService.save(updatedDelivery), HttpStatus.OK);
         } else {
