@@ -2,6 +2,7 @@
 # First time you need to run the pipeline manually, so that the .jar files are stored in cache
 # Enable Container Registry in GitLab
 # You might need to create a personal access token or a deploy token to execute the Docker login command if it fails
+# You need to change the IPs (and HOST in the docker_compose file) in the variables to suit your AWS instances
 # Need previously created swarm in a node in EC2 of AWS (you can do that by docker swarm init + deploy-swarm job)
 # Comment the rules in the build and package stages, or manually run the pipeline, if the pipeline failed at some point
 # and the modules were not packaged (since no changes were detected). You need those to build the Docker images
@@ -19,7 +20,8 @@ variables:
 
   # Deploy variables depending on the number of instances
   # Premium tier
-  MANAGER_NODE_IP: 3-125-160-233 # Set Elastic IPs in AWS so that it doesn't change between reboots
+  MANAGER_NODE_IP: 18-192-115-238 # Set Elastic IPs in AWS so that it doesn't change between reboots
+  MANAGER_NODE_IP_DOT: 18.192.115.238
 
   # Free tier
   MANAGER_NODE_1_IP: 18-192-123-179
@@ -43,7 +45,8 @@ build-boxmanagement:
   stage: build
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
         - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
         - backend/boxmanagement/Dockerfile
@@ -57,7 +60,8 @@ build-deliverymanagement:
     stage: build
     image: maven:latest
     rules:
-      - changes:
+      - if: '$CI_COMMIT_BRANCH == "main"'
+        changes:
         - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
       - changes:
         - backend/deliverymanagement/Dockerfile
@@ -71,7 +75,8 @@ build-emailnotification:
   stage: build
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/emailnotification/Dockerfile
@@ -85,7 +90,8 @@ build-eureka-discovery-service:
   stage: build
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/eureka-discovery-service/Dockerfile
@@ -99,7 +105,8 @@ build-gateway:
   stage: build
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/gateway/Dockerfile
@@ -113,7 +120,8 @@ build-usermngmt:
   stage: build
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/usermngmt/Dockerfile
@@ -127,7 +135,8 @@ package-boxmanagement:
   stage: package
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
     - changes:
       - backend/boxmanagement/Dockerfile
@@ -152,7 +161,8 @@ package-deliverymanagement:
   stage: package
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/deliverymanagement/src/**/*
     - changes:
       - backend/deliverymanagement/Dockerfile
@@ -172,7 +182,8 @@ package-emailnotification:
   stage: package
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/emailnotification/src/**/*
     - changes:
       - backend/emailnotification/Dockerfile
@@ -192,7 +203,8 @@ package-eureka-discovery-service:
   stage: package
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/eureka-discovery-service/src/**/*
     - changes:
       - backend/eureka-discovery-service/Dockerfile
@@ -211,7 +223,8 @@ package-gateway:
   stage: package
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/gateway/Dockerfile
@@ -230,7 +243,8 @@ package-usermngmt:
   stage: package
   image: maven:latest
   rules:
-    - changes:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
       - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/usernmgnmt/Dockerfile
@@ -248,6 +262,8 @@ package-usermngmt:
 
 docker-boxmanagement:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   # the tag 'shell' advices only GitLab runners using this tag to pick up that job
   #tags:
   #  - shell
@@ -262,6 +278,8 @@ docker-boxmanagement:
 
 docker-deliverymanagement:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-deliverymanagement
@@ -273,6 +291,8 @@ docker-deliverymanagement:
 
 docker-emailnotification:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   # the tag 'shell' advices only GitLab runners using this tag to pick up that job
   #tags:
   #  - shell
@@ -287,6 +307,8 @@ docker-emailnotification:
 
 docker-eureka-discovery-service:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-eureka-discovery-service
@@ -298,6 +320,8 @@ docker-eureka-discovery-service:
 
 docker-gateway:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-gateway
@@ -309,6 +333,8 @@ docker-gateway:
 
 docker-usermngmt:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-usermngmt
@@ -320,6 +346,8 @@ docker-usermngmt:
 
 docker-frontend:
   stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -352,6 +380,8 @@ deploy-swarm:
 # For deploying the microservices to a premium-tier instance of AWS. Required, since the free-tier doesn't have enough workload to carry the components
 deploy-premium:
   stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   when: always
   before_script:
     ##
@@ -381,7 +411,7 @@ deploy-premium:
   script:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
     # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker stack deploy --compose-file docker-compose.yml stack1"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=${MANAGER_NODE_IP_DOT}; docker-compose pull; docker-compose restart || docker-compose up"
 
 # For deploying a scaled version of the microservices
 # Depending on how many instances you have, you must change the number of scp commands you execute. You need one for each instance
@@ -404,4 +434,4 @@ deploy-scale:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$WORKER_NODE_7_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$WORKER_NODE_8_IP.eu-central-1.compute.amazonaws.com:~/
 
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker stack deploy --compose-file docker-compose.yml stack1"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=${MANAGER_NODE_IP_DOT}; docker stack deploy --compose-file docker-compose.yml stack1"

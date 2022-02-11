@@ -30,6 +30,9 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 	@Autowired
 	DeliveryService deliveryService;
 
+	@Autowired
+	private DeliveryRepository deliveryRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(DeliveryManagementApplication.class, args);
 	}
@@ -37,18 +40,19 @@ public class DeliveryManagementApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		log.info("MongoClient = " + mongoClient.getClusterDescription());
+		if (deliveryRepository.findAll().size() != 0) {
+			deliveryRepository.deleteAll();
+		}
 
 		// Create list of dummy deliveries
 		/*List<Delivery> deliveries = new ArrayList<Delivery>();
 		deliveries.add(new Delivery("deliveryID1", "targetBox1", "targetCustomer1", "108560888149","deliverer1", "520413243569", DeliveryStatus.open));
 		deliveries.add(new Delivery("deliveryID2", "targetBox1", "targetCustomer2", "108560888149","deliverer2", "rtoken1", DeliveryStatus.open));
-		deliveries.add(new Delivery(null, "targetBox3", "targetCustomer3", "ctoken1","deliverer3", "rtoken1", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox4", "targetCustomer4", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox5", "targetCustomer5", "ctoken1","deliverer4","rtoken1", DeliveryStatus.pickedUp));
-		deliveries.add(new Delivery(null, "targetBox6", "targetCustomer6", "ctoken1","deliverer5", "rtoken1",DeliveryStatus.delivered));*/
+*/
 
 		List<Delivery> deliveries = new ArrayList<Delivery>();
-		deliveries.add(new Delivery("deliveryTestID", "targetBoxTest", "TestCustomer1", "108560888149","TestDeliverer1", "520413243569", DeliveryStatus.delivered));
+		deliveries.add(new Delivery("deliveryTestID", "RBPIID1", "TestCustomer1", "RFIDToken1","TestDeliverer1", "RFIDToken2", DeliveryStatus.open));
+		deliveries.add(new Delivery("deliveryTestID2", "RBPIID1", "TestCustomer1", "RFIDToken1","TestDeliverer2", "RFIDToken3", DeliveryStatus.open));
 
 		List<Delivery> _deliveries = deliveryService.saveAll(deliveries);
 	}

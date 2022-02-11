@@ -7,18 +7,35 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {isLoggedIn} from "./views/loginSlice";
+import {parseJwt, getCookie} from './views/tokenReader';
 
 const headersData = [
+
     {
-        label: "UserManagement",
-        href: "/user-management",
+        id: "box-management",
+        label: "Box Management",
+        href: "/box-management",
     },
     {
-        label: "DeliveryManagement",
+        id: "delivery-management",
+        label: "Delivery Management",
         href: "/delivery-management",
     },
     {
-        label: "Log Out",
+        id: "user-management",
+        label: "User Management",
+        href: "/user-management",
+    },
+    {
+        id: "login",
+        label: "Log In",
+        href: "/login",
+    },
+    {
+        id: "logout",
+        label: "Log out",
         href: "/logout",
     },
 ];
@@ -50,6 +67,8 @@ const useStyles = makeStyles(() => ({
 export default function Header() {
     const { header, logo, menuButton, toolbar } = useStyles();
 
+    const isLogin = useSelector(isLoggedIn);
+
     const displayDesktop = () => {
         return (
             <Toolbar className={toolbar}>
@@ -66,11 +85,24 @@ export default function Header() {
     );
 
     const getMenuButtons = () => {
-        return headersData.map(({ label, href }) => {
+        return headersData.filter((elem)=>{
+            const role = parseJwt(getCookie("jwt")).roles;
+            if(isLogin){
+                var res = elem.id !== "login"
+                if(role === 'ROLE_CUSTOMER') {
+                    res = res && elem.id !== "user-management";
+                } else if( role === 'ROLE_DELIVERER'){
+                    res = res && elem.id !== "user-management";
+                }
+                return res;
+            } else {
+                return elem.id === "login";
+            }
+        }).map(({ id, label,  href }) => {
             return (
                 <Button
                     {...{
-                        key: label,
+                        key: id,
                         color: "inherit",
                         to: href,
                         component: RouterLink,

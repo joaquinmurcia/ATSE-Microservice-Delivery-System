@@ -49,21 +49,38 @@ public class DeliveryController {
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
+                List<Delivery> existingDeliveries = deliveryService.findAll(new Query());
+                for (Delivery existingDel : existingDeliveries){
+                    // Do not check pickedUp deliveries
+                    if(existingDel.getDeliveryStatus().equals("pickedUp"))
+                        continue;
+                    // If deliveries have different customers but same box -> invalid
+                    if(!existingDel.getTargetCustomer().equals(delivery.getTargetCustomer()))
+                        if(existingDel.getTargetBox().equals(delivery.getTargetBox()))
+                            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
                 // Checks if customer exists
                 ResponseEntity<AseUser> targetCustomer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getTargetCustomer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
                 if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
-                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+                if (targetCustomer.getBody().getRole() != UserRole.ROLE_CUSTOMER) {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
                 // Checks if deliverer exists
                 ResponseEntity<AseUser> responsibleDeliverer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", delivery.getResponsibleDeliverer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
                 if (!Objects.requireNonNull(responsibleDeliverer.getBody()).isEnabled()){
-                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+                if (responsibleDeliverer.getBody().getRole() != UserRole.ROLE_DELIVERER) {
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
                 }
 
                 // Checks if a box exists
                 ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", delivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
-                if (Objects.requireNonNull(box.getBody()).getBoxStatus() == BoxStatus.occupied){
+                if (Objects.requireNonNull(box.getBody()).getId().isEmpty()){
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
@@ -86,7 +103,7 @@ public class DeliveryController {
             for (Delivery delivery: deliveries) {
                 // Get Box of delivery
                 ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", delivery.getTargetBox()), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
-                if (Objects.requireNonNull(box.getBody()).getBoxStatus() == BoxStatus.occupied){
+                if (Objects.requireNonNull(box.getBody()).getId().isEmpty()){
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
 
@@ -207,20 +224,20 @@ public class DeliveryController {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
-            //These if statements ensure that the delivery status can only be changed in the right order
-            //1. open -> 2. collected -> 3. delivered -> 4. pickedup -> 1. open -> ...
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.open && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.collected && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.open)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
-            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.delivered && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.open || updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected)){
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            }
+//            //These if statements ensure that the delivery status can only be changed in the right order
+//            //1. open -> 2. collected -> 3. delivered -> 4. pickedup -> 1. open -> ...
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.open && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.collected && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp || updatedDelivery.getDeliveryStatus() == DeliveryStatus.open)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.pickedUp && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected || updatedDelivery.getDeliveryStatus() == DeliveryStatus.delivered)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            if (oldDelivery.getDeliveryStatus() == DeliveryStatus.delivered && (updatedDelivery.getDeliveryStatus() == DeliveryStatus.open || updatedDelivery.getDeliveryStatus() == DeliveryStatus.collected)){
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
 
             // Create headers
             HttpHeaders headers = new HttpHeaders();
@@ -247,12 +264,14 @@ public class DeliveryController {
             if (!Objects.requireNonNull(targetCustomer.getBody()).isEnabled()){
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
+            updatedDelivery.setTargetCustomerRFIDToken(targetCustomer.getBody().getRfidToken());
 
             // Checks if deliverer exists
             ResponseEntity<AseUser> responsibleDeliverer = restTemplate.exchange(String.format("http://localhost:9004/users/%s", updatedDelivery.getResponsibleDeliverer()), HttpMethod.GET, new HttpEntity<>(headers), AseUser.class);
             if (!Objects.requireNonNull(responsibleDeliverer.getBody()).isEnabled()){
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
+            updatedDelivery.setResponsibleDelivererRfidToken(responsibleDeliverer.getBody().getRfidToken());
 
             return new ResponseEntity<>(deliveryService.save(updatedDelivery), HttpStatus.OK);
         } else {
@@ -265,9 +284,36 @@ public class DeliveryController {
             method = RequestMethod.DELETE
     )
     @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
-    public ResponseEntity<HttpStatus> deleteDelivery(@PathVariable("id") String id) {
+    public ResponseEntity<HttpStatus> deleteDelivery(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
         try {
-            deliveryService.deleteById(id);
+
+            Optional<Delivery> deliveryOptional = deliveryService.findById(id);
+
+            if (deliveryOptional.isPresent()) {
+                String boxId = deliveryOptional.get().getTargetBox();
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Cookie", cookie);
+
+                ResponseEntity<Box> box = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", boxId), HttpMethod.GET, new HttpEntity<>(headers), Box.class);
+                if (Objects.requireNonNull(box.getBody()).getId().isEmpty()){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                List<String> deliveries = box.getBody().getDeliveryIDs();
+                deliveries.remove(id);
+                box.getBody().setDeliveryIDs(deliveries);
+
+                if (deliveries.size()==0) {
+                    box.getBody().setBoxStatus(BoxStatus.available);
+                }
+                ResponseEntity<Box> httpResponse = restTemplate.exchange(String.format("http://localhost:9002/boxes/%s", boxId), HttpMethod.PUT, new HttpEntity<>(box.getBody(), headers), Box.class);
+                if (!(httpResponse.getStatusCode() == HttpStatus.OK)){
+                    return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                }
+
+                deliveryService.deleteById(id);
+            }
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -319,7 +365,7 @@ public class DeliveryController {
             value = "/{id}/deposit",
             method = RequestMethod.PUT
     )
-    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<Delivery> depositDelivery(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 

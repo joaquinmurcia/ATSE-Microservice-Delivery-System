@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -29,17 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // Http Config, Authentication Manager Bean Definition, and BcryptPasswordEncoder
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http    .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
+        http.csrf().disable()
                 .authorizeRequests() // 2. Require authentication in all endpoints except login
-                .antMatchers("/**").authenticated()
-                .antMatchers("/auth").permitAll()
-                .and()
-                .httpBasic() // 3. Use Basic Authentication
-
-                .and()
-                .sessionManagement().disable()
-                .csrf().disable();
+                    .antMatchers("/auth").permitAll()
+                    .antMatchers("/**").permitAll()
+                    .and()
+                    .httpBasic() // 3. Use Basic Authentication
+                    .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
     }
     @Override
 

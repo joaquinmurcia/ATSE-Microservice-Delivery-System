@@ -37,10 +37,10 @@ public class BoxController {
     public ResponseEntity<List<Box>> createBoxes(@RequestBody List<Box> boxes) {
         try {
             for (Box box : boxes) {
-                if (box.getBoxStatus() != BoxStatus.available || box.getRaspberryPiID() == null || box.getDeliveryIDs() != null) {
+                box.setId(box.getRaspberryPiID());
+                if (box.getBoxStatus() != BoxStatus.available || box.getRaspberryPiID() == null) {
                     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 }
-
                 Address boxAddress = box.getAddress();
                 if(!this.isAddressValid(boxAddress)){
                     return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -60,7 +60,7 @@ public class BoxController {
             method = RequestMethod.GET
     )
     @PreAuthorize(" hasAuthority('ROLE_DELIVERER') || hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_CUSTOMER')")
-    public ResponseEntity<List<Box>> getBoxes(@RequestParam(required = false) String deliveryId, @RequestParam(required = false) BoxStatus boxStatus) {
+    public ResponseEntity<List<Box>> getBoxes(@RequestParam(required = false) String customerId, @RequestParam(required = false) List<String> deliveryIds, @RequestParam(required = false) BoxStatus boxStatus, @RequestHeader("Cookie") String cookie) {
         Authentication authContext = SecurityContextHolder.getContext().getAuthentication();
         try {
             List<Box> boxes = new ArrayList<>();
@@ -71,11 +71,36 @@ public class BoxController {
             if (!Validation.isNullOrEmpty(boxStatus)) {
                 query.addCriteria(Criteria.where(Constants.BOX_STATUS).is(boxStatus));
             }
-            if (!Validation.isNullOrEmpty(deliveryId)) {
-                query.addCriteria(Criteria.where(Constants.DELIVERY_ID).is(deliveryId));
+            if (!Validation.isNullOrEmpty(deliveryIds)) {
+                query.addCriteria(Criteria.where(Constants.DELIVERY_ID+"s").is(deliveryIds));
             }
 
             boxes = boxService.findAll(query);
+
+            if (!Validation.isNullOrEmpty(customerId)) {
+                // Create headers
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Cookie", cookie);
+                List<Box> customerBoxes = new ArrayList<>();
+
+                for (Box box : boxes)
+                {
+                    if (box.getDeliveryIDs() != null){
+                        if(box.getDeliveryIDs().size() != 0) {
+                            ResponseEntity<Delivery> delivery = null;
+                            try {
+                                delivery = restTemplate.exchange(String.format("http://localhost:9003/deliveries/%s", box.getDeliveryIDs().get(0)), HttpMethod.GET, new HttpEntity<>(headers), Delivery.class);
+                            }catch (Exception e){
+                                continue;
+                            }
+                            if (delivery.getStatusCodeValue() == 200) {
+                                customerBoxes.add(box);
+                            }
+                        }
+                    }
+                }
+                boxes = customerBoxes;
+            }
 
             if (boxes.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -86,6 +111,7 @@ public class BoxController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @RequestMapping(
             value = "/{id}",
@@ -155,6 +181,7 @@ public class BoxController {
 
             if(boxOptional.isPresent()) {
                 Box _box = boxOptional.get();
+                _box.setBoxStatus(BoxStatus.occupied);
 
                 if (_box.getDeliveryIDs() == null || _box.getDeliveryIDs().size() == 0){
                     List<String> deliveryIDs = new ArrayList<String>();

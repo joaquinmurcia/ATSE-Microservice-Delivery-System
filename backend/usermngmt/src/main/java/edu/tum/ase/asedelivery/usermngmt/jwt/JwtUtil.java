@@ -35,7 +35,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuer("aseProject")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Expires after 5 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 60 * 24)) // Expires after 5 hours
                 .signWith(keyStoreManager.getPrivateKey(), SignatureAlgorithm.RS256)
                 .compact();
         return jwt;
@@ -66,6 +66,16 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
+    public String getRole(final String token){
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        String roles = claims.get("roles").toString();
+        return roles;
+    }
+
+
     // Check if the JWT is signed by us, and is not expired
     public boolean verifyJwtSignature(String token) {
         PublicKey publicKey = keyStoreManager.getPublicKey();
@@ -79,5 +89,56 @@ public class JwtUtil {
         }
 
         return true;
+
+
+    }
+    public UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        String tmpname = extractUsername(token);
+
+        UserDetails userDetails = new UserDetails() {
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return null;
+            }
+
+            @Override
+            public String getPassword() {
+                return null;
+            }
+
+            @Override
+            public String getUsername() {
+                return tmpname;
+            }
+
+            @Override
+            public boolean isAccountNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isAccountNonLocked() {
+                return true;
+            }
+
+            @Override
+            public boolean isCredentialsNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+        };
+        JwtParser jwtParser = loadJwtParser();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Claims claims = claimsJws.getBody();
+
+        Collection<SimpleGrantedAuthority> authorities =
+                Arrays.stream(claims.get("roles").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 }
