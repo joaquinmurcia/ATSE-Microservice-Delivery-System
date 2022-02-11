@@ -2,6 +2,7 @@
 # First time you need to run the pipeline manually, so that the .jar files are stored in cache
 # Enable Container Registry in GitLab
 # You might need to create a personal access token or a deploy token to execute the Docker login command if it fails
+# You need to change the IPs (and HOST in the docker_compose file) in the variables to suit your AWS instances
 # Need previously created swarm in a node in EC2 of AWS (you can do that by docker swarm init + deploy-swarm job)
 # Comment the rules in the build and package stages, or manually run the pipeline, if the pipeline failed at some point
 # and the modules were not packaged (since no changes were detected). You need those to build the Docker images
@@ -20,6 +21,7 @@ variables:
   # Deploy variables depending on the number of instances
   # Premium tier
   MANAGER_NODE_IP: 18-192-115-238 # Set Elastic IPs in AWS so that it doesn't change between reboots
+  MANAGER_NODE_IP_DOT: 18.192.115.238
 
   # Free tier
   MANAGER_NODE_1_IP: 18-192-123-179
@@ -409,7 +411,7 @@ deploy-premium:
   script:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
     # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker stack deploy --compose-file docker-compose.yml stack1"
-    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; export HOST=${MANAGER_NODE_IP_DOT}; docker-compose pull; docker-compose restart || docker-compose up"
 
 # For deploying a scaled version of the microservices
 # Depending on how many instances you have, you must change the number of scp commands you execute. You need one for each instance

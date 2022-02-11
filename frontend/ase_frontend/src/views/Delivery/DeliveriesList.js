@@ -14,7 +14,7 @@ import {
 import { Delete, ModeEdit } from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {
-    deleteDeliveryAsync,
+    deleteDeliveryAsync, editDeliveryAsync,
     getDeliveriesAsync,
     selectDeliveries,
     startEditElement
@@ -136,18 +136,19 @@ const DeliveriesList = () => {
                                         <TableCell>
                                             {row.deliveryStatus}
                                         </TableCell>
-                                        { parseJwt(getCookie("jwt")).roles !== "ROLE_CUSTOMER" &&
+                                        { parseJwt(getCookie("jwt")).roles === "ROLE_DELIVERER" &&
+                                            <Button sx={{minWidth: 100, margin: 1}} variant="contained" size="small" color="success"  onClick={()=> dispatch(editDeliveryAsync({id: row.id}))}>Deposit</Button>
+                                        }
+                                        { parseJwt(getCookie("jwt")).roles === "ROLE_DISPATCHER" &&
                                             <TableCell>
                                                 <button type="button" className={editButtonStyle}
                                                         onClick={() => dispatch(startEditElement(row))}>
                                                     <ModeEdit/>
                                                 </button>
-                                                { parseJwt(getCookie("jwt")).roles !== "ROLE_DELIVERER" &&
-                                                    <button type="button" className={deleteButtonStyle}
-                                                            onClick={() => dispatch(deleteDeliveryAsync(row))}>
-                                                        <Delete/>
-                                                    </button>
-                                                }
+                                                <button type="button" className={deleteButtonStyle}
+                                                        onClick={() => dispatch(deleteDeliveryAsync(row))}>
+                                                    <Delete/>
+                                                </button>
                                             </TableCell>
                                         }
                                     </TableRow>
