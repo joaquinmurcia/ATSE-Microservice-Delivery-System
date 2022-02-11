@@ -20,4 +20,4 @@ EXPOSE 3000/udp
 COPY . ./
 
 # start app
-CMD ["npm", "start"]
+CMD ["npm", "run start"]

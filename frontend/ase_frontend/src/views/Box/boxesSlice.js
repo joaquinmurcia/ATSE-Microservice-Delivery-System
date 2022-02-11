@@ -16,7 +16,8 @@ export const getBoxesAsync = createAsyncThunk(
             method: "GET",
             credentials:"include"
         }
-        var link = 'http://127.0.0.1:9000/boxmanagement/boxes';
+        const host_ip = process.env.HOST || '127.0.0.1';
+        var link = 'http://' + host_ip + ':9000/boxmanagement/boxes';
         const role = parseJwt(getCookie("jwt")).roles;
         const sub = parseJwt(getCookie("jwt")).sub;
         if(role === 'ROLE_CUSTOMER'){
@@ -41,7 +42,8 @@ export const deleteBoxAsync = createAsyncThunk(
             method: "DELETE",
             credentials: "include"
         }
-        const link = 'http://127.0.0.1:9000/boxmanagement/boxes/' + elem.id;
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/boxmanagement/boxes/' + elem.id;
         await fetch(link ,requestOptions);
         console.log("deleted: " + elem.id)
     }
@@ -60,7 +62,8 @@ export const editBoxAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json
         }
-        const link = 'http://127.0.0.1:9000/boxmanagement/boxes/' + elem.id;
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/boxmanagement/boxes/' + elem.id;
         const response = await fetch(link ,requestOptions).then((data)=> data.json());
         console.log("changed " + elem.id);
         return response;
@@ -79,7 +82,8 @@ export const addBoxAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json,
         }
-        const link = 'http://127.0.0.1:9000/boxmanagement/boxes';
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/boxmanagement/boxes';
         await fetch(link ,requestOptions);
         console.log("Added new Element");
     }

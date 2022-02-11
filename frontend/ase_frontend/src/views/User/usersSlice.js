@@ -15,7 +15,8 @@ export const getUsersAsync = createAsyncThunk(
             method: "GET",
             credentials:"include"
         }
-        var link = 'http://127.0.0.1:9000/usermanagement/users';
+        const host_ip = process.env.HOST || '127.0.0.1';
+        var link = 'http://' + host_ip + ':9000/usermanagement/users';
         const role = parseJwt(getCookie("jwt")).roles;
         const sub = parseJwt(getCookie("jwt")).sub;
         if(role === 'ROLE_CUSTOMER'){
@@ -40,7 +41,8 @@ export const deleteUserAsync = createAsyncThunk(
             method: "DELETE",
             credentials: "include"
         }
-        const link = 'http://127.0.0.1:9000/usermanagement/users/' + elem.id;
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/usermanagement/users/' + elem.id;
         await fetch(link ,requestOptions);
         console.log("deleted: " + elem.id)
     }
@@ -59,7 +61,8 @@ export const editUserAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json
         }
-        const link = 'http://127.0.0.1:9000/usermanagement/users/' + elem.id;
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/usermanagement/users/' + elem.id;
         const response = await fetch(link ,requestOptions).then((data)=> data.json());
         console.log("changed " + elem.id);
         return response;
@@ -78,7 +81,8 @@ export const addUserAsync = createAsyncThunk(
             credentials: "include",
             body: elem_json,
         }
-        const link = 'http://127.0.0.1:9000/usermanagement/users';
+        const host_ip = process.env.HOST || '127.0.0.1';
+        const link = 'http://' + host_ip + ':9000/usermanagement/users';
         await fetch(link ,requestOptions);
         console.log("Added new Element");
     }
