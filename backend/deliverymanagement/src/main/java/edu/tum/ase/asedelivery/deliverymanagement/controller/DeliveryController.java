@@ -319,7 +319,7 @@ public class DeliveryController {
             value = "/{id}/deposit",
             method = RequestMethod.PUT
     )
-    @PreAuthorize("hasAuthority('ROLE_DISPATCHER')")
+    @PreAuthorize("hasAuthority('ROLE_DISPATCHER') || hasAuthority('ROLE_DELIVERER')")
     public ResponseEntity<Delivery> depositDelivery(@PathVariable("id") String id, @RequestHeader("Cookie") String cookie) {
         Optional<Delivery> deliveryOptional = deliveryService.findById(id);
 
