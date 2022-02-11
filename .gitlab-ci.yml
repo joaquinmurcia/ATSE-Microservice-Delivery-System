@@ -44,7 +44,7 @@ build-boxmanagement:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
         - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
         - backend/boxmanagement/Dockerfile
@@ -59,7 +59,7 @@ build-deliverymanagement:
     image: maven:latest
     rules:
       - if: '$CI_COMMIT_BRANCH == "main"'
-      - changes:
+        changes:
         - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
       - changes:
         - backend/deliverymanagement/Dockerfile
@@ -74,7 +74,7 @@ build-emailnotification:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/emailnotification/Dockerfile
@@ -89,7 +89,7 @@ build-eureka-discovery-service:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/eureka-discovery-service/Dockerfile
@@ -104,7 +104,7 @@ build-gateway:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/gateway/Dockerfile
@@ -119,7 +119,7 @@ build-usermngmt:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/usermngmt/Dockerfile
@@ -134,7 +134,7 @@ package-boxmanagement:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
     - changes:
       - backend/boxmanagement/Dockerfile
@@ -160,7 +160,7 @@ package-deliverymanagement:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/deliverymanagement/src/**/*
     - changes:
       - backend/deliverymanagement/Dockerfile
@@ -181,7 +181,7 @@ package-emailnotification:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/emailnotification/src/**/*
     - changes:
       - backend/emailnotification/Dockerfile
@@ -202,7 +202,7 @@ package-eureka-discovery-service:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/eureka-discovery-service/src/**/*
     - changes:
       - backend/eureka-discovery-service/Dockerfile
@@ -222,7 +222,7 @@ package-gateway:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/gateway/Dockerfile
@@ -242,7 +242,7 @@ package-usermngmt:
   image: maven:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-    - changes:
+      changes:
       - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
       - backend/usernmgnmt/Dockerfile
