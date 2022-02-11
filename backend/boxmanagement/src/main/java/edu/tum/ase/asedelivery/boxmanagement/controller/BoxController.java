@@ -181,6 +181,7 @@ public class BoxController {
 
             if(boxOptional.isPresent()) {
                 Box _box = boxOptional.get();
+                _box.setBoxStatus(BoxStatus.occupied);
 
                 if (_box.getDeliveryIDs() == null || _box.getDeliveryIDs().size() == 0){
                     List<String> deliveryIDs = new ArrayList<String>();
