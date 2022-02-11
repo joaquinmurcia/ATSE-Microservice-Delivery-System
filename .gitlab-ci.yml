@@ -1,7 +1,10 @@
+# Instructions
 # First time you need to run the pipeline manually, so that the .jar files are stored in cache
 # Enable Container Registry in GitLab
-# Have some access token to execute the Docker login command
-# Need previously created swarm in a node in EC2 of AWS
+# You might need to create a personal access token or a deploy token to execute the Docker login command if it fails
+# Need previously created swarm in a node in EC2 of AWS (you can do that by docker swarm init + deploy-swarm job)
+# Comment the rules in the build and package stages, or manually run the pipeline, if the pipeline failed at some point
+# and the modules were not packaged (since no changes were detected). You need those to build the Docker images
 
 stages:
   - build
@@ -10,14 +13,15 @@ stages:
   - deploy
 
 variables:
-  # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
-  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
   MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-  # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
-  # when running from the command line.
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-  MANAGER_NODE_IP: 18-198-6-63 # Set Elastic IPs in AWS so that it doesn't change between reboots
+
+  # Deploy variables depending on the number of instances
+  # Premium tier
+  MANAGER_NODE_IP: 3-125-160-233 # Set Elastic IPs in AWS so that it doesn't change between reboots
+
+  # Free tier
   MANAGER_NODE_1_IP: 18-192-123-179
   MANAGER_NODE_2_IP: 3-65-206-48
   MANAGER_NODE_3_IP: 3-71-102-67
@@ -26,12 +30,11 @@ variables:
   WORKER_NODE_6_IP: 3-71-50-136
   WORKER_NODE_7_IP: 3-64-179-39
   WORKER_NODE_8_IP: 18-196-237-248
+
+  # Copy from a manager node after manually initializing a swarm in an instance
   SWARM_JOIN_WORKER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-5v4g1gz4a5143fbxzuvvufk5u 172.31.24.49:2377
   SWARM_JOIN_MANAGER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-dtj3tzbekksyx2mz60m32hsw9 172.31.24.49:2377
 
-
-# Cache downloaded dependencies and plugins between builds.
-# To keep cache across branches add 'key: "$CI_JOB_NAME"'
 cache:
   paths:
     - .m2/repository
@@ -259,9 +262,6 @@ docker-boxmanagement:
 
 docker-deliverymanagement:
   stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
   when: always
   dependencies:
     - package-deliverymanagement
@@ -287,9 +287,6 @@ docker-emailnotification:
 
 docker-eureka-discovery-service:
   stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
   when: always
   dependencies:
     - package-eureka-discovery-service
@@ -301,9 +298,6 @@ docker-eureka-discovery-service:
 
 docker-gateway:
   stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
   when: always
   dependencies:
     - package-gateway
@@ -315,9 +309,6 @@ docker-gateway:
 
 docker-usermngmt:
   stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
   when: always
   dependencies:
     - package-usermngmt
@@ -329,9 +320,6 @@ docker-usermngmt:
 
 docker-frontend:
   stage: publish
-  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
-  #tags:
-  #  - shell
   when: always
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -339,32 +327,15 @@ docker-frontend:
   - docker build -t $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest .
   - docker image push $CI_REGISTRY/ase-21-22/team-32/ase_project/ase-frontend:latest
 
-deploy-setup:
+# Use when you want to initiate a swarm
+# Modify depending on how you want to configure your swarm (number of instances, worker-manager balance...)
+deploy-swarm:
   stage: deploy
   when: manual
   before_script:
-    ##
-    ## Install ssh-agent if not already installed, it is required by Docker.
-    ## (change apt-get to yum if you use an RPM-based image)
-    ##
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-
-    ##
-    ## Run ssh-agent (inside the build environment)
-    ##
     - eval $(ssh-agent -s)
-
-    ##
-    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-    ## We're using tr to fix line endings which makes ed25519 keys work
-    ## without extra base64 encoding.
-    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
-    ##
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-
-    ##
-    ## Create the SSH directory and give it the right permissions
-    ##
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
@@ -377,11 +348,9 @@ deploy-setup:
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-35-158-96-207.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-67-93-11.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-174-18.eu-central-1.compute.amazonaws.com "$SWARM_JOIN_WORKER"
-    # Deploy services (scalability part)
-    # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker service create --replicas 1 "
 
-
-deploy:
+# For deploying the microservices to a premium-tier instance of AWS. Required, since the free-tier doesn't have enough workload to carry the components
+deploy-premium:
   stage: deploy
   when: always
   before_script:
@@ -410,6 +379,22 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
+    - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com:~/
+    # - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker stack deploy --compose-file docker-compose.yml stack1"
+    - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
+
+# For deploying a scaled version of the microservices
+# Depending on how many instances you have, you must change the number of scp commands you execute. You need one for each instance
+deploy-scale:
+  stage: deploy
+  when: manual
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_2_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$MANAGER_NODE_3_IP.eu-central-1.compute.amazonaws.com:~/
@@ -419,24 +404,4 @@ deploy:
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$WORKER_NODE_7_IP.eu-central-1.compute.amazonaws.com:~/
     - scp -o StrictHostKeyChecking=no -r ./docker-compose.yml .env ubuntu@ec2-$WORKER_NODE_8_IP.eu-central-1.compute.amazonaws.com:~/
 
-    # TODO: - ssh -o StrictHostKeyChecking=no ubuntu@ec2-18-156-78-238.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker-compose restart || docker-compose up"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_2_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_3_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_4_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_5_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_6_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_7_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$WORKER_NODE_8_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull"
-    #- ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY; export GITLAB_REGISTRY_PATH=$CI_REGISTRY/ase-21-22/team-32/ase_project/; docker-compose pull; docker stack deploy --compose-file docker-compose.yml stack1"
     - ssh -o StrictHostKeyChecking=no ubuntu@ec2-$MANAGER_NODE_1_IP.eu-central-1.compute.amazonaws.com "export GITLAB_REGISTRY_PATH=gitlab.lrz.de:5005/ase-21-22/team-32/ase_project/; docker stack deploy --compose-file docker-compose.yml stack1"
-
-#artifacts:
-#  paths:
-#    - target/demo-0.0.1-SNAPSHOT.jar
-
-
-#testtt:
-#  stage: test
-#  script:
-#    - mvn $MAVEN_CLI_OPTS test

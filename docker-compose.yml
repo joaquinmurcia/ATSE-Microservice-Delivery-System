@@ -2,13 +2,14 @@ version: '3'
 
 services:
   discovery:
-    image: ${GITLAB_REGISTRY_PATH:-}ase-discovery:latest
+    image: ${GITLAB_REGISTRY_PATH:-}ase-discovery:latest # Set in.env
+    # (although you may need to manually set it as an environment variable for Docker Swarm)
     container_name: ase-discovery
-    # build: ./backend/eureka-discovery-service
+    # build: ./backend/eureka-discovery-service not needed when pulling from registry
     ports:
       - "9001:9001"
     working_dir: /opt/app
-    deploy:
+    deploy: # Only considered in docker swarm
       replicas: 1
       update_config:
         parallelism: 1
@@ -49,8 +50,8 @@ services:
     environment:
       - EUREKA_SERVER=discovery
       - MONGO_DB_HOSTNAME=mongo
-      #- MONGO_DB_USERNAME=aseAdmin
-      #- MONGO_DB_PASSWORD=ase
+      # - MONGO_DB_USERNAME=aseAdmin disabled mongo auth
+      # - MONGO_DB_PASSWORD=ase disabled mongo auth
       - KEYSTORE_PATH=./ase_project.keystore
     depends_on:
       - discovery
@@ -69,7 +70,6 @@ services:
   boxmanagement:
     image: ${GITLAB_REGISTRY_PATH:-}ase-boxmanagement:latest
     # build: ./backend/boxmanagement
-    # restart: always # This will be ignored if we deploy in docker swarm
     ports:
       - "9002:9002"
     working_dir: /opt/app
@@ -82,7 +82,7 @@ services:
       - gateway
       - mongo
     deploy:  # This will be considered only in docker swarm.
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 20s
@@ -109,7 +109,7 @@ services:
       - discovery
       - gateway
       - mongo
-    deploy:  # This will be considered only in docker swarm.
+    deploy:
       replicas: 1
       update_config:
         parallelism: 1
