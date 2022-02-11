@@ -42,9 +42,8 @@ cache:
 build-boxmanagement:
   stage: build
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
         - backend/boxmanagement/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -59,6 +58,7 @@ build-deliverymanagement:
     stage: build
     image: maven:latest
     rules:
+      - if: '$CI_COMMIT_BRANCH == "main"'
       - changes:
         - backend/deliverymanagement/src/**/* #All files in the directory and in subsequent subdirectories
       - changes:
@@ -72,9 +72,8 @@ build-deliverymanagement:
 build-emailnotification:
   stage: build
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/emailnotification/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -88,9 +87,8 @@ build-emailnotification:
 build-eureka-discovery-service:
   stage: build
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/eureka-discovery-service/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -104,9 +102,8 @@ build-eureka-discovery-service:
 build-gateway:
   stage: build
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -120,9 +117,8 @@ build-gateway:
 build-usermngmt:
   stage: build
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/usermngmt/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -136,9 +132,8 @@ build-usermngmt:
 package-boxmanagement:
   stage: package
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/boxmanagement/src/**/* #All files in the directory and in subsequent surectories
     - changes:
@@ -163,9 +158,8 @@ package-boxmanagement:
 package-deliverymanagement:
   stage: package
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/deliverymanagement/src/**/*
     - changes:
@@ -185,9 +179,8 @@ package-deliverymanagement:
 package-emailnotification:
   stage: package
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/emailnotification/src/**/*
     - changes:
@@ -207,9 +200,8 @@ package-emailnotification:
 package-eureka-discovery-service:
   stage: package
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/eureka-discovery-service/src/**/*
     - changes:
@@ -228,9 +220,8 @@ package-eureka-discovery-service:
 package-gateway:
   stage: package
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/gateway/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -249,9 +240,8 @@ package-gateway:
 package-usermngmt:
   stage: package
   image: maven:latest
-  only:
-    - main
   rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
     - changes:
       - backend/usernmgnmt/src/**/* #All files in the directory and in subsequent subdirectories
     - changes:
@@ -270,8 +260,8 @@ package-usermngmt:
 
 docker-boxmanagement:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   # the tag 'shell' advices only GitLab runners using this tag to pick up that job
   #tags:
   #  - shell
@@ -286,8 +276,8 @@ docker-boxmanagement:
 
 docker-deliverymanagement:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-deliverymanagement
@@ -299,8 +289,11 @@ docker-deliverymanagement:
 
 docker-emailnotification:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
+  # the tag 'shell' advices only GitLab runners using this tag to pick up that job
+  #tags:
+  #  - shell
   when: always
   dependencies:
     - package-emailnotification
@@ -312,8 +305,8 @@ docker-emailnotification:
 
 docker-eureka-discovery-service:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-eureka-discovery-service
@@ -325,8 +318,8 @@ docker-eureka-discovery-service:
 
 docker-gateway:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-gateway
@@ -338,8 +331,8 @@ docker-gateway:
 
 docker-usermngmt:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   dependencies:
     - package-usermngmt
@@ -351,8 +344,8 @@ docker-usermngmt:
 
 docker-frontend:
   stage: publish
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"' 
   when: always
   script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -385,9 +378,9 @@ deploy-swarm:
 # For deploying the microservices to a premium-tier instance of AWS. Required, since the free-tier doesn't have enough workload to carry the components
 deploy-premium:
   stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   when: always
-  only:
-    - main
   before_script:
     ##
     ## Install ssh-agent if not already installed, it is required by Docker.
