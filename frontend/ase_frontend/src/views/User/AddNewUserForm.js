@@ -71,9 +71,9 @@ const AddNewUserForm = () => {
                     <InputLabel id="selectRole">Role</InputLabel>
                     <Select name="role" labelId="selectRole" label="" value={elemRole} onChange={handleChangeRole}>
                         <MenuItem value=""><em>None</em></MenuItem>
-                        <MenuItem value="customer">Customer</MenuItem>
-                        <MenuItem value="deliverer">Deliverer</MenuItem>
-                        <MenuItem value="dispatcher">Dispatcher</MenuItem>
+                        <MenuItem value="ROLE_CUSTOMER">Customer</MenuItem>
+                        <MenuItem value="ROLE_DELIVERER">Deliverer</MenuItem>
+                        <MenuItem value="ROLE_DISPATCHER">Dispatcher</MenuItem>
                     </Select>
                 </FormControl>
                 <br/>

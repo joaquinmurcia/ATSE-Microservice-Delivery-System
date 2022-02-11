@@ -20,7 +20,6 @@ import {
     startEditElement
 } from "./deliveriesSlice";
 import Button from "@mui/material/Button";
-import {store} from "../../app/store"
 import {getCookie, parseJwt} from "../tokenReader";
 
 const useStyles = makeStyles(() => {
@@ -65,8 +64,6 @@ const DeliveriesList = () => {
 
     const[searchId, setSearchId] = useState("");
 
-    const state = store.getState();
-
     useEffect(() => dispatch(getDeliveriesAsync()), [dispatch]);
     //dispatch(getDeliveriesAsync());
 
@@ -78,12 +75,10 @@ const DeliveriesList = () => {
 
     const handleChangeSearchId = (e) => {
         setSearchId(e.target.value);
-        console.log(e.target.value);
-        console.log(state);
     }
 
     const columns = [
-        { id: 'id', label: 'Id', minWidth: 30},
+        { id: 'id', label: 'Tracking Number', minWidth: 30},
         { id: 'targetBox', label: 'Box', minWidth: 80 },
         { id: 'targetCustomer', label: 'Customer', minWidth: 80},
         { id: 'responsibleDeliverer', label: 'Responsible Deliverer', minWidth: 80 },
@@ -94,7 +89,7 @@ const DeliveriesList = () => {
     return (
         <Container>
             <Paper  sx={{border: 1, borderRadius: 1}}>
-                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="search" label="Search Id" value={searchId} onChange={handleChangeSearchId}/>
+                <TextField sx={{minWidth: 120, margin: 1}} size="small" name="search" label="Search Tracking Number" value={searchId} onChange={handleChangeSearchId}/>
                 <TableContainer>
                     <Table stickyHeader aria-label="sticky table" className={listStyle}>
                         <TableHead>

@@ -3,8 +3,6 @@ import Button from "@mui/material/Button";
 import {TextField, Typography, Paper, Container, MenuItem, Select, InputLabel, FormControl} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {cancelEdit, editBoxAsync,getEditBox} from "./boxesSlice";
-import {getCookie, parseJwt} from "../tokenReader";
-
 
 const EditBoxForm = () => {
 
