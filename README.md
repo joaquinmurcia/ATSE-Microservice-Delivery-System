@@ -23,3 +23,6 @@ When everything is pulled, Ctrl+C and do...
 
 Finally...
 `docker-compose up`
+
+# Demo of the Raspberry Pi  in action with example workflow:
+https://drive.google.com/drive/folders/104-tZQlUf5-F8F6lYqmx27HnmE2UUMkZ?usp=sharing
