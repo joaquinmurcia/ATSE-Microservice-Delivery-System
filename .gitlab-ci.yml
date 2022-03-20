@@ -36,8 +36,8 @@ variables:
   WORKER_NODE_8_IP: 18-196-237-248
 
   # Copy from a manager node after manually initializing a swarm in an instance
-  SWARM_JOIN_WORKER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-5v4g1gz4a5143fbxzuvvufk5u 172.31.24.49:2377
-  SWARM_JOIN_MANAGER: docker swarm join --token SWMTKN-1-09zri1p91luc8pi8qb02o72mb2292te5phwlh8ddmc9gfbih7f-dtj3tzbekksyx2mz60m32hsw9 172.31.24.49:2377
+  SWARM_JOIN_WORKER: docker swarm join --token <token> 172.31.24.49:2377
+  SWARM_JOIN_MANAGER: docker swarm join --token <token> 172.31.24.49:2377
 
 cache:
   paths:
