@@ -2,7 +2,9 @@
 
 Main repository for the ASE Project
 
-# How to run the project
+The README is not very extensive since we did a public presentation in which functionality and usage were explained instead
+
+# How to run the project in your machine (as a project member)
 ## Locally, with docker-compose up
 In your machine, run...
 ```
@@ -24,5 +26,5 @@ When everything is pulled, Ctrl+C and do...
 Finally...
 `docker-compose up`
 
-# Demo of the Raspberry Pi  in action with example workflow:
+# Demo videos:
 https://drive.google.com/drive/folders/104-tZQlUf5-F8F6lYqmx27HnmE2UUMkZ?usp=sharing
